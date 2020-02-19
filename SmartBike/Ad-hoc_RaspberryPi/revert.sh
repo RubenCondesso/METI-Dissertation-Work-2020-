@@ -11,13 +11,6 @@ then
 fi
 rm /etc/rc.local.adhoc_bak
 
-if [ -e /etc/udhcpd.conf.adhoc_bak ]
-then
-    cp /etc/udhcpd.conf.adhoc_bak /etc/udhcpd.conf
-else 
-    rm /etc/udhcpd.conf
-fi
-rm /etc/udhcpd.conf.adhoc_bak
 
 if [ -e /etc/dhcpcd.conf.adhoc_bak ]
 then
@@ -26,6 +19,14 @@ else
     rm /etc/dhcpcd.conf
 fi
 rm /etc/dhcpcd.conf.adhoc_bak
+
+if [ -e /etc/network/interfaces.adhoc_bak ]
+then
+    cp /etc/network/interfaces.adhoc_bak /etc/network/interfaces
+else 
+    rm /etc/network/interfaces
+fi
+rm /etc/network/interfaces.adhoc_bak
 
 echo "Please reboot now for changes to take effect."
 exit 0
