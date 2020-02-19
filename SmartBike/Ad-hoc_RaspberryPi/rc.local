@@ -8,7 +8,7 @@
 
 ifconfig wlan0 down
 iwconfig wlan0 mode Ad-Hoc
-iwconfig wlan0 essid SmartBikeNetwork  # Change Raspberry-Pi-1 to whatever name you like
+iwconfig wlan0 essid SmartBike  # Change Raspberry-Pi-1 to whatever name you like
 #iwconfig wlan0 key 3b205742624039762d586f4f3e    # Uncomment this line to use a WEP key
 sleep 1
 ifconfig wlan0 10.0.0.2           # This should agree with the IP address in udhcpd.conf
