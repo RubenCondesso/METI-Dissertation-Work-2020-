@@ -16,9 +16,9 @@ then
 fi
 
 
-if [ -e /etc/network/interfaces ]
+if [ -e /etc/network/interfaces.d/wlan0 ]
 then
-    cp /etc/network/interfaces /etc/network/interfaces.adhoc_bak
+    cp /etc/network/interfaces.d/wlan0 /etc/network/interfaces.d/wlan0.adhoc_bak
 fi
 
 
@@ -26,10 +26,9 @@ fi
 
 # copy new files
 
-#sudo cp rc.local /etc
-sudo cp interfaces /etc/network/interfaces.d
-sudo cp udhcpd.conf /etc
-sudo cp dhcpcd.conf /etc
+cp rc.local /etc
+cp wlan0 /etc/network/interfaces.d
+cp dhcpcd.conf /etc
 
 echo "Installation complete. Please reboot now for changes to take effect."
 exit 0

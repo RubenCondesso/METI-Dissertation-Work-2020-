@@ -2,14 +2,6 @@
 #ad-hoc mode configuration - Raspberry Pi 0
 
 
-# Include files from /etc/network/interfaces.d:
-source-directory /etc/network/interfaces.d
-
-
-
-auto lo
-iface lo inet loopback
-
 auto wlan0
 iface wlan0 inet static
   address 10.0.0.2
@@ -17,3 +9,5 @@ iface wlan0 inet static
   wireless-channel 1
   wireless-essid SmartBike
   wireless-mode ad-hoc
+
+source /etc/network/interfaces.d/*
