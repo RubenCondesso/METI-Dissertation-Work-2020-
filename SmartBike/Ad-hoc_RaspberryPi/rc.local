@@ -1,8 +1,0 @@
-#!/bin/sh -e
-#
-# rc.local
-#
-
-/home/pi/Desktop/Ad-hoc\ Wifi_Configuration/install.sh
-
-exit 0

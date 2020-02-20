@@ -38,5 +38,4 @@ sudo ifup wlx503eaa4453ad # Tunr on the wireless interface of the network adapto
 if [ "$PI" = false ]; then sudo start network-manager; fi #In case of being a regular laptop, restart network-manager
 sudo iwlist wlx503eaa4453ad scan # Scan the networks available (this is needed with some networks adapters)
 sudo iwconfig # Show actual interfaces settings
-
 echo "All settings restored" && exit 0
