@@ -11,7 +11,7 @@ iface lo inet loopback
 
 auto wlx503eaa4453ad
 iface wlx503eaa4453ad inet static
-	address 192.168.1.191
+	address 192.168.1.192
 	netmask 255.255.255.0
 	wireless-channel 1
 	wireless-essid SmartBike
