@@ -1,0 +1,24 @@
+Open /etc/default/hostapd and replace #DAEMON_CONF="" with
+	DAEMON_CONF="/etc/hostapd/hostapd.conf"
+
+Open /etc/init.d/hostapd and replace #DAEMON_CONF="" with
+	DAEMON_CONF=/etc/hostapd/hostapd.conf
+
+Open /etc/sysctl.conf and put: net.ipv4.ip_forward=1
+
+Open /etc/rc.local and put (before exit 0): 
+
+	iptables-restore < /etc/iptables.ipv4.nat  
+	sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+	#para lançar o socket automaticamente
+	python /home/pi/server.py
+
+Check if the file /etc/wpa_supplicant/wpa_supplicant.conf is created. If so, open it (with nano) and put the following information:
+	ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+	update_config=1
+
+Reboot 
+
+
+#Notas: O adaptador Wifi TL-WN821N (do Miguel) tem de ligar à porta superior direita; O adaptador TL-WN321G (da professora) tem de ligar à porta inferior esquerda

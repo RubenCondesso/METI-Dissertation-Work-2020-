@@ -21,12 +21,12 @@ error_exit() {
 #Restore interface config and removing backup
 sudo cp /etc/network/interfaces.backup /etc/network/interfaces || error_exit "$LINENO: I couldn't restore the backup."
 sudo rm /etc/network/interfaces.backup || error_exit "$LINENO: I couldn't delete the backup."
-sudo iwconfig wlx503eaa4453ad mode Managed
+sudo iwconfig wlan0 mode Managed
 
-sudo ifdown wlx503eaa4453ad #Turn off the interface of the network adaptor (of laptop)
-sudo ifup wlx503eaa4453ad # Tunr on the wireless interface of the network adaptor (of laptop)
+sudo ifconfig wlan0 down #Turn off the wireless interface of Raspberry Pi
+sudo ifconfig wlan0 up # Tunr on the wireless interface  of Raspberry Pi
 
-sudo service network-manager restart #Restart network-manager
-sudo iwlist wlx503eaa4453ad scan # Scan the networks available (this is needed with some networks adapters)
+sudo iwlist wlan0 scan # Scan the networks available
 sudo iwconfig # Show actual interfaces settings
+
 echo "All settings restored" && exit 0

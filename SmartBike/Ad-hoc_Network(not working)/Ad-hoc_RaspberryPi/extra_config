@@ -1,7 +1,0 @@
-# 
-# Extra configurations to do on Raspberry Pi 0
-
-
-# Acabar esta parte das configuracoes
-sudo apt-get install isc-dhcp-server
-sudo dhcp.conf /etc/dhcp.conf

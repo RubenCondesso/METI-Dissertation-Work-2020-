@@ -27,21 +27,21 @@ IFACE="wlx503eaa4453ad" # this is the one for my network adaptor in my PC
 # Creates a backup of /etc/network/interfaces
 if [ -e /etc/network/interfaces.backup ]; then	# if there is alredy a backup, the device should be alredy in Ad-Hoc mode
 	echo "Backup alredy exist. Ad-Hoc probably on, trying to turn it off and then continuing" # Just in case, it's turn off and try again (so the network ca be 'restart' easily)
-	$DIR/uninstall_PC.sh
+	.$DIR/uninstall_PC.sh
 else
 	echo "Backup /etc/network/interfaces as interfaces.backup" # Make a backup of this file
 	sudo cp /etc/network/interfaces /etc/network/interfaces.backup || error_exit "$LINENO: Error creating interfaces backup"
 fi
 
-sudo ifdown $IFACE # Turn off interfaces
+sudo ifconfig $IFACE down # Turn off interface
 
 echo " Setting /etc/network/interfaces properly" # Change interfaces for interfaces.adhoc
 
 sudo cp $DIR/interfaces.adhocPC /etc/network/interfaces || error_exit "$LINENO: Error copying  .adhocPC to /etc/network"
 
 
-sudo ifdown $IFACE && sudo ifup $IFACE # Restarting wireless interface to apply the changes made
-sudo ifdown $IFACE && sudo ifup $IFACE # Twice for actually get it working
+sudo ifconfig $IFACE down && sudo ifconfig $IFACE up # Restarting wireless interface to apply the changes made
+sudo ifconfig $IFACE down && sudo ifconfig $IFACE up # Twice for actually get it working
 echo "Restarting inteface $IFACE. Wait about 25s" # Waiting for the interface establishment
 sleep 25
 
