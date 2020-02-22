@@ -23,6 +23,9 @@ sudo cp /etc/network/interfaces.backup /etc/network/interfaces || error_exit "$L
 sudo rm /etc/network/interfaces.backup || error_exit "$LINENO: I couldn't delete the backup."
 sudo iwconfig wlan0 mode Managed
 
+sudo rm /etc/default/isc-dhcp-server
+sudo rm /etc/dhcp/dhcpd.conf
+
 sudo ifconfig wlan0 down #Turn off the wireless interface of Raspberry Pi
 sudo ifconfig wlan0 up # Tunr on the wireless interface  of Raspberry Pi
 

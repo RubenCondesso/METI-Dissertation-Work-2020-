@@ -16,9 +16,11 @@ error_exit() {
 	
 #############################	Start of script  ##############################
 
+# Install isc-dhcp server
+sudo apt-get install isc-dhcp-server
+
 
 # Wireless interface to configure (check the wireless interface with iwconfig)
-
 IFACE="wlan0" # this is the one for the Raspberry Pi
 
 
@@ -36,13 +38,16 @@ sudo ifconfig $IFACE down # Turn off interface
 
 sudo cp $DIR/interfaces_adhocPI /etc/network/interfaces || error_exit "$LINENO: Error copying  .adhocPI to /etc/network"
 
+sudo cp $DIR/isc-dhcp-server /etc/default/isc-dhcp-server
+
+sudo cp $DIR/dhcpd.conf /etc/dhcp/dhcpd.conf
 
 sudo ifconfig $IFACE down && sudo ifconfig $IFACE up # Restarting wireless interface to apply the changes made
 sudo ifconfig $IFACE down && sudo ifconfig $IFACE up # Twice for actually get it working
 echo "Restarting inteface $IFACE. Wait about 25s" # Waiting for the interface establishment
 sleep 25
 
-sudo iwlist $IFACE scan # Scan networks with interface $IFACE 
+#sudo iwlist $IFACE scan # Scan networks with interface $IFACE 
+#sudo iwconfig # Show actual interfaces settings to check the configurations made
 
-sudo iwconfig # Show actual interfaces settings to check the configurations made
-echo "The Ad-Hoc SmartBike newtork is ready" && exit 0
+echo "Reboot the system so the configurations can be applied." && exit 0
