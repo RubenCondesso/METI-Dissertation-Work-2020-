@@ -17,7 +17,7 @@ error_exit() {
 #############################	Start of script  ##############################
 
 # Install isc-dhcp server
-sudo apt-get install isc-dhcp-server
+#sudo apt-get install isc-dhcp-server
 
 
 # Wireless interface to configure (check the wireless interface with iwconfig)
@@ -38,9 +38,9 @@ sudo ifconfig $IFACE down # Turn off interface
 
 sudo cp $DIR/interfaces_adhocPI /etc/network/interfaces || error_exit "$LINENO: Error copying  .adhocPI to /etc/network"
 
-sudo cp $DIR/isc-dhcp-server /etc/default/isc-dhcp-server
+#sudo cp $DIR/isc-dhcp-server /etc/default/isc-dhcp-server
 
-sudo cp $DIR/dhcpd.conf /etc/dhcp/dhcpd.conf
+#sudo cp $DIR/dhcpd.conf /etc/dhcp/dhcpd.conf
 
 sudo ifconfig $IFACE down && sudo ifconfig $IFACE up # Restarting wireless interface to apply the changes made
 sudo ifconfig $IFACE down && sudo ifconfig $IFACE up # Twice for actually get it working
