@@ -26,7 +26,7 @@ IFACE="wlan0" # this is the one for the Raspberry Pi
 # Creates a backup of /etc/network/interfaces
 if [ -e /etc/network/interfaces.backup ]; then	# if there is alredy a backup, the device should be alredy in Ad-Hoc mode
 	echo "Backup alredy exist. Ad-Hoc probably on, trying to turn it off and then continuing" # Just in case, it's turn off and try again (so the network ca be 'restart' easily)
-	$DIR/uninstall_PI.sh
+	.$DIR/uninstall_PI.sh
 else
 	echo "Backup /etc/network/interfaces as interfaces.backup" # Make a backup of this file
 	sudo cp /etc/network/interfaces /etc/network/interfaces.backup || error_exit "$LINENO: Error creating interfaces backup"
