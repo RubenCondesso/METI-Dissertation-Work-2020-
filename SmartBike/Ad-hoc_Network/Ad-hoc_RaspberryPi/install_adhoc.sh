@@ -50,4 +50,4 @@ sleep 25
 #sudo iwlist $IFACE scan # Scan networks with interface $IFACE 
 #sudo iwconfig # Show actual interfaces settings to check the configurations made
 
-echo "Reboot the system so the configurations can be applied." && exit 0
+echo "Reboot the laptop. Then the Ad-Hoc SmartBike newtork will be ready" && exit 0

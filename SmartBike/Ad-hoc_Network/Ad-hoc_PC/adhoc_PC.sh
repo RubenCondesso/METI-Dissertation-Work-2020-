@@ -20,7 +20,7 @@ error_exit() {
 # Wireless interface to configure (check the wireless interface with iwconfig)
 
 #IFACE="wlan0" # this is the one for my rpi
-IFACE="wlx503eaa4453ad" # this is the one for my network adaptor in my PC
+IFACE="wlo1" # this is the one for my network adaptor in my PC
 
 
 
@@ -46,7 +46,8 @@ echo "Restarting inteface $IFACE. Wait about 25s" # Waiting for the interface es
 sleep 25
 
 sudo service network-manager restart # Restart network-manager 
-sudo iwlist $IFACE scan # Scan networks with interface $IFACE 
 
-sudo iwconfig # Show actual interfaces settings to check the configurations made
-echo "The Ad-Hoc SmartBike newtork is ready" && exit 0
+#sudo iwlist $IFACE scan # Scan networks with interface $IFACE 
+#sudo iwconfig # Show actual interfaces settings to check the configurations made
+
+echo "Reboot the laptop. Then the Ad-Hoc SmartBike newtork will be ready" && exit 0

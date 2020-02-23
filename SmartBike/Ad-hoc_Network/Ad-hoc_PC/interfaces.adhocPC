@@ -9,8 +9,8 @@ source-directory /etc/network/interfaces.d
 auto lo
 iface lo inet loopback
 
-auto wlx503eaa4453ad
-iface wlx503eaa4453ad inet static
+auto wlo1
+iface wlo1 inet static
 	address 10.0.0.2
 	netmask 255.255.255.0
 	wireless-channel 1
