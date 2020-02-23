@@ -21,10 +21,10 @@ error_exit() {
 #Restore interface config and removing backup
 sudo cp /etc/network/interfaces.backup /etc/network/interfaces || error_exit "$LINENO: I couldn't restore the backup."
 sudo rm /etc/network/interfaces.backup || error_exit "$LINENO: I couldn't delete the backup."
-sudo iwconfig wlan1 mode Managed
+sudo iwconfig wlo1 mode Managed
 
-sudo ifconfig wlan1 down #Turn off the interface of the network adaptor (of laptop)
-sudo ifconfig wlan1 up # Tunr on the wireless interface of the network adaptor (of laptop)
+sudo ifconfig wlo1 down #Turn off the interface of the network adaptor (of laptop)
+sudo ifconfig wlo1 up # Tunr on the wireless interface of the network adaptor (of laptop)
 
 sudo service network-manager restart #Restart network-manager
 
