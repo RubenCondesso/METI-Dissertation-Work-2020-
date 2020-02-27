@@ -1,0 +1,7 @@
+# Hardware used by the Sensor_System
+
+
+. HC-SR04 Ultrasonic sensor;
+. Mini Breadboard;
+. 470R and 330R resistors;
+. Connector cables;
