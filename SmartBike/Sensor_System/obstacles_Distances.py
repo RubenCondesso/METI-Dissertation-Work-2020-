@@ -38,7 +38,7 @@ __QUIT           = "Q"
 class Ultrasonic_Sensor():
   
     
-    def __init__(self, TRIG, ECHO, offset = 0.5):
+    def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
 
         # Set GPIO pin numbering - GPIO Mode (BOARD/BCM)
         GPIO.setmode(GPIO.BCM)
@@ -71,12 +71,13 @@ class Ultrasonic_Sensor():
 
         print "Waiting for the Sensor to settle."
         
-        # Delay of 2 seconds
-        time.sleep(2)      
+        # Some gap between measurements
+        sleep(1)      
 
         # Set the Trigger to HIGH
         GPIO.output(self.GPIO_TRIGGER, GPIO.HIGH)
 
+        # Delay 10 us
         sleep(0.00001)
 
         # Set TRIG as LOW
@@ -99,7 +100,7 @@ class Ultrasonic_Sensor():
         # Time difference between start and arrival - Get pulse duration to a variable
         pulse_duration = pulse_end - pulse_start 
 
-        # Distance = 17160.5 * Time (unit cm) at sea level and ãt 20ºC
+        # Distance = 17160.5 * Time (unit cm) at sea level and at 20 degrees
         distance = pulse_duration * 17160.5  
 
         # Round to two decimal points            
@@ -108,13 +109,13 @@ class Ultrasonic_Sensor():
         # Check whether the distance is within the sensor's range
         if distance > 2 and distance < 400: 
 
-            distance = distance + self.OFFSET
-            print("Distance: ", distance," cm")
+            distance = distance + self.GPIO_OFFSET
+            print("Obstacle detected at: ", distance," cm")
 
         else:
 
             distance = 0
-            print("No obstacle") 
+            print("No obstacle detected.") 
 
         return distance
 
@@ -127,28 +128,28 @@ class Ultrasonic_Sensor():
         while True:
 
             self.echo_signal()
-            response = input("Enter OFFSET (Q = Quit): ")
 
-            if response == __QUIT:
+            #response = input("Enter OFFSET (Q = Quit): ")
 
-                break;
+            #if response == __QUIT:
+            #    break;
 
-            sensor.offset = float(response)
-            print(sensor)
-
+            #sensor.offset = float(response)
+            #print(sensor)
 
             
     # Simple low pass filter function which is equivalent to an exponentially weighted moving average. It's useful for smoothing the distance values returned from the sensor.
-    def low_pass_filter(value, previous_value, beta):    	
+    #def low_pass_filter(value, previous_value, beta):    	
         # Simple infinite-impulse-response (IIR) 
         # Single-pole low-pass filter
-        # ß = discrete-time smoothing parameter; The higher the value of beta, the greater the smoothing.
-        # (determines smoothness). 0 < ß < 1
-        # LPF: Y(n) = (1-ß)*Y(n-1) + (ß*X(n))) 
-        #           = Y(n-1) - (ß*(Y(n-1)-X(n)))
+        # Beta = discrete-time smoothing parameter; The higher the value of beta, the greater the smoothing.
+        # (determines smoothness). 0 < Beta < 1
+        # LPF: Y(n) = (1-Beta)*Y(n-1) + (Beta*X(n))) 
+        #           = Y(n-1) - (Beta*(Y(n-1)-X(n)))
   
-        smooth_value = previous_value - (beta * (previous_value - value))
-        return smooth_value
+    #    smooth_value = previous_value - (beta * (previous_value - value))
+
+    #    return smooth_value
         
 
 
@@ -157,6 +158,7 @@ def main():
 
     # New sensor on GPIO pins: Trigger - 18 & Echo - 24
     sensor = Ultrasonic_Sensor(18, 24)       
+
     print(sensor)
 
     def endProcess(signum = None, frame = None):
@@ -169,7 +171,10 @@ def main():
 
         print("\n-- Terminating program --")
         print("Cleaning up GPIO...")
+
+        # Clean the GPIO pins
         GPIO.cleanup()
+
         print("Done.")
         exit(0)
 
@@ -182,35 +187,37 @@ def main():
     while True:
 
         # Select the action to take
-        action = input("\nSelect Action - (1) Calibrate, (2) Test, or (3) Filter: ")
+        #action = input("\nSelect Action - (1) Calibrate, (2) Test, or (3) Filter: ")
 
         # Calibrate the ultrasonic sensor
-        if action == __CALIBRATE:
-            sensor.calibrate()
+        #if action == __CALIBRATE:
+        #    sensor.calibrate()
 
         # Filter action
-        elif action == __FILTER:
-            beta = input("Enter Beta 0 < ß < 1 (Q = Quit): ")
-            filtered_value = 0
+        #elif action == __FILTER:
+        #    beta = input("Enter Beta 0 < Beta < 1 (Q = Quit): ")
+        #    filtered_value = 0
 
-            # Qui the function
-            if beta == __QUIT:
-                break;
+            # Quit the function
+        #    if beta == __QUIT:
+        #        break;
 
-            while True:
+        #    while True:
 
-                filtered_value = sensor.low_pass_filter(sensor.echo_signal(), filtered_value, float(beta))
-                filtered_value = round(filtered_value, 2)
-                print("Filtered: ", filtered_value, " cm")
+        #        filtered_value = sensor.low_pass_filter(sensor.echo_signal(), filtered_value, float(beta))
+        #        filtered_value = round(filtered_value, 2)
+        #        print("Filtered: ", filtered_value, " cm")
 
-        else:
+        #else:
 
             # Obtain the distances to the detected obstacles 
-            sensor.echo_signal()
+            #sensor.echo_signal()
+
+   		sensor.echo_signal()
 
 
 
-# Main 
+# Main of this python code
 if __name__ == "__main__":
 
     # execute only if run as a script
