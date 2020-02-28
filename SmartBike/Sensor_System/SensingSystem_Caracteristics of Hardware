@@ -1,0 +1,47 @@
+# 
+# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+#
+# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 
+#
+# Caracteristics of Hardware used in the Sensor's System
+# 
+#
+#
+#
+
+# ------------------------------------------------------------------------------------ HC-SR04 Ultrasonic sensor ------------------------------------------------------------------------------------------------ # 
+
+	- Source 1: https://electrosome.com/hc-sr04-ultrasonic-sensor-raspberry-pi/;
+
+
+		. Overview:
+
+			.. Reach: 2cm to 400cm; 
+			.. The transmitter transmits short bursts which gets reflected by target and are picked up by the receiver; 
+			.. The time difference between transmission and reception of ultrasonic signals is calculated;
+			.. Using the speed of sound and ‘Speed = Distance/Time‘ equation, the distance between the source and target can be easily calculated;
+			.. HC-SR04 ultrasonic distance sensor module has four pins: VCC – 5V, input power; TRIG – Trigger Input; ECHO – Echo Output; GND – Ground; 
+
+
+		. Modus Operandi: 
+
+			.. TX -> emits signal, until it reaches the target. RX -> captures the signal back. It's like an echo signal.
+			.. 1 - Provide trigger signal to TRIG input, it requires a HIGH signal of atleast 10μS duration;
+			.. 2 - This enables the module to transmit eight 40KHz ultrasonic burst;
+			.. 3 - If there is an obstacle in-front of the module, it will reflect those ultrasonic waves;
+			.. 4 - If the signal comes back, the ECHO output of the module will be HIGH for a duration of time taken for sending and receiving ultrasonic signals. The pulse width ranges from 150μS to 25mS depending upon the distance of the obstacle from the sensor and it will be about 38ms if there is no obstacle; 
+
+		
+		. Distance Calculation:
+
+			.. Time taken by pulse is actually for to and fro travel of ultrasonic signals, while we need only half of this. Therefore Time is taken as Time/2.
+				... Distance = Speed * Time/2;
+
+			.. Speed of sound at sea level = 343.21 m/s or 34321 cm/s.
+				... Thus, Distance = 17160.5 * Time (unit cm);
+
+
+		. Calibration:
+
+			.. For accurate distance readings the output can be calibrated using a ruler. In the developed program a calibration of 0.5 cm is added;

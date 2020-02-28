@@ -1,7 +1,19 @@
+# 
+# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+#
+# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 
+#
+# 
 # Hardware used by the Sensor_System
+#
+#
+#
 
 
-. HC-SR04 Ultrasonic sensor;
-. Mini Breadboard;
-. 470R and 330R resistors;
-. Connector cables;
+# --------------------------------------------------------- Hardware used by the Sensor_System -------------------------------------------------------------------------- # 
+
+	. HC-SR04 Ultrasonic sensor;
+	. Mini Breadboard;
+	. 470R and 330R resistors;
+	. Connector cables;
