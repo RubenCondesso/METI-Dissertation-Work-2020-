@@ -54,7 +54,8 @@ class Ultrasonic_Sensor():
 
         # GPIO setup
         GPIO.setup(self.GPIO_TRIGGER, GPIO.OUT)                  
-        GPIO.setup(self.GPIO_ECHO, GPIO.IN)    
+        GPIO.setup(self.GPIO_ECHO, GPIO.IN)   
+
 
 
     def __str__(self):
@@ -117,7 +118,7 @@ class Ultrasonic_Sensor():
             distance = 0
             print("No obstacle detected.") 
 
-        return distance
+        return str(distance)
 
 
 
@@ -160,6 +161,9 @@ def main():
     sensor = Ultrasonic_Sensor(18, 24)       
 
     print(sensor)
+
+    # Open the text file
+    data_file = open("ultrasonicSensor_Data.txt","w+")
 
     def endProcess(signum = None, frame = None):
 
@@ -213,7 +217,16 @@ def main():
             # Obtain the distances to the detected obstacles 
             #sensor.echo_signal()
 
-   		sensor.echo_signal()
+
+        
+        # Get the distance obtained in this exact moment
+        present_distance = sensor.echo_signal()
+        
+        # Add this distance to the text file
+        data_file.write(present_distance + "\n")
+
+    # Close the text file
+    data_file.close()
 
 
 

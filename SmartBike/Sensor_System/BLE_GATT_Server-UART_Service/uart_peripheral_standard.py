@@ -19,53 +19,30 @@ mainloop = None
  
 class TxCharacteristic(Characteristic):
 
-
-
     # Init the uart peripheral
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_TX_CHARACTERISTIC_UUID,
                                 ['notify'], service)
         self.notifying = False
-        GLib.io_add_watch(sys.stdin, GLib.IO_IN, self.read_SensorData)
-
-
+        GLib.io_add_watch(sys.stdin, GLib.IO_IN, self.on_console_input)
     
-    # Read the data obtained by the ultrasonic sensor
-    def read_SensorData(self, fd, condition):
-
+    # Read the input on console
+    def on_console_input(self, fd, condition):
         s = fd.readline()
-
         if s.isspace():
-            
             pass
-
         else:
-
-            # Open the file with the sensor's data information
-            data_file = open("/home/pi/SmartBike/Sensing_System/ultrasonicSensor_Data.txt")
-
-            # Read each line of the text file
-            line = data_file.readlines()
-
-            for x in line:
-
-                # Send the sensor's data to the smartphone
-                self.send_SensorData(x)
-        
+            self.send_tx(s)
         return True
-
-       
-
-    # Send the distances to the obstacle, detected by the ultrasonic sensor
-    def send_SensorData(self, s):
+    
+    # Send the data received
+    def send_tx(self, s):
         if not self.notifying:
             return
         value = []
         for c in s:
             value.append(dbus.Byte(c.encode()))
         self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
-
-
  
     def StartNotify(self):
         if self.notifying:
