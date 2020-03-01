@@ -1,0 +1,35 @@
+
+#
+# links_info - Text file with information
+#
+# 1 March 2020 - 1.0 
+# 
+# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+# 
+# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+#
+# 
+# Text file that contains Links with info about GATT and Bluetooth UART Services
+#
+# 
+
+- Bluetooth UART Service:
+
+	. https://makecode.microbit.org/reference/bluetooth/start-uart-service;
+
+- GATT:
+
+	. https://learn.adafruit.com/introduction-to-bluetooth-low-energy/gatt;
+
+- Creating BLE GATT Server (UART Service) on Raspberry Pi:
+	
+	. https://scribles.net/creating-ble-gatt-server-uart-service-on-raspberry-pi/;
+
+- dbus:
+	
+	. https://dbus.freedesktop.org/doc/dbus-tutorial.html;
+
+- Github repository example:	
+	
+	. https://github.com/Douglas6/cputemp/blob/master/cputemp.py;
