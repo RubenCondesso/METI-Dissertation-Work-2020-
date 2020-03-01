@@ -2,7 +2,7 @@
 #
 # obstacles_Distances.py - Ultrasonic Sensor Class for the Raspberry Pi Zero
 #
-# 01 March 2020 - 2.0 
+# 28 Fev 2020 - 1.0 
 # 
 # Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -13,6 +13,11 @@
 # Python code that measures the distance to obstacles detected by the ultrasonic sensor
 # 
 #
+
+
+# V1 - This version only sends the distance of the detected obstacle
+
+
 
 # -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
 
@@ -25,6 +30,14 @@ from time import sleep, time
 import os, signal
 
 # ----------------------------------------------------------------------------------- Code starts here -------------------------------------------------------------------------------------- #
+
+
+# Private Attributes
+__CALIBRATE      = "1"
+__TEST           = "2"
+__FILTER         = "3"
+__QUIT           = "Q"
+
 
 # Ultrasonic sensor class 
 class Ultrasonic_Sensor():
@@ -110,7 +123,40 @@ class Ultrasonic_Sensor():
             distance = 0
             print("No obstacle detected.") 
 
-        return str(distance)     
+        return str(distance)
+
+
+
+    # Calibrate the sensor for the distance measurement
+    def calibrate(self):
+        # Calibration function is used to help correct for things like altitude and temperature
+
+        while True:
+
+            self.echo_signal()
+
+            #response = input("Enter OFFSET (Q = Quit): ")
+
+            #if response == __QUIT:
+            #    break;
+
+            #sensor.offset = float(response)
+            #print(sensor)
+
+            
+    # Simple low pass filter function which is equivalent to an exponentially weighted moving average. It's useful for smoothing the distance values returned from the sensor.
+    #def low_pass_filter(value, previous_value, beta):    	
+        # Simple infinite-impulse-response (IIR) 
+        # Single-pole low-pass filter
+        # Beta = discrete-time smoothing parameter; The higher the value of beta, the greater the smoothing.
+        # (determines smoothness). 0 < Beta < 1
+        # LPF: Y(n) = (1-Beta)*Y(n-1) + (Beta*X(n))) 
+        #           = Y(n-1) - (Beta*(Y(n-1)-X(n)))
+  
+    #    smooth_value = previous_value - (beta * (previous_value - value))
+
+    #    return smooth_value
+        
 
 
 # Main function - Menu
@@ -148,6 +194,35 @@ def main():
     signal.signal(signal.SIGQUIT, endProcess)
 
     while True:
+
+        # Select the action to take
+        #action = input("\nSelect Action - (1) Calibrate, (2) Test, or (3) Filter: ")
+
+        # Calibrate the ultrasonic sensor
+        #if action == __CALIBRATE:
+        #    sensor.calibrate()
+
+        # Filter action
+        #elif action == __FILTER:
+        #    beta = input("Enter Beta 0 < Beta < 1 (Q = Quit): ")
+        #    filtered_value = 0
+
+            # Quit the function
+        #    if beta == __QUIT:
+        #        break;
+
+        #    while True:
+
+        #        filtered_value = sensor.low_pass_filter(sensor.echo_signal(), filtered_value, float(beta))
+        #        filtered_value = round(filtered_value, 2)
+        #        print("Filtered: ", filtered_value, " cm")
+
+        #else:
+
+            # Obtain the distances to the detected obstacles 
+            #sensor.echo_signal()
+
+
         
         # Get the distance obtained in this exact moment
         present_distance = sensor.echo_signal()

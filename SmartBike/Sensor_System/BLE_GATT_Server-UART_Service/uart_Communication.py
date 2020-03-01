@@ -10,8 +10,12 @@
 # SmartBike System - Master Thesis in Telecomunications and Computer Engineering
 #
 # 
-# Python code that send the sensor's data to the smarthphone via BLE, using a UART service 
+# BLE GATT Nordic UART Service that receives and writes data and serves as a bridge to the UART interface.
 #
+#
+# In this case, this peripheral (Raspberry Pi Zero) will be connected to one central device (Smartphone)
+#
+# The peripheral (GATT Server) holds the ATT lookup data and service and characteristic definitions, and the GATT Client (smarthphone) sends requests to this server.
 #
 
 # -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
@@ -33,13 +37,20 @@ LE_ADVERTISING_MANAGER_IFACE = 'org.bluez.LEAdvertisingManager1'
 GATT_MANAGER_IFACE =           'org.bluez.GattManager1'
 GATT_CHRC_IFACE =              'org.bluez.GattCharacteristic1'
 UART_SERVICE_UUID =            '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
+
+# Write data to the RX Characteristic to send it on to the UART interface
 UART_RX_CHARACTERISTIC_UUID =  '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
+
+# Enable notifications for the TX Characteristic to receive data from the application, where the application transmits all data that is received over UART as notifications
 UART_TX_CHARACTERISTIC_UUID =  '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
+
 LOCAL_NAME =                   'RPi-Sensing_System'
 mainloop = None
 
- 
+
+# Characteristic for read data
 class TxCharacteristic(Characteristic):
+    # To receive data coming from the TX Characteristic, enable notifications after the service discovery.
 
     # Init the uart peripheral
     def __init__(self, bus, index, service):
@@ -87,6 +98,7 @@ class TxCharacteristic(Characteristic):
             # Add the value received to the dbus
             value.append(dbus.Byte(c.encode()))
 
+        # Change properties
         self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
 
 
@@ -102,7 +114,9 @@ class TxCharacteristic(Characteristic):
         self.notifying = False
  
 
+# Characteristic for sending data
 class RxCharacteristic(Characteristic):
+    # The sending procedure is asynchronous, so the data to be sent must remain valid until a dedicated callback notifies you that the Write Request has been completed.
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_RX_CHARACTERISTIC_UUID,
@@ -112,6 +126,7 @@ class RxCharacteristic(Characteristic):
         print('remote: {}'.format(bytearray(value).decode()))
  
 
+# Service with two Characteristics: one for read data and other to send data
 class UartService(Service):
 
     def __init__(self, bus, index):

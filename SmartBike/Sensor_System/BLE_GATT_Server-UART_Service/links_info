@@ -33,3 +33,16 @@
 - Github repository example:	
 	
 	. https://github.com/Douglas6/cputemp/blob/master/cputemp.py;
+
+- nRF toolbox - Nordic UART Service:
+	
+	. https://github.com/NordicSemiconductor/Android-nRF-Toolbox;
+
+- Android-BLE GATT Client:
+	
+	. https://github.com/chenineazeddine/Android-BLE-GATT-Client/tree/master/app/src/main/java/com/cerist/summer/blelightswitcher
+
+
+- Develop Apps in Android:
+
+	. Use Android Studio;
