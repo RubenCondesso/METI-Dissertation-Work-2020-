@@ -2,7 +2,7 @@
 #
 # install_AP.sh - Script for the Raspberry Pi Zero
 #
-# 01 March 2020 - 1.0 
+# 04 March 2020 - 1.0 
 # 
 # Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -51,11 +51,6 @@ fi
 if [ -f /etc/dnsmasq.conf ]
 then
 	cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
-fi
-
-if [ -f /etc/network/interfaces ]
-then
-	cp /etc/network/interfaces /etc/network/interfaces.backup
 fi
 
 if [ -f /etc/hostapd/hostapd.conf ]
