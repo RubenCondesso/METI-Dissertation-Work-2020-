@@ -1,0 +1,62 @@
+
+# RPiZero_Software_Configurations - Configurations mada on the Raspberry Pi Zero
+#
+# 01 March 2020 - 2.0 
+# 
+# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+# 
+# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+#
+# 
+# Text file that enumerates some configurations made of the Raspberry Pi Zero
+# 
+#
+
+
+# -------------------------------------------------------------------------------------- Operation System ----------------------------------------------------------------------------------------- #
+
+- Image used: Raspbian Buster Lite;
+
+	. Link: https://www.raspberrypi.org/downloads/raspbian/;
+
+
+# -------------------------------------------------------------------------------------- Boot Configurations ----------------------------------------------------------------------------------------- #
+
+- Set time zone:
+	
+	1. sudo raspi-config
+	2. Localization options
+	3. Change Time Zone
+	4. Europe
+	5. Lisbon
+
+- Set keyboard layout - Portuguese:
+
+	1. sudo raspi-config
+	2. Localization option
+	3. Change keyboard layout
+	4. Generic 101-key PC
+	5. Portuguese
+	6. The default for the keyboard layout
+	7. No compose key
+
+- Configure wifi connection for the first time:
+	
+	1. Put the memory card on laptop
+	2. Go to boot partition
+	3. Create file "wpa_supplicant.conf"
+	4. Edit "wpa_supplicant.conf":
+		country=PT
+		network={
+			ssid="YourNetworkName"
+			psk="Password"
+		}
+	5. Run the Raspberry Pi Zero
+	6. Do the installations and updates bellow
+	
+# -------------------------------------------------------------------------------------- Updates & Installations ----------------------------------------------------------------------------------------- #
+
+sudo apt -y update
+sudo apt -y upgrade
+sudo apt -y install dnsmasq dhcpcd hostapd
