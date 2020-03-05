@@ -14,11 +14,6 @@
 # 
 #
 
-
-# =================================================================================== Code starts here =====================================================================================#
-
-
-
 # -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
 
 # Import GPIO library
@@ -41,26 +36,13 @@ import fcntl
 # Import struct library
 import struct
 
-# Import Threads
-import threading
-
-
-
-# --------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
-
-lock = threading.Semaphore()
-
-
-# -------------------------------------------------------------------------------------- Functions -------------------------------------------------------------------------------------- #
+# ----------------------------------------------------------------------------------- Code starts here -------------------------------------------------------------------------------------- #
 
 # Ultrasonic sensor class 
-class Ultrasonic_Sensor(threading.Thread):
-    # Thread that writes the detected obstacle distances to the text file
+class Ultrasonic_Sensor():
+  
     
     def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
-
-        threading.Thread.__init__(self)
-        self.kill_received = False
 
         # Set GPIO pin numbering - GPIO Mode (BOARD/BCM)
         GPIO.setmode(GPIO.BCM)
@@ -84,14 +66,6 @@ class Ultrasonic_Sensor(threading.Thread):
 
         # Return a string that representates the sensor attributes
         return "Ultrasonic Sensor: TRIGGER - {0}, ECHO - {1}, OFFSET: {2} cm".format(self.GPIO_TRIGGER, self.GPIO_ECHO, self.GPIO_OFFSET)
-
-
-    def run (self):
-
-        while self.kill_received == False:
-            self.echo_signal()
-
-        GPIO.cleanup()
 
 
     # Get the current timestamp of each obstacle detection
@@ -183,28 +157,7 @@ class Ultrasonic_Sensor(threading.Thread):
         if distance > 2 and distance < 400: 
 
             distance = distance + self.GPIO_OFFSET
-
-            # Lock
-            lock.acquire()
-
-            # Open the text file
-            data_file = open("ultrasonicSensor_Data.txt","a")
-
-                # Get the ID of Raspberry Pi Zero
-            rpi_ID = self.getIP_RPizero()
-
-            # Get the timestamp of this exact moment
-            present_timestamp = self.timestamp()
-
-            # Add this distance to the text file
-            data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + "\n")
-
-            # Close the text file
-            data_file.close()
             
-            # Unlock
-            lock.release()
-
             print("Obstacle detected")
 
         else:
@@ -215,28 +168,14 @@ class Ultrasonic_Sensor(threading.Thread):
         return str(distance)     
 
 
-# HandlerState class
-#class HandlerState(threading.Thread):
-    # Thread responsible for read the text files and change the obstacle state - Idle or Active
-
-#    def __init__(self):
-
-#        threading.Thread.__init__(self)
-#        self.kill_received = False
-
-
-    # Check the state of the obstacle
-#    def obstacle_state(self):
-
-        # POR ACABAR
-
-#        return 0
-
-# -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
-
-
 # Main function - Menu
-def main():  
+def main():
+
+    # New sensor on GPIO pins: Trigger - 18 & Echo - 24
+    sensor = Ultrasonic_Sensor(18, 24)       
+
+    # Open the text file
+    data_file = open("ultrasonicSensor_Data.txt","w+")
 
     def endProcess(signum = None, frame = None):
 
@@ -255,30 +194,28 @@ def main():
         print("Done.")
         exit(0)
 
+    # Assign handler for process exit
+    signal.signal(signal.SIGTERM, endProcess)
+    signal.signal(signal.SIGINT, endProcess)
+    signal.signal(signal.SIGHUP, endProcess)
+    signal.signal(signal.SIGQUIT, endProcess)
 
-    # Run the ultrasonic sensor wtih this GPIO pins: Trigger - 18 & Echo - 24
-    sensor = Ultrasonic_Sensor(18, 24)  
-    sensor.start()
+    while True:
+        
+        # Get the ID of Raspberry Pi Zero
+        rpi_ID = sensor.getIP_RPizero()
 
-    # Run the Handler Thread
-    #state = Handler()
-    #state.start()
+        # Get the timestamp of this exact moment
+        present_timestamp = sensor.timestamp()
 
-    while sensor.isAlive():
-        try:
+        # Get the distance obtained in this exact moment
+        present_distance = sensor.echo_signal()
 
-            # Synchronization timeout of threads kill
-            sensor.join(1)
+        # Add this distance to the text file
+        data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + present_distance + "\n")
 
-        except KeyboardInterrupt:
-
-            sensor.kill_received = True
-
-             # Assign handler for process exit
-            signal.signal(signal.SIGTERM, endProcess)
-            signal.signal(signal.SIGINT, endProcess)
-            signal.signal(signal.SIGHUP, endProcess)
-            signal.signal(signal.SIGQUIT, endProcess)
+    # Close the text file
+    data_file.close()
 
 
 
