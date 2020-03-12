@@ -44,6 +44,7 @@ import struct
 # Import Threads
 import threading
 
+import os.path
 
 
 # --------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
@@ -57,6 +58,7 @@ lock = threading.Semaphore()
 class Ultrasonic_Sensor(threading.Thread):
     # Thread that writes the detected obstacle distances to the text file
     
+    # Init thread
     def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
 
         threading.Thread.__init__(self)
@@ -86,6 +88,7 @@ class Ultrasonic_Sensor(threading.Thread):
         return "Ultrasonic Sensor: TRIGGER - {0}, ECHO - {1}, OFFSET: {2} cm".format(self.GPIO_TRIGGER, self.GPIO_ECHO, self.GPIO_OFFSET)
 
 
+    # Run thread
     def run (self):
 
         while self.kill_received == False:
@@ -216,21 +219,83 @@ class Ultrasonic_Sensor(threading.Thread):
 
 
 # HandlerState class
-#class HandlerState(threading.Thread):
+class HandlerState(threading.Thread):
     # Thread responsible for read the text files and change the obstacle state - Idle or Active
 
-#    def __init__(self):
+    # Init thread
+    def __init__(self):
 
-#        threading.Thread.__init__(self)
-#        self.kill_received = False
+        threading.Thread.__init__(self)
+        self.kill_received = False
+
+
+    # Run thread
+    def run (self):
+
+        while self.kill_received == False:
+            self.obstacle_state()
 
 
     # Check the state of the obstacle
-#    def obstacle_state(self):
+    def obstacle_state(self):
 
-        # POR ACABAR
+        value_previous = 0
 
-#        return 0
+        # Open the text file
+        data_file = open("ultrasonicSensor_Data.txt","r")
+
+        for aline in data_file:
+
+            value_line = aline.split()
+
+            for i in value_line:
+
+                if i == 'distance:':
+
+                    # If difference between two consecutives measurements is small -> obstacles is  motionless
+                    if abs(float(value_line[(value_line.index(i))+1]) - value_previous) < 20:
+
+                        # State not check yet
+                        if 'State: Immobile' not in aline:
+
+                            # Lock
+                            lock.acquire()
+
+                            change_file = open("ultrasonicSensor_Data.txt","a")
+
+                            change_file.write(aline.strip() + ' ' + "State: Immobile" + '\n')
+
+                            change_file.close()
+
+                            # Unlock
+                            lock.release()
+
+                            # Obstacle Distance present on the file
+                            value_previous = value_line[(value_line.index(i))+1]
+
+                    # Obstacle detected in on the move    
+                    else:
+
+                        # State was not check yet
+                        if 'State: Moving' not in aline:
+
+                            # Lock
+                            lock.acquire()
+
+                            change_file = open("ultrasonicSensor_Data.txt", "a")
+
+                            change_file.write(aline.strip() + ' ' + "State: Moving" + '\n')
+
+                            change_file.close()
+
+                            # Unlock
+                            lock.release()
+
+
+        # Close the text file
+        data_file.close()
+
+        return 0
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
@@ -255,14 +320,21 @@ def main():
         print("Done.")
         exit(0)
 
+    
+    if os.path.exists("ultrasonicSensor_Data.txt") == False:
 
+        # Create the file for measures
+        file_create = open("ultrasonicSensor_Data.txt","w+")
+        file_create.close()
+
+    
     # Run the ultrasonic sensor wtih this GPIO pins: Trigger - 18 & Echo - 24
     sensor = Ultrasonic_Sensor(18, 24)  
     sensor.start()
 
     # Run the Handler Thread
-    #state = Handler()
-    #state.start()
+    state = HandlerState()
+    state.start()
 
     while sensor.isAlive():
         try:
