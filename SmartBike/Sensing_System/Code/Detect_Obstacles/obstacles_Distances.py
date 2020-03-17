@@ -44,6 +44,11 @@ import struct
 # Import Threads
 import threading
 
+# Import os.path
+import os.path
+
+# Import sys
+import sys
 
 
 # --------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
@@ -57,6 +62,7 @@ lock = threading.Semaphore()
 class Ultrasonic_Sensor(threading.Thread):
     # Thread that writes the detected obstacle distances to the text file
     
+    # Init thread
     def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
 
         threading.Thread.__init__(self)
@@ -86,6 +92,7 @@ class Ultrasonic_Sensor(threading.Thread):
         return "Ultrasonic Sensor: TRIGGER - {0}, ECHO - {1}, OFFSET: {2} cm".format(self.GPIO_TRIGGER, self.GPIO_ECHO, self.GPIO_OFFSET)
 
 
+    # Run thread
     def run (self):
 
         while self.kill_received == False:
@@ -142,7 +149,7 @@ class Ultrasonic_Sensor(threading.Thread):
         # Set TRIG as LOW
         GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)     
 
-        print "Waiting for the Sensor to settle."
+        print "Waiting for the Sensor to settle"
         
         # Some gap between measurements
         sleep(1)      
@@ -187,84 +194,164 @@ class Ultrasonic_Sensor(threading.Thread):
             # Lock
             lock.acquire()
 
-            # Open the text file
-            data_file = open("ultrasonicSensor_Data.txt","a")
+            try:
 
-                # Get the ID of Raspberry Pi Zero
-            rpi_ID = self.getIP_RPizero()
+                # Open the text file
+                data_file = open("detected_obstacles.txt","a")
 
-            # Get the timestamp of this exact moment
-            present_timestamp = self.timestamp()
+                    # Get the ID of Raspberry Pi Zero
+                rpi_ID = self.getIP_RPizero()
 
-            # Add this distance to the text file
-            data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + "\n")
+                # Get the timestamp of this exact moment
+                present_timestamp = self.timestamp()
 
-            # Close the text file
-            data_file.close()
+                # Add this distance to the text file
+                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + "\n")
+
+                print("Obstacle detected")
+
+                # Close the text file
+                data_file.close()
+
+            # Handle IOERROR exception
+            except IOERROR as e:
+                print "I/O error({0}: {1}".format(e.errno, e.strerror)
+            
+            # Handle other exceptions such as atribute error        
+            except:
+                print "Unexpected error: ", sys.exc_info()[0]
             
             # Unlock
             lock.release()
 
-            print("Obstacle detected")
-
         else:
 
+            print("No obstacle detected")
+
             distance = 0
-            print("No obstacle detected.") 
 
         return str(distance)     
 
 
 # HandlerState class
-#class HandlerState(threading.Thread):
+class HandlerState(threading.Thread):
     # Thread responsible for read the text files and change the obstacle state - Idle or Active
 
-#    def __init__(self):
+    # Init thread
+    def __init__(self):
 
-#        threading.Thread.__init__(self)
-#        self.kill_received = False
+        threading.Thread.__init__(self)
+        self.kill_received = False
+
+
+    # Run thread
+    def run (self):
+
+        while self.kill_received == False:
+            self.check_obstacleState()
 
 
     # Check the state of the obstacle
-#    def obstacle_state(self):
+    def check_obstacleState(self):
 
-        # POR ACABAR
+        value_previous = 0
 
-#        return 0
+        newlines = []
+
+        with open("detected_obstacles.txt", 'r') as f:
+
+            # Do a small sleep to acquire first some detection
+            sleep(1.1)
+
+            for line in f.readlines():
+
+                # Lock
+                lock.acquire()
+
+                value_line = line.split()
+
+                # The state of the obstacle has not been defined yet
+                if value_line[17] == "Unknown":
+
+                    try:
+
+                        # If difference between two consecutives measurements is small -> obstacles is  motionless
+                        if abs(float(value_line[14]) - value_previous) < 20:
+
+                            # Change the status
+                            line = line.replace(value_line[17], "Immobile")
+
+                        else:
+
+                            # Change the status
+                            line = line.replace(value_line[17], "Moving")
+
+                        value_previous = float(value_line[14])
+
+                        newlines.append(line)
+
+                    # No obstacle detected in this line of file
+                    # Handle IOERROR exception
+                    except IOERROR as e:
+                        print "I/O error({0}: {1}".format(e.errno, e.strerror)
+            
+                    # Handle other exceptions such as atribute error        
+                    except:
+                        print "Unexpected error: ", sys.exc_info()[0]  
+
+                # Unlock
+                lock.release()  
+
+
+        # Set the status of detection made
+        with open("status_obstacles.txt", 'w') as f:
+
+            for line in newlines:
+
+                # Lock
+                lock.acquire()
+
+                try:
+
+                    # Write to the file the detection made with right/real status
+                    f.write(line)
+
+                # No write to be made
+                # Handle IOERROR exception
+                except IOERROR as e:
+                    print "I/O error({0}: {1}".format(e.errno, e.strerror)
+            
+                # Handle other exceptions such as atribute error        
+                except:
+                    print "Unexpected error: ", sys.exc_info()[0]
+
+                # Unlock
+                lock.release()
+
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
 
 # Main function - Menu
 def main():  
+    
+    if os.path.exists("detected_obstacles.txt") == False:
 
-    def endProcess(signum = None, frame = None):
+        # Create the file for measures
+        file_create = open("detected_obstacles.txt","w+")
+        file_create.close()
 
-        # Called on process termination. 
-        if signum is not None:
-
-            SIGNAL_NAMES_DICT = dict((getattr(signal, n), n) for n in dir(signal) if n.startswith('SIG') and '_' not in n )
-            print("signal {} received by process with PID {}".format(SIGNAL_NAMES_DICT[signum], os.getpid()))
-
-        print("\n-- Terminating program --")
-        print("Cleaning up GPIO...")
-
-        # Clean the GPIO pins
-        GPIO.cleanup()
-
-        print("Done.")
-        exit(0)
-
-
+    
     # Run the ultrasonic sensor wtih this GPIO pins: Trigger - 18 & Echo - 24
     sensor = Ultrasonic_Sensor(18, 24)  
     sensor.start()
 
     # Run the Handler Thread
-    #state = Handler()
-    #state.start()
+    state = HandlerState()
+    state.start()
 
     while sensor.isAlive():
+
         try:
 
             # Synchronization timeout of threads kill
@@ -274,12 +361,20 @@ def main():
 
             sensor.kill_received = True
 
-             # Assign handler for process exit
-            signal.signal(signal.SIGTERM, endProcess)
-            signal.signal(signal.SIGINT, endProcess)
-            signal.signal(signal.SIGHUP, endProcess)
-            signal.signal(signal.SIGQUIT, endProcess)
+            print("\n---- Terminating Sensing System program ----")
 
+            print("Cleaning up GPIO pins...")
+
+            # Clean the GPIO pins
+            GPIO.cleanup()
+
+            print("Done.")
+            
+            try:
+                sys.exit(0)
+
+            except SystemExit:
+                os._exit(0)
 
 
 # Main of this python code

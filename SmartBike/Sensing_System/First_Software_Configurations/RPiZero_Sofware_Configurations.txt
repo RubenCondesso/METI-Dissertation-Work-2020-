@@ -60,3 +60,4 @@
 sudo apt -y update
 sudo apt -y upgrade
 sudo apt -y install dnsmasq dhcpcd hostapd
+sudo apt -y install ntp

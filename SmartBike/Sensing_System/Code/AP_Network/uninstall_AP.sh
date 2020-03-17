@@ -50,7 +50,6 @@ sudo mv /etc/iptables.ipv4.nat.backup /etc/iptables.ipv4.nat || error_exit "$LIN
 # Restore the /etc/wpa_supplicant/wpa_supplicant.conf backup
 sudo mv /etc/wpa_supplicant/wpa_supplicant.conf.backup /etc/wpa_supplicant/wpa_supplicant.conf || error_exit "$LINENO: I couldn't restore the /etc/wpa_supplicant/wpa_supplicant.conf backup."
 
-
 echo "Uninstall Configuration is finished! Please reboot your Raspberry Pi Zero to apply the changes made."
 
 

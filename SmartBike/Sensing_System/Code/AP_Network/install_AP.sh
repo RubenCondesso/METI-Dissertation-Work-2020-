@@ -135,7 +135,7 @@ EOF
 
 # Configure /bin/launch_AP.sh
 sudo bash -c 'cat > /bin/launch_AP.sh' << EOF
-echo 'Starting Access Point.'
+echo 'Starting Access Point on Raspberry Pi Zero'
 sleep 50
 sudo ifdown --force wlan0
 sudo ifup wlan0
