@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BLE_UART-App_Android.iml" filepath="$PROJECT_DIR$/BLE_UART-App_Android.iml" group="BLE_UART-App_Android" />
-      <module fileurl="file://$PROJECT_DIR$/nRFUARTSmartBike/nRFUARTSmartBike.iml" filepath="$PROJECT_DIR$/nRFUARTSmartBike/nRFUARTSmartBike.iml" group="BLE_UART-App_Android/nRFUARTSmartBike" />
+      <module fileurl="file://$PROJECT_DIR$/nRFUARTBridge/nRFUARTBridge.iml" filepath="$PROJECT_DIR$/nRFUARTBridge/nRFUARTBridge.iml" group="BLE_UART-App_Android/nRFUARTBridge" />
     </modules>
   </component>
 </project>
