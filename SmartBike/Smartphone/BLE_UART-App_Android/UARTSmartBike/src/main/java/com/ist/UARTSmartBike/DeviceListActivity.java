@@ -1,26 +1,4 @@
-
-/*
- * Copyright (c) 2015, Nordic Semiconductor
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this
- * software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-package com.ist.nRFUARTSmartBike;
+package com.ist.UARTSmartBike;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,23 +32,32 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Activity of the BLE devices founded by the Smartphone
+ */
 public class DeviceListActivity extends Activity {
+
     private BluetoothAdapter mBluetoothAdapter;
 
-   // private BluetoothAdapter mBtAdapter;
     private TextView mEmptyList;
     public static final String TAG = "DeviceListActivity";
-    
+
+    // List of the Bluetooth devices
     List<BluetoothDevice> deviceList;
+
     private DeviceAdapter deviceAdapter;
     private ServiceConnection onService = null;
+
+    // Map that contains the Rssi values
     Map<String, Integer> devRssiValues;
-    private static final long SCAN_PERIOD = 10000; //scanning for 10 seconds
+
+    // Scan for 10 seconds
+    private static final long SCAN_PERIOD = 10000;
+
     private Handler mHandler;
     private boolean mScanning;
 
-
-
+    // Initialise instances
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
@@ -81,26 +68,28 @@ public class DeviceListActivity extends Activity {
         android.view.WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
         layoutParams.gravity=Gravity.TOP;
         layoutParams.y = 200;
+
         mHandler = new Handler();
-        // Use this check to determine whether BLE is supported on the device.  Then you can
-        // selectively disable BLE-related features.
+
+        // Use this check to determine whether BLE is supported on the device
+        // Then it can selectively disable BLE-related features
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-        // BluetoothAdapter through BluetoothManager.
+        // Initializes a Bluetooth adapter
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-        // Checks if Bluetooth is supported on the device.
+        // Checks if Bluetooth Low Energy is supported on the device
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+
         populateList();
         mEmptyList = (TextView) findViewById(R.id.empty);
         Button cancelButton = (Button) findViewById(R.id.btn_cancel);
@@ -112,12 +101,14 @@ public class DeviceListActivity extends Activity {
             	else finish();
             }
         });
-
     }
 
+    // Populate list with the data regarding the BLE devices
     private void populateList() {
-        /* Initialize device list container */
+
+        // Initialize device list container
         Log.d(TAG, "populateList");
+
         deviceList = new ArrayList<BluetoothDevice>();
         deviceAdapter = new DeviceAdapter(this, deviceList);
         devRssiValues = new HashMap<String, Integer>();
@@ -127,13 +118,14 @@ public class DeviceListActivity extends Activity {
         newDevicesListView.setOnItemClickListener(mDeviceClickListener);
 
            scanLeDevice(true);
-
     }
-    
+
+    // Scan the BLE devices
     private void scanLeDevice(final boolean enable) {
         final Button cancelButton = (Button) findViewById(R.id.btn_cancel);
         if (enable) {
-            // Stops scanning after a pre-defined scan period.
+
+            // Stops scanning after a pre-defined scan period
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -153,7 +145,6 @@ public class DeviceListActivity extends Activity {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
             cancelButton.setText(R.string.scan);
         }
-
     }
 
     private BluetoothAdapter.LeScanCallback mLeScanCallback =
@@ -170,7 +161,8 @@ public class DeviceListActivity extends Activity {
             });
         }
     };
-    
+
+    // Add device to the list of Devices founded
     private void addDevice(BluetoothDevice device, int rssi) {
         boolean deviceFound = false;
 
@@ -312,6 +304,7 @@ public class DeviceListActivity extends Activity {
             return vg;
         }
     }
+
     private void showMessage(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }

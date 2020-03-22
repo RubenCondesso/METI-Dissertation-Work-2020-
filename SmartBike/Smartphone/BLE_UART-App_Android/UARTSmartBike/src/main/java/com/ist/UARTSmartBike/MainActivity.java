@@ -1,27 +1,4 @@
-
-/*
- * Copyright (c) 2015, Nordic Semiconductor
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this
- * software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-package com.ist.nRFUARTSmartBike;
+package com.ist.UARTSmartBike;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +13,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -66,7 +44,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+/**
+ * Main activity present on the SmartBike's App
+ */
 public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
+
     private static final int REQUEST_SELECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
     private static final int UART_PROFILE_READY = 10;
@@ -77,6 +60,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
     TextView mRemoteRssiVal;
     RadioGroup mRg;
+
     private int mState = UART_PROFILE_DISCONNECTED;
     private UartService mService = null;
     private BluetoothDevice mDevice = null;
@@ -89,21 +73,26 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     //socket server vars
     private ServerSocket serverSocket;
     Thread serverThread = null;
+
+    // TCP port
     private static final int SERVERPORT = 6000;
     private static final int BUFSIZE = 20;
     private boolean socketConnected = false;
     private OutputStream socketOutput = null;
 
+    // Initialize instances
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+
         if (mBtAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
+
         messageListView = (ListView) findViewById(R.id.listMessage);
         listAdapter = new ArrayAdapter<String>(this, R.layout.message_detail);
         messageListView.setAdapter(listAdapter);
@@ -115,7 +104,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         this.serverThread = new Thread(new ServerThread());
         this.serverThread.start();
 
-        // Handle Disconnect & Connect button
+        // Handle Disconnect and Connect button
         btnConnectDisconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,12 +116,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 else {
                 	if (btnConnectDisconnect.getText().equals("Connect")){
                 		
-                		//Connect button pressed, open DeviceListActivity class, with popup windows that scan for devices
-                		
+                		// Connect button is pressed, open DeviceListActivity class, with popup windows that scan for BLE devices
             			Intent newIntent = new Intent(MainActivity.this, DeviceListActivity.class);
             			startActivityForResult(newIntent, REQUEST_SELECT_DEVICE);
         			} else {
-        				//Disconnect button pressed
+
+        				//Disconnect button is pressed
         				if (mDevice!=null)
         				{
         					mService.disconnect();
@@ -285,7 +274,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         return "";
     }
 
-    //UART service connected/disconnected
+    // UART service connected/disconnected
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder rawBinder) {
         		mService = ((UartService.LocalBinder) rawBinder).getService();
@@ -303,6 +292,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }
     };
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         
@@ -318,7 +308,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             String action = intent.getAction();
 
             final Intent mIntent = intent;
-           //*********************//
+
             if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
             	 runOnUiThread(new Runnable() {
                      public void run() {
@@ -333,8 +323,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                      }
             	 });
             }
-           
-          //*********************//
+
             if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
             	 runOnUiThread(new Runnable() {
                      public void run() {
@@ -351,13 +340,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                      }
                  });
             }
-            
-          
-          //*********************//
+
             if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
              	 mService.enableTXNotification();
             }
-          //*********************//
+
             if (action.equals(UartService.ACTION_DATA_AVAILABLE)) {
               
                  final byte[] txValue = intent.getByteArrayExtra(UartService.EXTRA_DATA);
@@ -377,7 +364,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                      */
                  }
              }
-           //*********************//
+
             if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)){
             	showMessage("Device doesn't support UART. Disconnecting");
             	mService.disconnect();
@@ -393,6 +380,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
   
         LocalBroadcastManager.getInstance(this).registerReceiver(UARTStatusChangeReceiver, makeGattUpdateIntentFilter());
     }
+
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(UartService.ACTION_GATT_CONNECTED);
@@ -402,6 +390,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         intentFilter.addAction(UartService.DEVICE_DOES_NOT_SUPPORT_UART);
         return intentFilter;
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -440,7 +429,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }
     }
 
-
     @Override
     protected void onPause() {
         Log.d(TAG, "onPause");
@@ -462,7 +450,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         }
- 
     }
 
     @Override
@@ -487,6 +474,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
             }
             break;
+
         case REQUEST_ENABLE_BT:
             // When the request to enable Bluetooth returns
             if (resultCode == Activity.RESULT_OK) {

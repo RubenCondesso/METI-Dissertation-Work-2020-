@@ -1,26 +1,4 @@
-
-/*
- * Copyright (c) 2015, Nordic Semiconductor
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this
- * software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-package com.ist.nRFUARTSmartBike;
+package com.ist.UARTSmartBike;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -44,8 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.Semaphore;
 
 /**
- * Service for managing connection and data communication with a GATT server hosted on a
- * given Bluetooth LE device.
+ * Service for managing connection and data communication with a GATT server hosted on a given Bluetooth LE device
  */
 public class UartService extends Service {
     private final static String TAG = UartService.class.getSimpleName();
@@ -85,8 +62,7 @@ public class UartService extends Service {
     private final Semaphore writeSema = new Semaphore(1);
     int writeStatus;
 
-    // Implements callback methods for GATT events that the app cares about.  For example,
-    // connection change and services discovered.
+    // Implements callback methods for GATT events that the app cares about, e.g. connection change and services discovered
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -177,9 +153,9 @@ public class UartService extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        // After using a given device, you should make sure that BluetoothGatt.close() is called
-        // such that resources are cleaned up properly.  In this particular example, close() is
-        // invoked when the UI is disconnected from the Service.
+        // After using a given device, it should be guaranteed that BluetoothGatt.close() is called such that resources are cleaned up properly
+        // In this particular example, close() is invoked when the UI is disconnected from the Service
+
         close();
         return super.onUnbind(intent);
     }
@@ -187,13 +163,12 @@ public class UartService extends Service {
     private final IBinder mBinder = new LocalBinder();
 
     /**
-     * Initializes a reference to the local Bluetooth adapter.
+     * Initializes a reference to the local Bluetooth adapter
      *
-     * @return Return true if the initialization is successful.
+     * @return Return true if the initialization is successful
      */
     public boolean initialize() {
-        // For API level 18 and above, get a reference to BluetoothAdapter through
-        // BluetoothManager.
+        // For API level 18 and above, get a reference to BluetoothAdapter through BluetoothManager
         if (mBluetoothManager == null) {
             mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
             if (mBluetoothManager == null) {
@@ -212,14 +187,13 @@ public class UartService extends Service {
     }
 
     /**
-     * Connects to the GATT server hosted on the Bluetooth LE device.
+     * Connects to the GATT server hosted on the Bluetooth Low Energy device
      *
-     * @param address The device address of the destination device.
+     * @param address The device address of the destination device
      *
-     * @return Return true if the connection is initiated successfully. The connection result
-     *         is reported asynchronously through the
-     *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-     *         callback.
+     * @return Return true if the connection is initiated successfully.
+     *          The connection result is reported asynchronously through the
+     *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)} callback
      */
     public boolean connect(final String address) {
         if (mBluetoothAdapter == null || address == null) {
@@ -244,8 +218,7 @@ public class UartService extends Service {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;
         }
-        // We want to directly connect to the device, so we are setting the autoConnect
-        // parameter to false.
+        // We want to directly connect to the device, so we are setting the autoConnect parameter to false
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
@@ -269,8 +242,7 @@ public class UartService extends Service {
     }
 
     /**
-     * After using a given BLE device, the app must call this method to ensure resources are
-     * released properly.
+     * After using a given BLE device, the app must call this method to ensure resources are released properly
      */
     public void close() {
         if (mBluetoothGatt == null) {
@@ -283,9 +255,9 @@ public class UartService extends Service {
     }
 
     /**
-     * Request a read on a given {@code BluetoothGattCharacteristic}. The read result is reported
-     * asynchronously through the {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)}
-     * callback.
+     * Request a read on a given {@code BluetoothGattCharacteristic}
+     * The read result is reported asynchronously through the
+     *  {@code BluetoothGattCallback#onCharacteristicRead(android.bluetooth.BluetoothGatt, android.bluetooth.BluetoothGattCharacteristic, int)} callback
      *
      * @param characteristic The characteristic to read from.
      */
@@ -298,9 +270,8 @@ public class UartService extends Service {
     }
 
     /**
-     * Enables or disables notification on a give characteristic.
+     * Enables or disables notification on a give characteristic
      *
-
     */
     
     /**
@@ -310,13 +281,7 @@ public class UartService extends Service {
      */
     public void enableTXNotification()
     { 
-    	/*
-    	if (mBluetoothGatt == null) {
-    		showMessage("mBluetoothGatt null" + mBluetoothGatt);
-    		broadcastUpdate(DEVICE_DOES_NOT_SUPPORT_UART);
-    		return;
-    	}
-    		*/
+
     	BluetoothGattService RxService = mBluetoothGatt.getService(RX_SERVICE_UUID);
     	if (RxService == null) {
             showMessage("Rx service not found!");
@@ -378,8 +343,8 @@ public class UartService extends Service {
         Log.e(TAG, msg);
     }
     /**
-     * Retrieves a list of supported GATT services on the connected device. This should be
-     * invoked only after {@code BluetoothGatt#discoverServices()} completes successfully.
+     * Retrieves a list of supported GATT services on the connected device
+     * This should be invoked only after {@code BluetoothGatt#discoverServices()} completes successfully
      *
      * @return A {@code List} of supported services.
      */
