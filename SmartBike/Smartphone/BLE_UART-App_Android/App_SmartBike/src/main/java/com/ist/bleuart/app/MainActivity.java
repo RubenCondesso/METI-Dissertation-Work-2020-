@@ -85,14 +85,14 @@ public class MainActivity extends Activity {
             // Different states that can exist or change to
 
             if (newState == BluetoothGatt.STATE_CONNECTED) {
-                writeLine("Connected to GATT Server - Sensing System");
+                writeLine("Connected to GATT Server - Sensing System :)");
 
                 if (!gatt.discoverServices()) {
-                    writeLine("Failed to start discovering services!");
+                    writeLine("Failed to start discovering services :(");
                 }
             }
             else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-                writeLine("Disconnected from GATT Server");
+                writeLine("Disconnected from GATT Server.");
             }
             else {
                 writeLine("Connection state changed.  New state: " + newState);
@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
 
             // (first) Call setCharacteristicNotification to enable notification
             if (!gatt.setCharacteristicNotification(rx, true)) {
-                writeLine("Could not set notifications for RX characteristic");
+                writeLine("Could not set notifications for RX characteristic.");
             }
 
             // (next) Update the RX characteristic's client descriptor to enable notifications
@@ -128,11 +128,11 @@ public class MainActivity extends Activity {
                 BluetoothGattDescriptor desc = rx.getDescriptor(CLIENT_UUID);
                 desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 if (!gatt.writeDescriptor(desc)) {
-                    writeLine("Could not write RX client descriptor value");
+                    writeLine("Could not write RX client descriptor value.");
                 }
             }
             else {
-                writeLine("Could not get RX client descriptor");
+                writeLine("Could not get RX client descriptor.");
             }
         }
 
@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 
             super.onCharacteristicChanged(gatt, characteristic);
-            writeLine("Received: " + characteristic.getStringValue(0));
+            writeLine("Received from the Sensing System: " + characteristic.getStringValue(0));
         }
     };
 
@@ -160,7 +160,7 @@ public class MainActivity extends Activity {
                 // Found the device -> stop the scanning
                 adapter.stopLeScan(scanCallback);
 
-                writeLine("Found the UART service");
+                writeLine("Found the UART service.");
 
                 // Connect to the GATT Server - Raspberry Pi Zero
                 // Control flow will now go to the callback functions when BLE events occur
