@@ -1,23 +1,6 @@
-# Android nRF-UART SmartBike
+BLE_UART-App_Android
+==================================================================================================================================================================================================================
 
-nRF-UART SmartBike app can be used to connect to Bluetooth® Smart devices running a custom Nordic Semiconductor UART service. 
-When connected, the app bridges the UART port with TCP port, so an Android device can be used as a BLE interface over WiFi or USB.
+SmartBike System's App used to send/receive data to the Sensing System (Raspberry Pi Zero), using Bluetooth Low Energy. The Sensing System runs a BLE GATT server, and its used a Bluetooth Low Energy UART service to send and receive the data between both components.
 
-This source code can be compiled with Android Studio and Gradle. 
 
-Based on Android-nRF-UART app by Nordic Semiconductor.
-
-## Usage
-
-- Install apk, start the app
-- Connect to BLE device
-- ADB USB:
-  - Forward TCP port 6000 with adb: *adb forward tcp:6000 tcp:6000*
-  - Connect to localhost:6000 
-- WiFi:
-  - Connect to IP:port shown in the app
-- Send/receive data - this will be forwarded to/from BLE device  
-
-### Note
-- Android 4.3 or later is required.
-- Android Studio supported 
