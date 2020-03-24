@@ -1,4 +1,3 @@
-
 /*
 #
 # MainActivity.java - Java Class of Android App
@@ -41,6 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -302,19 +302,7 @@ public class MainActivity extends Activity {
         
         // Inflate the menu -> This adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.main, menu);
+        
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        // Handle action bar item clicks here
-        // The action bar will automatically handle clicks on the Home/Up button, so long as its be specify a parent activity in AndroidManifest.xml
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

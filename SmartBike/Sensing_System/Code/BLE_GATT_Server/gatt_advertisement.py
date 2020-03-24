@@ -1,4 +1,23 @@
 #!/usr/bin/python
+#
+# gatt_advertisement.py - Python code 
+#
+# 23 March 2020 - 2.0 
+# 
+# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+# 
+# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+#
+# 
+# Python code responsible for advertise the GATT Server and register the service
+#
+#
+
+# =================================================================================== Code starts here ===================================================================================== #
+
+
+# -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
 
 from __future__ import print_function
 
@@ -10,11 +29,18 @@ import dbus.service
 import array
 
 try:
-  from gi.repository import GObject  # python3
+    # Python 3
+    from gi.repository import GObject 
+
 except ImportError:
-  import gobject as GObject  # python2
+    # Python 2
+    import gobject as GObject 
 
 from random import randint
+
+
+
+# -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
 mainloop = None
 
@@ -169,6 +195,9 @@ def find_adapter(bus):
 
     return None
 
+
+
+# -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
 def main():
     global mainloop

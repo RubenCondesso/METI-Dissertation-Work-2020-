@@ -6,35 +6,59 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.ist.bletuart.app.MainActivity">
+    tools:context="com.ist.bleuart.app.MainActivity">
 
     <Button
         android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="Send data"
-        android:onClick="sendClick"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/custom_button"
+        android:fontFamily="@font/fanwood_text"
+        android:onClick="sendClick"
+        android:text="Send"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
 
     <EditText
         android:id="@+id/input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/send"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"/>
+        android:layout_toLeftOf="@id/send"
+        android:fontFamily="@font/im_fell_double_pica"
+        android:textAppearance="@android:style/TextAppearance.Material.Body1"
+        android:textColor="#050505"
+        android:textColorLink="#1E6CE9"
+        android:textSize="21sp" />
 
     <ScrollView
+        style="@android:style/Widget.ScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/send"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:scrollbarStyle="insideInset">
 
         <TextView
             android:id="@+id/messages"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/eczar"
+            android:textColor="#0616d3"
+            android:textColorLink="#1E6CE9"
+            android:textSize="18sp"
             android:layout_gravity="bottom" />
 
     </ScrollView>

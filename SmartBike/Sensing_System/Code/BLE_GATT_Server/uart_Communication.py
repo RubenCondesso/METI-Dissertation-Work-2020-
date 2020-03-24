@@ -2,7 +2,7 @@
 #
 # uart_Communication.py - Class for the Raspberry Pi Zero
 #
-# 1 March 2020 - 1.0 
+# 24 March 2020 - 2.0 
 # 
 # Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -18,6 +18,9 @@
 # The peripheral (GATT Server) holds the ATT lookup data and service and characteristic definitions, and the GATT Client (smarthphone) sends requests to this server.
 #
 
+
+# =================================================================================== Code starts here ===================================================================================== #
+
 # -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
 
 import sys
@@ -29,7 +32,7 @@ from gatt_server import Service, Characteristic
 from gatt_server import register_app_cb, register_app_error_cb
 
 
-# ----------------------------------------------------------------------------------- Code starts here -------------------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
  
 BLUEZ_SERVICE_NAME =           'org.bluez'
 DBUS_OM_IFACE =                'org.freedesktop.DBus.ObjectManager'
@@ -47,6 +50,8 @@ UART_TX_CHARACTERISTIC_UUID =  '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
 LOCAL_NAME =                   'RPi-Sensing_System'
 mainloop = None
 
+
+# -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
 # Characteristic for read data
 class TxCharacteristic(Characteristic):
@@ -167,7 +172,7 @@ class UartApplication(Application):
         self.add_service(UartService(bus, 0))
  
 
-# Bluetooth Low Energy Advertisement
+# Bluetooth Low Energy UART Service Advertisement
 class UartAdvertisement(Advertisement):
 
     def __init__(self, bus, index):
@@ -189,8 +194,8 @@ def find_adapter(bus):
     return None
  
 
+# -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
-# Main function 
 def main():
 
     global mainloop

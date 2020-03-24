@@ -1,3 +1,24 @@
+#!/usr/bin/python
+#
+# uart_peripheral.py - Class for the Raspberry Pi Zero
+#
+# 24 March 2020 - 2.0 
+# 
+# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+# 
+# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+#
+# 
+# Python code that launch the BLE GATT Server and runs the UART Service -> to be connected to the UART Peripheral (Smartphone)
+#
+#
+
+
+# =================================================================================== Code starts here ===================================================================================== #
+
+# -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
+
 import sys
 import dbus, dbus.mainloop.glib
 from gi.repository import GLib
@@ -6,6 +27,9 @@ from gatt_advertisement import register_ad_cb, register_ad_error_cb
 from gatt_server import Service, Characteristic
 from gatt_server import register_app_cb, register_app_error_cb
  
+
+# -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
+
 BLUEZ_SERVICE_NAME =           'org.bluez'
 DBUS_OM_IFACE =                'org.freedesktop.DBus.ObjectManager'
 LE_ADVERTISING_MANAGER_IFACE = 'org.bluez.LEAdvertisingManager1'
@@ -17,6 +41,9 @@ UART_TX_CHARACTERISTIC_UUID =  '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
 LOCAL_NAME =                   'RPi-Sensing_System'
 mainloop = None
  
+
+# -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
+
 class TxCharacteristic(Characteristic):
 
     # Init the uart peripheral
@@ -43,17 +70,21 @@ class TxCharacteristic(Characteristic):
         for c in s:
             value.append(dbus.Byte(c.encode()))
         self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
- 
+    
+    # Start Notify
     def StartNotify(self):
         if self.notifying:
             return
         self.notifying = True
- 
+    
+    # Stop Notify
     def StopNotify(self):
         if not self.notifying:
             return
         self.notifying = False
- 
+
+
+# Initialize Rx Characteristic 
 class RxCharacteristic(Characteristic):
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_RX_CHARACTERISTIC_UUID,
@@ -61,13 +92,15 @@ class RxCharacteristic(Characteristic):
  
     def WriteValue(self, value, options):
         print('remote: {}'.format(bytearray(value).decode()))
- 
+
+# UART Service initialize with two characteristics 
 class UartService(Service):
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, UART_SERVICE_UUID, True)
         self.add_characteristic(TxCharacteristic(bus, 0, self))
         self.add_characteristic(RxCharacteristic(bus, 1, self))
  
+# Initialize the Service Application 
 class Application(dbus.service.Object):
     def __init__(self, bus):
         self.path = '/'
@@ -89,19 +122,22 @@ class Application(dbus.service.Object):
             for chrc in chrcs:
                 response[chrc.get_path()] = chrc.get_properties()
         return response
- 
+
+# Initialize UART Application  
 class UartApplication(Application):
     def __init__(self, bus):
         Application.__init__(self, bus)
         self.add_service(UartService(bus, 0))
- 
+
+# Initialize UART Service Advertisement 
 class UartAdvertisement(Advertisement):
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
         self.add_service_uuid(UART_SERVICE_UUID)
         self.add_local_name(LOCAL_NAME)
         self.include_tx_power = True
- 
+
+# Find the adapter to be used 
 def find_adapter(bus):
     remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'),
                                DBUS_OM_IFACE)
@@ -111,6 +147,9 @@ def find_adapter(bus):
             return o
         print('Skip adapter:', o)
     return None
+
+
+# -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
  
 def main():
     global mainloop
