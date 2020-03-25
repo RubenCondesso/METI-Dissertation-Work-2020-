@@ -19,7 +19,7 @@
 
     <style name="CustomText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/colorTitle</item>
-        <item name="android:fontFamily">@font/purple_purse</item>
+        <item name="android:fontFamily">@font/headland_one</item>
         <item name="android:textSize">20dp</item>
     </style>
 

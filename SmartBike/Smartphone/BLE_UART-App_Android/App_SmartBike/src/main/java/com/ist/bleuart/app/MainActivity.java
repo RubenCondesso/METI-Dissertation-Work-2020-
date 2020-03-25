@@ -197,12 +197,16 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = BluetoothAdapter.getDefaultAdapter();
 
-        //prepare service
+        /*
+        // Prepare the location service
         final Intent intent = new Intent(this.getApplication(), BackgroundLocationService.class);
         this.getApplication().startService(intent);
         this.getApplication().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
+        // Start the track of the user's location
         startTracking();
+
+         */
 
     }
 
@@ -220,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // OnStop _> called right before the activity loses foreground focus
-    // Close the BTLE connection
+    // Close the BLE connection
     @Override
     protected void onStop() {
 
@@ -291,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0x06:// Partial list of 128-bit UUIDs
                 case 0x07:// Complete list of 128-bit UUIDs
 
-                    // Loop through the advertised 128-bit UUID's.
+                    // Loop through the advertised 128-bit UUID's
                     while (len >= 16) {
                         try {
                             // Wrap the advertised bits and order them.
@@ -301,11 +305,9 @@ public class MainActivity extends AppCompatActivity {
                             uuids.add(new UUID(leastSignificantBit,
                                     mostSignificantBit));
                         } catch (IndexOutOfBoundsException e) {
-                            // Defensive programming
-                            //Log.e(LOG_TAG, e.toString());
                             continue;
                         } finally {
-                            // Move the offset to read the next uuid.
+                            // Move the offset to read the next uuid
                             offset += 15;
                             len -= 16;
                         }
@@ -328,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /*
     public void startTracking() {
 
         //check for permission
@@ -353,4 +356,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    */
 }

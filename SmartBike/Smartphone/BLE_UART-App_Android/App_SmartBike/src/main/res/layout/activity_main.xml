@@ -16,21 +16,20 @@
         android:layout_alignParentRight="true"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="5dp"
         android:background="@drawable/custom_button"
-        android:fontFamily="@font/stoke"
-        android:minWidth="60dp"
-        android:minHeight="40dp"
+        android:fontFamily="@font/eczar_semibold"
+        android:minWidth="50dp"
+        android:minHeight="35dp"
         android:onClick="sendClick"
         android:scrollbarSize="20dp"
         android:text="Send"
         android:textAllCaps="false"
-        android:textColor="#1a1aff"
-        android:textSize="16sp"
-        android:typeface="serif" />
+        android:textColor="#000000"
+        android:textSize="17sp" />
 
     <EditText
         android:id="@+id/input"
@@ -44,7 +43,7 @@
         android:layout_marginRight="30dp"
         android:layout_toStartOf="@+id/send"
         android:layout_toLeftOf="@id/send"
-        android:fontFamily="@font/lato_light"
+        android:fontFamily="@font/actor"
         android:textAppearance="@android:style/TextAppearance.Material.Body1"
         android:textColor="#050505"
         android:textSize="16sp" />
