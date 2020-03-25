@@ -16,18 +16,20 @@
         android:layout_alignParentRight="true"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="15dp"
         android:layout_marginBottom="5dp"
         android:background="@drawable/custom_button"
-        android:fontFamily="@font/fanwood_text"
+        android:fontFamily="@font/stoke"
+        android:minWidth="60dp"
+        android:minHeight="40dp"
         android:onClick="sendClick"
+        android:scrollbarSize="20dp"
         android:text="Send"
         android:textAllCaps="false"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:textColor="#1a1aff"
+        android:textSize="16sp"
         android:typeface="serif" />
 
     <EditText
@@ -36,32 +38,36 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="30dp"
+        android:layout_toStartOf="@+id/send"
         android:layout_toLeftOf="@id/send"
-        android:fontFamily="@font/im_fell_double_pica"
+        android:fontFamily="@font/lato_light"
         android:textAppearance="@android:style/TextAppearance.Material.Body1"
         android:textColor="#050505"
-        android:textColorLink="#1E6CE9"
-        android:textSize="21sp" />
+        android:textSize="16sp" />
 
     <ScrollView
         style="@android:style/Widget.ScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="380dp"
+        android:layout_height="420dp"
         android:layout_below="@id/send"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="101dp"
+        android:layout_marginBottom="20dp"
         android:scrollbarStyle="insideInset">
 
         <TextView
             android:id="@+id/messages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/eczar"
-            android:textColor="#0616d3"
-            android:textColorLink="#1E6CE9"
-            android:textSize="18sp"
-            android:layout_gravity="bottom" />
+            android:layout_gravity="bottom"
+            android:fontFamily="@font/fenix"
+            android:textColor="#1a75ff"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
     </ScrollView>
-
-
 </RelativeLayout>

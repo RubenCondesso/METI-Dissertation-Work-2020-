@@ -26,7 +26,6 @@
 
 package com.ist.bleuart.app;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.bluetooth.BluetoothDevice;
@@ -36,11 +35,10 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -49,11 +47,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.content.ComponentName;
+import android.os.IBinder;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 /*
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     // UUIDs for UAT service and associated characteristics
     public static UUID UART_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
@@ -72,6 +82,11 @@ public class MainActivity extends Activity {
     private BluetoothGatt gatt;
     private BluetoothGattCharacteristic tx;
     private BluetoothGattCharacteristic rx;
+
+    private final int PERMISSION_REQUEST_CODE = 200;
+
+    public BackgroundLocationService gpsService;
+    public boolean mTracking = false;
 
     // BLE device callbacks -> Handles the main logic of this class
     private BluetoothGattCallback callback = new BluetoothGattCallback() {
@@ -181,6 +196,14 @@ public class MainActivity extends Activity {
         input = (EditText) findViewById(R.id.input);
 
         adapter = BluetoothAdapter.getDefaultAdapter();
+
+        //prepare service
+        final Intent intent = new Intent(this.getApplication(), BackgroundLocationService.class);
+        this.getApplication().startService(intent);
+        this.getApplication().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+        startTracking();
+
     }
 
     // OnResume -> called right before UI is displayed.
@@ -299,10 +322,35 @@ public class MainActivity extends Activity {
     // Boilerplate code from the activity creation
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu -> This adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.main, menu);
-        
         return true;
     }
+
+    public void startTracking() {
+
+        //check for permission
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            gpsService.startTracking();
+            mTracking = true;
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            String name = className.getClassName();
+            if (name.endsWith("BackgroundLocationService")) {
+                gpsService = ((BackgroundLocationService.LocationServiceBinder) service).getService();
+            }
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            if (className.getClassName().equals("BackgroundLocationService")) {
+                gpsService = null;
+            }
+        }
+    };
 }
