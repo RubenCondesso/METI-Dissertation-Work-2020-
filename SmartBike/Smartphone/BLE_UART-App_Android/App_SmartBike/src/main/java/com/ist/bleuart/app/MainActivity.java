@@ -40,6 +40,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 
 import android.view.View;
@@ -52,19 +53,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import android.content.ComponentName;
-import android.os.IBinder;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 
 /*
@@ -91,15 +79,6 @@ public class MainActivity extends Activity {
     private BluetoothGatt gatt;
     private BluetoothGattCharacteristic tx;
     private BluetoothGattCharacteristic rx;
-
-    // Permission to track location
-    private final int PERMISSION_REQUEST_CODE = 200;
-
-    // Initialize the Background Location Service
-    public BackgroundLocationService gpsService;
-
-    // App is tracking (or not) the location
-    public boolean mTracking = false;
 
 
     // BLE device callbacks -> Handles the main logic of this class
@@ -209,15 +188,6 @@ public class MainActivity extends Activity {
         input = (EditText) findViewById(R.id.input);
 
         adapter = BluetoothAdapter.getDefaultAdapter();
-
-
-        // Setup the Background Location Service
-        final Intent intent = new Intent(this.getApplication(), BackgroundLocationService.class);
-        this.getApplication().startService(intent);
-        this.getApplication().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
-        // Start the track the user's location
-        startTracking();
     }
 
     // OnResume -> called right before UI is displayed
@@ -330,34 +300,6 @@ public class MainActivity extends Activity {
         }
         return uuids;
     }
-
-    // Start tracking the user's location
-    public void startTracking() {
-
-        //check for permission for starting tracking
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            gpsService.startTracking();
-            mTracking = true;
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    // Setup the Service Location
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            String name = className.getClassName();
-            if (name.endsWith("BackgroundLocationService")) {
-                gpsService = ((BackgroundLocationService.LocationServiceBinder) service).getService();
-            }
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            if (className.getClassName().equals("BackgroundLocationService")) {
-                gpsService = null;
-            }
-        }
-    };
 
     // Boilerplate code from the activity creation
     @Override
