@@ -26,6 +26,7 @@
 
 package com.ist.bleuart.app;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.bluetooth.BluetoothDevice;
@@ -63,7 +64,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     // UUIDs for UAT service and associated characteristics
     public static UUID UART_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
@@ -83,10 +84,11 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothGattCharacteristic tx;
     private BluetoothGattCharacteristic rx;
 
+    /*
     private final int PERMISSION_REQUEST_CODE = 200;
-
     public BackgroundLocationService gpsService;
     public boolean mTracking = false;
+    */
 
     // BLE device callbacks -> Handles the main logic of this class
     private BluetoothGattCallback callback = new BluetoothGattCallback() {
@@ -205,8 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Start the track of the user's location
         startTracking();
-
-         */
+        */
 
     }
 
