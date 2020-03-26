@@ -4,13 +4,13 @@
 #
 # 25 March 2020 - 1.0
 #
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 #
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# TO COMPLETE
+# Allows to read and write on the data base
 #
 # */
 
@@ -40,8 +40,10 @@ import java.util.List;
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
+// Location Dao
 @Dao
 public interface LocationDao {
+
     @Insert
     Long insertLocation(MyLocation location);
 

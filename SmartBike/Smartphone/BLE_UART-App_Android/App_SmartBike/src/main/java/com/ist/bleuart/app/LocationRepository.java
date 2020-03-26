@@ -4,13 +4,13 @@
 #
 # 25 March 2020 - 1.0
 #
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 #
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# TO COMPLETE
+# Creates the services/actions on the the Data Base (room)  -> it stores the user's coordinates in time
 #
 # */
 
@@ -38,15 +38,17 @@ import java.util.List;
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
+// Data Base
 public class LocationRepository {
     private String DB_NAME = "location_db";
     private MyDataBase myDataBase;
 
+    // Create the room
     public LocationRepository(Context context) {
         myDataBase = Room.databaseBuilder(context, MyDataBase.class, DB_NAME).build();
     }
 
-
+    // insert a new location in the data base
     public void insertLocation(final MyLocation location) {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -57,6 +59,7 @@ public class LocationRepository {
         }.execute();
     }
 
+    // update a location in the data base
     public void updateLocation(final MyLocation location) {
 
         new AsyncTask<Void, Void, Void>() {
@@ -68,6 +71,7 @@ public class LocationRepository {
         }.execute();
     }
 
+    // delete a location in the data base
     public void deleteLocation(final int id) {
         final LiveData<MyLocation> location = getLocation(id);
         if (location != null) {
@@ -81,6 +85,7 @@ public class LocationRepository {
         }
     }
 
+    // delete a location in the data base
     public void deleteLocation(final MyLocation location) {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -91,6 +96,7 @@ public class LocationRepository {
         }.execute();
     }
 
+    // get a location in the data base
     public LiveData<MyLocation> getLocation(int id) {
         return myDataBase.dao().getLocation(id);
     }

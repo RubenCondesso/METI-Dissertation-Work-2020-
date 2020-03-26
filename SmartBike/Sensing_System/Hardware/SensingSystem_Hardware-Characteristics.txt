@@ -1,14 +1,17 @@
+# SensingSystem_Hardware_Characteristics - Text file with information of the characteristics of the hardware present on the Sensing System
+#
+# 01 March 2020 - 2.0 
 # 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+# 
+# Characteristics of Hardware used in the Sensing System
 # 
 #
-# Caracteristics of Hardware used in the Sensor's System
-# 
-#
-#
-#
+
 
 # ------------------------------------------------------------------------------------ HC-SR04 Ultrasonic sensor ------------------------------------------------------------------------------------------------ # 
 

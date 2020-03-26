@@ -2,16 +2,16 @@
 #
 # NTP_Client_RaspberryPiZero.sh - Configure NTP client on Raspberry Pi Zero
 #
-# 17 March 2020 - 1.0 
-# 
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 17 March 2020 - 1.0
 #
-# 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
-# 
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
 # Script that configures NTP client on Raspberry Pi Zero
-# 
+#
 #
 
 

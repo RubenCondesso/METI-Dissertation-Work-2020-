@@ -4,10 +4,10 @@
 #
 # 04 March 2020 - 1.0 
 # 
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 # 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 # 
 # Script that uninstall the configurations made to setup an access point in Raspberry Pi Zero

@@ -2,15 +2,19 @@
 #
 # MainActivity.java - Java Class of Android App
 #
-# 23 March 2020 - 1.0 
+# 26 March 2020 - 2.0
 # 
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 # 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 # 
-# Java class that sends and receives data to a Bluetooth Low Energy UART service, which is running on the Raspberry Pi Zero (BLE GATT Server)
+# Java class that represents the main activity of the App
+#
+# Sends and receives data to a Bluetooth Low Energy UART service, which is running on the Raspberry Pi Zero (BLE GATT Server)
+#
+# Launch the Background Location Service -> track the user's location in time
 #
 # */ 
 
@@ -25,6 +29,7 @@
 */ 
 
 package com.ist.bleuart.app;
+
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -52,7 +57,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.content.ComponentName;
@@ -60,10 +64,14 @@ import android.os.IBinder;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+
 /*
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
+// Main activity of the App
 public class MainActivity extends Activity {
 
     // UUIDs for UAT service and associated characteristics
@@ -78,17 +86,21 @@ public class MainActivity extends Activity {
     private TextView messages;
     private EditText input;
 
-    // BLE state
+    // BLE state/features
     private BluetoothAdapter adapter;
     private BluetoothGatt gatt;
     private BluetoothGattCharacteristic tx;
     private BluetoothGattCharacteristic rx;
 
-    /*
+    // Permission to track location
     private final int PERMISSION_REQUEST_CODE = 200;
+
+    // Initialize the Background Location Service
     public BackgroundLocationService gpsService;
+
+    // App is tracking (or not) the location
     public boolean mTracking = false;
-    */
+
 
     // BLE device callbacks -> Handles the main logic of this class
     private BluetoothGattCallback callback = new BluetoothGattCallback() {
@@ -100,7 +112,6 @@ public class MainActivity extends Activity {
             super.onConnectionStateChange(gatt, status, newState);
 
             // Different states that can exist or change to
-
             if (newState == BluetoothGatt.STATE_CONNECTED) {
                 writeLine("Connected to GATT Server - Sensing System :)");
 
@@ -165,7 +176,7 @@ public class MainActivity extends Activity {
     // BLE device scanning callback
     private LeScanCallback scanCallback = new LeScanCallback() {
 
-        // Funcction called when the GATT Server (RPi Zero) is found
+        // Function called when the GATT Server (RPi Zero) is found
         @Override
         public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
 
@@ -199,19 +210,17 @@ public class MainActivity extends Activity {
 
         adapter = BluetoothAdapter.getDefaultAdapter();
 
-        /*
-        // Prepare the location service
+
+        // Setup the Background Location Service
         final Intent intent = new Intent(this.getApplication(), BackgroundLocationService.class);
         this.getApplication().startService(intent);
         this.getApplication().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-        // Start the track of the user's location
+        // Start the track the user's location
         startTracking();
-        */
-
     }
 
-    // OnResume -> called right before UI is displayed.
+    // OnResume -> called right before UI is displayed
     // Start the BLE connection
     @Override
     protected void onResume() {
@@ -322,19 +331,10 @@ public class MainActivity extends Activity {
         return uuids;
     }
 
-    // Boilerplate code from the activity creation
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu -> This adds items to the action bar if it is present
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    /*
+    // Start tracking the user's location
     public void startTracking() {
 
-        //check for permission
+        //check for permission for starting tracking
         if (ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             gpsService.startTracking();
             mTracking = true;
@@ -343,6 +343,7 @@ public class MainActivity extends Activity {
         }
     }
 
+    // Setup the Service Location
     private ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             String name = className.getClassName();
@@ -357,5 +358,13 @@ public class MainActivity extends Activity {
             }
         }
     };
-    */
+
+    // Boilerplate code from the activity creation
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu -> This adds items to the action bar if it is present
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 }

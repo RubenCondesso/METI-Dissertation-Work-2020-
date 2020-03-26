@@ -2,16 +2,16 @@
 #
 # NTP_Server_Laptop.sh - Configure NTP server on Laptop
 #
-# 17 March 2020 - 1.0 
-# 
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 17 March 2020 - 1.0
 #
-# 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
-# 
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
 # Script that configures NTP server on Laptop
-# 
+#
 #
 
 

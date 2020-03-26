@@ -4,13 +4,13 @@
 #
 # 25 March 2020 - 1.0
 #
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 #
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# TO COMPLETE
+# Setup the Background Location Service -> Service to get location updates
 #
 # */
 
@@ -25,7 +25,6 @@
 */
 
 package com.ist.bleuart.app;
-
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -43,18 +42,28 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 
-
 /*
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
+// Background Location Service
 public class BackgroundLocationService extends Service {
+
     private final LocationServiceBinder binder = new LocationServiceBinder();
     private static final String TAG = "BackgroundLocationServi";
+
+    // Initialize the Location Listener
     private LocationListener mLocationListener;
+
+    // Initialize the Location Manager
     private LocationManager mLocationManager;
+
+    // Initialize the Notification Manager
     private NotificationManager notificationManager;
+
+    // Initalize the Local Data Base
     private LocationRepository locationRepository;
+
     private final int LOCATION_INTERVAL = 500;
     private final int LOCATION_DISTANCE = 10;
 
@@ -63,7 +72,9 @@ public class BackgroundLocationService extends Service {
         return binder;
     }
 
+    // Setup the Location Listener
     private class LocationListener implements android.location.LocationListener {
+
         private Location lastLocation = null;
         private final String TAG = "LocationListener";
         private Location mLastLocation;
@@ -72,18 +83,20 @@ public class BackgroundLocationService extends Service {
             mLastLocation = new Location(provider);
         }
 
+        // Location has changed -> update it to Data Base
         @Override
         public void onLocationChanged(Location location) {
+
             mLastLocation = location;
             Log.i(TAG, "LocationChanged: " + location);
-            // Save to local DB
+
+            // Save to local Data Base
             if (locationRepository != null) {
                 MyLocation loc = new MyLocation();
                 loc.setLatitude(location.getLatitude());
                 loc.setLongitude(location.getLongitude());
                 locationRepository.insertLocation(loc);
             }
-//            Toast.makeText(BackgroundLocationService.this, "LAT: " + location.getLatitude() + "\n LONG: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -112,7 +125,10 @@ public class BackgroundLocationService extends Service {
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate");
+
+        // Create new Local Data Base
         locationRepository = new LocationRepository(getApplicationContext());
+
         startForeground(12345678, getNotification());
     }
 
@@ -129,12 +145,14 @@ public class BackgroundLocationService extends Service {
         }
     }
 
+    // Initialize the Location Manager
     private void initializeLocationManager() {
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
 
+    // Start the tracking
     public void startTracking() {
         initializeLocationManager();
         mLocationListener = new LocationListener(LocationManager.GPS_PROVIDER);
@@ -154,6 +172,7 @@ public class BackgroundLocationService extends Service {
         this.onDestroy();
     }
 
+    // Notify
     @RequiresApi(api = Build.VERSION_CODES.O)
     private Notification getNotification() {
 
@@ -166,7 +185,7 @@ public class BackgroundLocationService extends Service {
         return builder.build();
     }
 
-
+    // Creates a bound service
     public class LocationServiceBinder extends Binder {
         public BackgroundLocationService getService() {
             return BackgroundLocationService.this;

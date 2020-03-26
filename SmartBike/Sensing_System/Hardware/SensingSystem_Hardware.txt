@@ -1,13 +1,15 @@
+# SensingSystem_Hardware - Text file with hardware information of the Sensing System
+#
+# 01 March 2020 - 2.0 
 # 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
-#
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
-# 
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 # 
-# Hardware used by the Sensor_System
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
-#
+# 
+# Hardware used by the Sensing System
+# 
 #
 
 

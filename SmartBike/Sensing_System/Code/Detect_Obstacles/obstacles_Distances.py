@@ -2,16 +2,16 @@
 #
 # obstacles_Distances.py - Ultrasonic Sensor Class for the Raspberry Pi Zero
 #
-# 01 March 2020 - 2.0 
-# 
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 01 March 2020 - 2.0
 #
-# 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
-# 
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
 # Python code that measures the distance to obstacles detected by the ultrasonic sensor
-# 
+#
 #
 
 
@@ -59,10 +59,10 @@ lock = threading.Semaphore()
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
-# Ultrasonic sensor class 
+# Ultrasonic sensor class
 class Ultrasonic_Sensor(threading.Thread):
     # Thread that writes the detected obstacle distances to the text file
-    
+
     # Init thread
     def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
 
@@ -71,7 +71,7 @@ class Ultrasonic_Sensor(threading.Thread):
 
         # Set GPIO pin numbering - GPIO Mode (BOARD/BCM)
         GPIO.setmode(GPIO.BCM)
-     
+
         # Sensor instance for Trigger
         self.GPIO_TRIGGER = GPIO_TRIGGER
 
@@ -79,11 +79,11 @@ class Ultrasonic_Sensor(threading.Thread):
         self.GPIO_ECHO = GPIO_ECHO
 
         # Sensor instance for calibration factor
-        self.GPIO_OFFSET = GPIO_OFFSET            
+        self.GPIO_OFFSET = GPIO_OFFSET
 
         # GPIO setup
-        GPIO.setup(self.GPIO_TRIGGER, GPIO.OUT)                  
-        GPIO.setup(self.GPIO_ECHO, GPIO.IN)   
+        GPIO.setup(self.GPIO_TRIGGER, GPIO.OUT)
+        GPIO.setup(self.GPIO_ECHO, GPIO.IN)
 
 
 
@@ -117,7 +117,7 @@ class Ultrasonic_Sensor(threading.Thread):
         current_date.append(dateTimeObj.day)
         current_date.append(dateTimeObj.month)
         current_date.append(dateTimeObj.year)
-        
+
         # Hour of the obstacle detection
         current_hour = []
         current_hour.append(dateTimeObj.hour)
@@ -126,7 +126,7 @@ class Ultrasonic_Sensor(threading.Thread):
         current_hour.append(dateTimeObj.microsecond)
 
         total_timestamp[0] = current_date
-        total_timestamp[1] = current_hour 
+        total_timestamp[1] = current_hour
 
         return total_timestamp
 
@@ -148,12 +148,12 @@ class Ultrasonic_Sensor(threading.Thread):
     def echo_signal(self):
 
         # Set TRIG as LOW
-        GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)     
+        GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)
 
         print "Waiting for the Sensor to settle"
-        
+
         # Some gap between measurements
-        sleep(1)      
+        sleep(1)
 
         # Set the Trigger to HIGH
         GPIO.output(self.GPIO_TRIGGER, GPIO.HIGH)
@@ -165,30 +165,30 @@ class Ultrasonic_Sensor(threading.Thread):
         GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)
 
         # Check whether the ECHO is LOW
-        while GPIO.input(self.GPIO_ECHO) == GPIO.LOW:    
+        while GPIO.input(self.GPIO_ECHO) == GPIO.LOW:
 
             # Saves the last known time of LOW pulse
-            pulse_start = time()      
+            pulse_start = time()
 
 
-        # Check whether the ECHO is HIGH 
-        while GPIO.input(self.GPIO_ECHO) == GPIO.HIGH:        
-            
+        # Check whether the ECHO is HIGH
+        while GPIO.input(self.GPIO_ECHO) == GPIO.HIGH:
+
             # Saves the last known time of HIGH pulse
-            pulse_end = time()                       
+            pulse_end = time()
 
 
         # Time difference between start and arrival - Get pulse duration to a variable
-        pulse_duration = pulse_end - pulse_start 
+        pulse_duration = pulse_end - pulse_start
 
         # Distance = 17160.5 * Time (unit cm) at sea level and at 20 degrees
-        distance = pulse_duration * 17160.5  
+        distance = pulse_duration * 17160.5
 
-        # Round to two decimal points            
+        # Round to two decimal points
         distance = round(distance, 2)
 
         # Check whether the distance is within the sensor's range
-        if distance > 2 and distance < 400: 
+        if distance > 2 and distance < 400:
 
             distance = distance + self.GPIO_OFFSET
 
@@ -217,11 +217,11 @@ class Ultrasonic_Sensor(threading.Thread):
             # Handle IOERROR exception
             except IOERROR as e:
                 print "I/O error({0}: {1}".format(e.errno, e.strerror)
-            
-            # Handle other exceptions such as atribute error        
+
+            # Handle other exceptions such as atribute error
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
-            
+
             # Unlock
             lock.release()
 
@@ -231,7 +231,7 @@ class Ultrasonic_Sensor(threading.Thread):
 
             distance = 0
 
-        return str(distance)     
+        return str(distance)
 
 
 # HandlerState class
@@ -295,13 +295,13 @@ class HandlerState(threading.Thread):
                     # Handle IOERROR exception
                     except IOERROR as e:
                         print "I/O error({0}: {1}".format(e.errno, e.strerror)
-            
-                    # Handle other exceptions such as atribute error        
+
+                    # Handle other exceptions such as atribute error
                     except:
-                        print "Unexpected error: ", sys.exc_info()[0]  
+                        print "Unexpected error: ", sys.exc_info()[0]
 
                 # Unlock
-                lock.release()  
+                lock.release()
 
 
         # Set the status of detection made
@@ -321,8 +321,8 @@ class HandlerState(threading.Thread):
                 # Handle IOERROR exception
                 except IOERROR as e:
                     print "I/O error({0}: {1}".format(e.errno, e.strerror)
-            
-                # Handle other exceptions such as atribute error        
+
+                # Handle other exceptions such as atribute error
                 except:
                     print "Unexpected error: ", sys.exc_info()[0]
 
@@ -334,17 +334,17 @@ class HandlerState(threading.Thread):
 
 
 # Main function - Menu
-def main():  
-    
+def main():
+
     if os.path.exists("detected_obstacles.txt") == False:
 
         # Create the file for measures
         file_create = open("detected_obstacles.txt","w+")
         file_create.close()
 
-    
+
     # Run the ultrasonic sensor wtih this GPIO pins: Trigger - 18 & Echo - 24
-    sensor = Ultrasonic_Sensor(18, 24)  
+    sensor = Ultrasonic_Sensor(18, 24)
     sensor.start()
 
     # Run the Handler Thread
@@ -370,7 +370,7 @@ def main():
             GPIO.cleanup()
 
             print("Done.")
-            
+
             try:
                 sys.exit(0)
 

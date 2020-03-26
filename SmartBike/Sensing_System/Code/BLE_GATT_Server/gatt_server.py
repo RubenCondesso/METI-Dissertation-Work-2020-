@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 #
-# gatt_server.py - Python code 
+# gatt_server.py - Python code
 #
-# 23 March 2020 - 2.0 
-# 
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 23 March 2020 - 2.0
 #
-# 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
-# 
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
 # Python code responsible for implementing the GATT Server
 #
 #
@@ -29,11 +29,11 @@ import array
 
 try:
     # Python 3
-    from gi.repository import GObject 
+    from gi.repository import GObject
 
 except ImportError:
     # Python 2
-    import gobject as GObject 
+    import gobject as GObject
 
 import sys
 

@@ -2,14 +2,14 @@
 #
 # uart_Communication.py - Class for the Raspberry Pi Zero
 #
-# 24 March 2020 - 2.0 
-# 
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# 24 March 2020 - 2.0
 #
-# 
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
-# 
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
 # BLE GATT UART Service that receives and writes data and serves as a bridge to the UART interface.
 #
 #
@@ -33,7 +33,7 @@ from gatt_server import register_app_cb, register_app_error_cb
 
 
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
- 
+
 BLUEZ_SERVICE_NAME =           'org.bluez'
 DBUS_OM_IFACE =                'org.freedesktop.DBus.ObjectManager'
 LE_ADVERTISING_MANAGER_IFACE = 'org.bluez.LEAdvertisingManager1'
@@ -65,7 +65,7 @@ class TxCharacteristic(Characteristic):
         self.notifying = False
         GLib.io_add_watch(sys.stdin, GLib.IO_IN, self.read_SensorData)
 
-    
+
     # Read the data obtained by the ultrasonic sensor
     def read_SensorData(self, fd, condition):
 
@@ -86,10 +86,10 @@ class TxCharacteristic(Characteristic):
 
                 # Send the sensor's data to the smartphone
                 self.send_SensorData(x)
-        
+
         return True
 
-       
+
     # Send the distances to the obstacle, detected by the ultrasonic sensor
     def send_SensorData(self, s):
 
@@ -97,7 +97,7 @@ class TxCharacteristic(Characteristic):
             return
 
         value = []
-        
+
         for c in s:
 
             # Add the value received to the dbus
@@ -107,17 +107,17 @@ class TxCharacteristic(Characteristic):
         self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
 
 
- 
+
     def StartNotify(self):
         if self.notifying:
             return
         self.notifying = True
- 
+
     def StopNotify(self):
         if not self.notifying:
             return
         self.notifying = False
- 
+
 
 # Characteristic for sending data
 class RxCharacteristic(Characteristic):
@@ -126,10 +126,10 @@ class RxCharacteristic(Characteristic):
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_RX_CHARACTERISTIC_UUID,
                                 ['write'], service)
- 
+
     def WriteValue(self, value, options):
         print('remote: {}'.format(bytearray(value).decode()))
- 
+
 
 # Service with two Characteristics: one for read data and other to send data
 class UartService(Service):
@@ -138,7 +138,7 @@ class UartService(Service):
         Service.__init__(self, bus, index, UART_SERVICE_UUID, True)
         self.add_characteristic(TxCharacteristic(bus, 0, self))
         self.add_characteristic(RxCharacteristic(bus, 1, self))
- 
+
 
 class Application(dbus.service.Object):
 
@@ -146,13 +146,13 @@ class Application(dbus.service.Object):
         self.path = '/'
         self.services = []
         dbus.service.Object.__init__(self, bus, self.path)
- 
+
     def get_path(self):
         return dbus.ObjectPath(self.path)
- 
+
     def add_service(self, service):
         self.services.append(service)
- 
+
     @dbus.service.method(DBUS_OM_IFACE, out_signature='a{oa{sa{sv}}}')
     def GetManagedObjects(self):
         response = {}
@@ -162,7 +162,7 @@ class Application(dbus.service.Object):
             for chrc in chrcs:
                 response[chrc.get_path()] = chrc.get_properties()
         return response
- 
+
 
 # Launch the application for the uart service
 class UartApplication(Application):
@@ -170,7 +170,7 @@ class UartApplication(Application):
     def __init__(self, bus):
         Application.__init__(self, bus)
         self.add_service(UartService(bus, 0))
- 
+
 
 # Bluetooth Low Energy UART Service Advertisement
 class UartAdvertisement(Advertisement):
@@ -180,7 +180,7 @@ class UartAdvertisement(Advertisement):
         self.add_service_uuid(UART_SERVICE_UUID)
         self.add_local_name(LOCAL_NAME)
         self.include_tx_power = True
- 
+
 
 # Find the BLE adapter to connect
 def find_adapter(bus):
@@ -192,7 +192,7 @@ def find_adapter(bus):
             return o
         print('Skip adapter:', o)
     return None
- 
+
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
@@ -205,47 +205,47 @@ def main():
 
     # Connect to the system bus
     bus = dbus.SystemBus()
-    
+
     # Find the BLE adapter to get a connection
     adapter = find_adapter(bus)
-    
+
     if not adapter:
         print(' The BLE adapter was not found.')
         return
- 
+
 
     service_manager = dbus.Interface(
                                 bus.get_object(BLUEZ_SERVICE_NAME, adapter),
                                 GATT_MANAGER_IFACE)
-    
+
     ad_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter),
                                 LE_ADVERTISING_MANAGER_IFACE)
- 
+
 
     app = UartApplication(bus)
     adv = UartAdvertisement(bus, 0)
-    
+
     # Main event loop
     mainloop = GLib.MainLoop()
-    
+
     # Run the application for this connection
     service_manager.RegisterApplication(app.get_path(), {},
                                         reply_handler=register_app_cb,
                                         error_handler=register_app_error_cb)
-    
+
     # Advertise the Raspberry Pi Zero BLE connection
     ad_manager.RegisterAdvertisement(adv.get_path(), {},
                                      reply_handler=register_ad_cb,
                                      error_handler=register_ad_error_cb)
-    
+
     try:
         mainloop.run()
 
     except KeyboardInterrupt:
         adv.Release()
- 
 
 
-# Main of this python code 
+
+# Main of this python code
 if __name__ == '__main__':
     main()

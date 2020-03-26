@@ -4,13 +4,13 @@
 #
 # 25 March 2020 - 1.0
 #
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 #
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# TO COMPLETE
+# Launch the data base
 #
 # */
 
@@ -30,12 +30,12 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 
-
 /*
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
 @Database(entities = {MyLocation.class}, version = 1, exportSchema = false)
 public abstract class MyDataBase extends RoomDatabase {
+
     public abstract LocationDao dao();
 }

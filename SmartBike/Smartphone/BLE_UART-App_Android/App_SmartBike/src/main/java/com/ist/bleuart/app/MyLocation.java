@@ -4,13 +4,13 @@
 #
 # 25 March 2020 - 1.0
 #
-# Autor: Ruben Condesso - 81969 - 2nd Semester (2020)
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
 #
-# SmartBike System - Master Thesis in Telecomunications and Computer Engineering
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# TO COMPLETE
+# Setup the characteristics of the user's location (entity)
 #
 # */
 
@@ -29,9 +29,11 @@ package com.ist.bleuart.app;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+// Location entity
 @Entity
 public class MyLocation {
     @PrimaryKey(autoGenerate = true)
+
     private int id;
     private double latitude;
     private double longitude;
