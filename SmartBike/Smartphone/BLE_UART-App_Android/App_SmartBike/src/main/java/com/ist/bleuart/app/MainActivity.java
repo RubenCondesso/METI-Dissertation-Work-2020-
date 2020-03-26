@@ -26,11 +26,12 @@
 
 /*
 # -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
-*/ 
+*/
 
 package com.ist.bleuart.app;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
@@ -39,6 +40,11 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -46,21 +52,19 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-
+import androidx.core.app.ActivityCompat;
 /*
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
 // Main activity of the App
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements LocationListener {
 
     // UUIDs for UAT service and associated characteristics
     public static UUID UART_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
@@ -81,6 +85,11 @@ public class MainActivity extends Activity {
     private BluetoothGattCharacteristic rx;
 
 
+    private TextView textView;
+
+    private LocationManager locationManager;
+
+
     // BLE device callbacks -> Handles the main logic of this class
     private BluetoothGattCallback callback = new BluetoothGattCallback() {
 
@@ -97,11 +106,9 @@ public class MainActivity extends Activity {
                 if (!gatt.discoverServices()) {
                     writeLine("Failed to start discovering services :(");
                 }
-            }
-            else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+            } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 writeLine("Disconnected from GATT Server.");
-            }
-            else {
+            } else {
                 writeLine("Connection state changed.  New state: " + newState);
             }
         }
@@ -114,8 +121,7 @@ public class MainActivity extends Activity {
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 writeLine("Sensing System Service discovery completed.");
-            }
-            else {
+            } else {
                 writeLine("Sensing System Service discovery failed with status: " + status);
             }
 
@@ -137,8 +143,7 @@ public class MainActivity extends Activity {
                 if (!gatt.writeDescriptor(desc)) {
                     writeLine("Could not write RX client descriptor value.");
                 }
-            }
-            else {
+            } else {
                 writeLine("Could not get RX client descriptor.");
             }
         }
@@ -188,6 +193,23 @@ public class MainActivity extends Activity {
         input = (EditText) findViewById(R.id.input);
 
         adapter = BluetoothAdapter.getDefaultAdapter();
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        onLocationChanged(location);
+
     }
 
     // OnResume -> called right before UI is displayed
@@ -308,5 +330,30 @@ public class MainActivity extends Activity {
         // Inflate the menu -> This adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+
+        Log.v("TAG", String.valueOf(longitude));
+        Log.v("TAG", String.valueOf(latitude));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

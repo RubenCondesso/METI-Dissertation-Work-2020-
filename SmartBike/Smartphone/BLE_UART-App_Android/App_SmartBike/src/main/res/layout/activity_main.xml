@@ -67,6 +67,6 @@
             android:textColor="#1a75ff"
             android:textSize="12sp"
             android:textStyle="bold" />
-
     </ScrollView>
+
 </RelativeLayout>
