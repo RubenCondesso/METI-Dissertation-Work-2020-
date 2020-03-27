@@ -14,7 +14,7 @@
 #
 # Sends and receives data to a Bluetooth Low Energy UART service, which is running on the Raspberry Pi Zero (BLE GATT Server)
 #
-# Launch the Background Location Service -> track the user's location in time
+# Tracks the user's location in time -> GPS coordinates
 #
 # */ 
 
@@ -98,20 +98,252 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
 
     private static final String TAG = "MainActivity";
+
+    // Textview to display on the screen
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLocation;
-    private LocationManager mLocationManager;
 
+    // Data class represents a geographic location
+    private Location mLocation;
+
+    // Obtains periodic updates of the device's geographical location
+    private LocationManager mLocationManager;
+    private LocationManager locationManager;
+
+    // Request a quality of service for location updates
     private LocationRequest mLocationRequest;
+
+    // Provides a common entry point to Google Play services and manages the network connection between the user's device and each Google service
+    private GoogleApiClient mGoogleApiClient;
+
+    // Receives notifications from the api when the location has changed
     private com.google.android.gms.location.LocationListener listener;
+
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
-    private LocationManager locationManager;
-
     private static final int MY_PERMISSIONS_REQUEST_READ_FINE_LOCATION = 100;
+
+    // OnCreate -> called once to initialize the activity
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // check the user's permissions
+        boolean permissionGranted = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        if(permissionGranted) {
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+        }
+
+        // Grab the references to the UI elements
+        messages = (TextView) findViewById(R.id.messages);
+        input = (EditText) findViewById(R.id.input);
+
+        adapter = BluetoothAdapter.getDefaultAdapter();
+
+        mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
+        mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+
+        checkLocation(); //check whether location service is enable or not in your  phone
+    }
+
+    // OnResume -> called right before UI is displayed
+    // Start the BLE connection
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        // Scan for all BLE devices
+        // The first one with the UART service (RPi Zero) will be chosen
+        writeLine("Scanning for devices...");
+        adapter.startLeScan(scanCallback);
+    }
+
+    // OnStop _> called right before the activity loses foreground focus
+    // Close the BLE connection
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+        if (gatt != null) {
+
+            gatt.disconnect();
+            gatt.close();
+            gatt = null;
+            tx = null;
+            rx = null;
+        }
+
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 200: {
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // {Some Code}
+                }
+            }
+        }
+    }
+
+
+/*
+# ------------------------------------------------------------------------------------ GPS Functions -------------------------------------------------------------------------------------------- #
+*/
+
+    // When the device is connected on the app
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        // Check for the permissions on Access Fine Location and Access Coarse Location
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        // Start updating the location of the device
+        startLocationUpdates();
+
+        // Get current location
+        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if(mLocation == null){
+
+            startLocationUpdates();
+        }
+        if (mLocation != null) {
+
+            // mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
+            // mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
+
+        } else {
+
+            // Display pop up on screen with the values
+            //Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Connection Suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
+    }
+
+    // When app is started
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Start the Google API
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    // Update the device's location (GPS Coordinates) in time
+    protected void startLocationUpdates() {
+
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
+
+        // Check for the app's permissions
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_FINE_LOCATION);
+            return;
+        }
+
+        // Get the updated location of the device
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        Log.d("reque", "--->>>>");
+    }
+
+    // Location has changed
+    @Override
+    public void onLocationChanged(Location location) {
+
+        String msg = "Updated Location: " +
+                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
+
+        // Set new latitude
+        mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
+
+        // Set new longitude
+        mLongitudeTextView.setText(String.valueOf(location.getLongitude() ));
+
+        // Display pop up on screen with the values
+        //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+        // You can now create a LatLng Object for use with maps
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
+    // Check location
+    private boolean checkLocation() {
+        if(!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
+    }
+
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Enable Location")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                    }
+                });
+        dialog.show();
+    }
+
+    // Check if location is enabled
+    private boolean isLocationEnabled() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+
+/*
+# ------------------------------------------------------------------------------------ BLE Functions -------------------------------------------------------------------------------------------- #
+*/
 
     // BLE device callbacks -> Handles the main logic of this class
     private BluetoothGattCallback callback = new BluetoothGattCallback() {
@@ -204,89 +436,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     };
 
-    // OnCreate -> called once to initialize the activity
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        // check the user's permissions
-        boolean permissionGranted = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
-        if(permissionGranted) {
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-        }
-
-        // Grab the references to the UI elements
-        messages = (TextView) findViewById(R.id.messages);
-        input = (EditText) findViewById(R.id.input);
-
-        adapter = BluetoothAdapter.getDefaultAdapter();
-
-        mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
-        mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-
-        checkLocation(); //check whether location service is enable or not in your  phone
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 200: {
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // {Some Code}
-                }
-            }
-        }
-    }
-
-    // OnResume -> called right before UI is displayed
-    // Start the BLE connection
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
-        // Scan for all BLE devices
-        // The first one with the UART service (RPi Zero) will be chosen 
-        writeLine("Scanning for devices...");
-        adapter.startLeScan(scanCallback);
-    }
-
-    // OnStop _> called right before the activity loses foreground focus
-    // Close the BLE connection
-    @Override
-    protected void onStop() {
-
-        super.onStop();
-        if (gatt != null) {
-
-            gatt.disconnect();
-            gatt.close();
-            gatt = null;
-            tx = null;
-            rx = null;
-        }
-
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
     // Handler for click on the send button
     public void sendClick(View view) {
 
         String message = input.getText().toString();
+
         if (tx == null || message == null || message.isEmpty()) {
             // Do nothing if there is no device or message to send
             return;
@@ -374,120 +528,4 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         return true;
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        startLocationUpdates();
-
-        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-        if(mLocation == null){
-            startLocationUpdates();
-        }
-        if (mLocation != null) {
-
-            // mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
-            //mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
-        } else {
-            // Display pop up on screen with the values
-            //Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i(TAG, "Connection Suspended");
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    protected void startLocationUpdates() {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
-
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            Log.i("MYTAG", "ENTREI AQUI");
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_FINE_LOCATION);
-
-            return;
-        }
-
-        Log.i("MYTAG", String.valueOf(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)));
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
-        Log.d("reque", "--->>>>");
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
-        mLongitudeTextView.setText(String.valueOf(location.getLongitude() ));
-
-        // Display pop up on screen with the values
-        //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-
-        // You can now create a LatLng Object for use with maps
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-    }
-
-    private boolean checkLocation() {
-        if(!isLocationEnabled())
-            showAlert();
-        return isLocationEnabled();
-    }
-
-    private void showAlert() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Enable Location")
-                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app")
-                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-
-                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-
-                    }
-                });
-        dialog.show();
-    }
-
-    private boolean isLocationEnabled() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
 }
