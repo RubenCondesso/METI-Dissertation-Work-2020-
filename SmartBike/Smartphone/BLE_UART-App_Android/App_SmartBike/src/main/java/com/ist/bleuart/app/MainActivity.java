@@ -100,8 +100,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private static final String TAG = "MainActivity";
 
     // Textview to display on the screen
-    private TextView mLatitudeTextView;
-    private TextView mLongitudeTextView;
+    //private TextView mLatitudeTextView;
+    //private TextView mLongitudeTextView;
 
     // Data class represents a geographic location
     private Location mLocation;
@@ -145,8 +145,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         adapter = BluetoothAdapter.getDefaultAdapter();
 
-        mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
-        mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
+        //mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
+        //mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -287,31 +287,51 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
 
-        String msg = "Updated Location: " +
+        String msg = "Updated Location - " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
 
         // Set new latitude
-        mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
+        //mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
 
         // Set new longitude
-        mLongitudeTextView.setText(String.valueOf(location.getLongitude() ));
+        //mLongitudeTextView.setText(String.valueOf(location.getLongitude() ));
 
         // Display pop up on screen with the values
         //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 
-        // You can now create a LatLng Object for use with maps
+        // LatLng Object can be created for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        if (tx == null || msg == null || msg.isEmpty()) {
+            // Do nothing if there is no device or message to send
+        }
+
+        else{
+
+            tx = gatt.getService(UART_UUID).getCharacteristic(TX_UUID);
+
+            tx.setValue(msg.getBytes(Charset.forName("UTF-8")));
+
+            if (gatt.writeCharacteristic(tx)) {
+                writeLine("Sent from App: " + msg);
+            }
+            else {
+                writeLine("Could not write TX characteristic.");
+            }
+        }
     }
 
     // Check location
     private boolean checkLocation() {
+
         if(!isLocationEnabled())
             showAlert();
         return isLocationEnabled();
     }
 
     private void showAlert() {
+
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Enable Location")
                 .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
@@ -335,7 +355,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     // Check if location is enabled
     private boolean isLocationEnabled() {
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
@@ -356,14 +378,19 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             // Different states that can exist or change to
             if (newState == BluetoothGatt.STATE_CONNECTED) {
+
                 writeLine("Connected to GATT Server - Sensing System :)");
 
                 if (!gatt.discoverServices()) {
+
                     writeLine("Failed to start discovering services :(");
                 }
             } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+
                 writeLine("Disconnected from GATT Server.");
+
             } else {
+
                 writeLine("Connection state changed.  New state: " + newState);
             }
         }
@@ -388,17 +415,22 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             // (first) Call setCharacteristicNotification to enable notification
             if (!gatt.setCharacteristicNotification(rx, true)) {
+
                 writeLine("Could not set notifications for RX characteristic.");
             }
 
             // (next) Update the RX characteristic's client descriptor to enable notifications
             if (rx.getDescriptor(CLIENT_UUID) != null) {
+
                 BluetoothGattDescriptor desc = rx.getDescriptor(CLIENT_UUID);
                 desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+
                 if (!gatt.writeDescriptor(desc)) {
                     writeLine("Could not write RX client descriptor value.");
                 }
+
             } else {
+
                 writeLine("Could not get RX client descriptor.");
             }
         }
@@ -449,10 +481,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Update TX characteristic value
         // Note the setValue overload that takes a byte array must be used
         tx.setValue(message.getBytes(Charset.forName("UTF-8")));
+
         if (gatt.writeCharacteristic(tx)) {
+
             writeLine("Sent from App: " + message);
         }
+
         else {
+
             writeLine("Could not write TX characteristic.");
         }
     }
@@ -469,7 +505,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         });
     }
 
-    // Workaround function from the SO thread to manually parse advertisement data
+    // Work around function from the SO thread to manually parse advertisement data
     private List<UUID> parseUUIDs(final byte[] advertisedData) {
         List<UUID> uuids = new ArrayList<UUID>();
 
