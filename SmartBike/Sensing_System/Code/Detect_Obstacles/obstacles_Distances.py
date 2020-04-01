@@ -56,6 +56,8 @@ import sys
 # Lock to be used in accessing to data files
 lock = threading.Semaphore()
 
+# GPS coordenates of the Smartphone when detection the obstacle
+global gps_coordenates
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
@@ -84,6 +86,9 @@ class Ultrasonic_Sensor(threading.Thread):
         # GPIO setup
         GPIO.setup(self.GPIO_TRIGGER, GPIO.OUT)
         GPIO.setup(self.GPIO_ECHO, GPIO.IN)
+
+        # Initialize variable
+        gps_coordenates = 'EMPTY'
 
 
 
@@ -143,7 +148,6 @@ class Ultrasonic_Sensor(threading.Thread):
         return socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', ifname[:15]))[20:24])
 
 
-
     # Get the distance measurement to the obstacle detected
     def echo_signal(self):
 
@@ -198,16 +202,16 @@ class Ultrasonic_Sensor(threading.Thread):
             try:
 
                 # Open the text file
-                data_file = open("detected_obstacles.txt","a")
+                data_file = open("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt","a")
 
-                    # Get the ID of Raspberry Pi Zero
+                # Get the ID of Raspberry Pi Zero
                 rpi_ID = self.getIP_RPizero()
 
                 # Get the timestamp of this exact moment
                 present_timestamp = self.timestamp()
 
                 # Add this distance to the text file
-                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + "\n")
+                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + "GPS Coordenates" + str(gps_coordenates) + "\n")
 
                 print("Obstacle detected")
 
@@ -259,7 +263,7 @@ class HandlerState(threading.Thread):
 
         newlines = []
 
-        with open("detected_obstacles.txt", 'r') as f:
+        with open("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt", 'r') as f:
 
             # Do a small sleep to acquire first some detection
             sleep(1.1)
@@ -305,7 +309,7 @@ class HandlerState(threading.Thread):
 
 
         # Set the status of detection made
-        with open("status_obstacles.txt", 'w') as f:
+        with open("/home/pi/SmartBike/Sensing_System/status_obstacles.txt", 'w') as f:
 
             for line in newlines:
 
@@ -336,10 +340,10 @@ class HandlerState(threading.Thread):
 # Main function - Menu
 def main():
 
-    if os.path.exists("detected_obstacles.txt") == False:
+    if os.path.exists("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt") == False:
 
         # Create the file for measures
-        file_create = open("detected_obstacles.txt","w+")
+        file_create = open("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt","w+")
         file_create.close()
 
 

@@ -77,7 +77,7 @@ class TxCharacteristic(Characteristic):
         else:
 
             # Open the file with the sensor's data information
-            data_file = open("/home/pi/SmartBike/Sensing_System/ultrasonicSensor_Data.txt")
+            data_file = open("/home/pi/SmartBike/Sensing_System/status_obstacles.txt")
 
             # Read each line of the text file
             line = data_file.readlines()
@@ -184,6 +184,7 @@ class UartAdvertisement(Advertisement):
 
 # Find the BLE adapter to connect
 def find_adapter(bus):
+
     remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'),
                                DBUS_OM_IFACE)
     objects = remote_om.GetManagedObjects()

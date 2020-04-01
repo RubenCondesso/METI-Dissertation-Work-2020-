@@ -28,6 +28,10 @@ from gatt_server import Service, Characteristic
 from gatt_server import register_app_cb, register_app_error_cb
 
 
+#sys.path.insert(0, '/home/pi/SmartBike/Sensing_System/Detect_Obstacles')
+#import obstacles_Distances
+
+
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
 BLUEZ_SERVICE_NAME =           'org.bluez'
@@ -39,8 +43,8 @@ UART_SERVICE_UUID =            '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
 UART_RX_CHARACTERISTIC_UUID =  '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
 UART_TX_CHARACTERISTIC_UUID =  '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
 LOCAL_NAME =                   'RPi-Sensing_System'
-mainloop = None
 
+mainloop = None
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
@@ -86,22 +90,44 @@ class TxCharacteristic(Characteristic):
 
 # Initialize Rx Characteristic
 class RxCharacteristic(Characteristic):
+
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_RX_CHARACTERISTIC_UUID,
                                 ['write'], service)
 
     def WriteValue(self, value, options):
-        print('remote: {}'.format(bytearray(value).decode()))
+
+        # Received message
+        msg_received = format(bytearray(value).decode())
+
+        # Analyze the message received
+        self.analyze_Message(msg_received)
+
+        print('Remote: {}'.format(bytearray(value).decode()) + '\n')
+
+    def analyze_Message(self, msg):
+
+        message = msg.split()
+
+        # Received GPS coordenates
+        if len(message) == 3 and message[0] == 'Updated' and message[1] == 'Location:':
+
+            coordenates = message[2]
+
+            GPS_coord = (coordenates.split())
 
 # UART Service initialize with two characteristics
 class UartService(Service):
+
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, UART_SERVICE_UUID, True)
         self.add_characteristic(TxCharacteristic(bus, 0, self))
         self.add_characteristic(RxCharacteristic(bus, 1, self))
 
+
 # Initialize the Service Application
 class Application(dbus.service.Object):
+
     def __init__(self, bus):
         self.path = '/'
         self.services = []
@@ -123,39 +149,49 @@ class Application(dbus.service.Object):
                 response[chrc.get_path()] = chrc.get_properties()
         return response
 
+
 # Initialize UART Application
 class UartApplication(Application):
+
     def __init__(self, bus):
         Application.__init__(self, bus)
         self.add_service(UartService(bus, 0))
 
+
 # Initialize UART Service Advertisement
 class UartAdvertisement(Advertisement):
+
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
         self.add_service_uuid(UART_SERVICE_UUID)
         self.add_local_name(LOCAL_NAME)
         self.include_tx_power = True
 
+
 # Find the adapter to be used
 def find_adapter(bus):
+
     remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'),
                                DBUS_OM_IFACE)
     objects = remote_om.GetManagedObjects()
+
     for o, props in objects.items():
         if LE_ADVERTISING_MANAGER_IFACE in props and GATT_MANAGER_IFACE in props:
             return o
         print('Skip adapter:', o)
+
     return None
 
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
 def main():
+
     global mainloop
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
     adapter = find_adapter(bus)
+
     if not adapter:
         print('BLE adapter not found')
         return

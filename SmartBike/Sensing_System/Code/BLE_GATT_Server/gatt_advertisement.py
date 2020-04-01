@@ -200,6 +200,7 @@ def find_adapter(bus):
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
 def main():
+
     global mainloop
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)

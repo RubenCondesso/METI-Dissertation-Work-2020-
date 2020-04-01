@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="app_name">SmartBike</string>
-    <string name="location">Location</string>
-    <string name="bluetooth">Bluetooth</string>
-
-</resources>
