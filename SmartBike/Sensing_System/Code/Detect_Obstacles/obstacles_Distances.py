@@ -202,7 +202,7 @@ class Ultrasonic_Sensor(threading.Thread):
             try:
 
                 # Open the text file
-                data_file = open("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt","a")
+                data_file = open("~/SmartBike/Output/detected_obstacles.txt","a")
 
                 # Get the ID of Raspberry Pi Zero
                 rpi_ID = self.getIP_RPizero()
@@ -263,7 +263,7 @@ class HandlerState(threading.Thread):
 
         newlines = []
 
-        with open("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt", 'r') as f:
+        with open("~/SmartBike/Output/detected_obstacles.txt", 'r') as f:
 
             # Do a small sleep to acquire first some detection
             sleep(1.1)
@@ -309,7 +309,7 @@ class HandlerState(threading.Thread):
 
 
         # Set the status of detection made
-        with open("/home/pi/SmartBike/Sensing_System/status_obstacles.txt", 'w') as f:
+        with open("~/SmartBike/Output/status_obstacles.txt", 'w') as f:
 
             for line in newlines:
 
@@ -340,10 +340,10 @@ class HandlerState(threading.Thread):
 # Main function - Menu
 def main():
 
-    if os.path.exists("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt") == False:
+    if os.path.exists("~/SmartBike/Output/detected_obstacles.txt") == False:
 
         # Create the file for measures
-        file_create = open("/home/pi/SmartBike/Sensing_System/detected_obstacles.txt","w+")
+        file_create = open("~/SmartBike/Output/detected_obstacles.txt","w+")
         file_create.close()
 
 
@@ -383,7 +383,7 @@ def main():
 
 
 # Main of this python code
-if __name__ == "__main__":
+#if __name__ == "__main__":
 
     # execute only if run as a script
-    main()
+    #main()

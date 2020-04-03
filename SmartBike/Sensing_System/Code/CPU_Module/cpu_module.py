@@ -19,16 +19,9 @@
 
 # -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
 
-from os import path
-
 import sys
 
-#sys.path.insert(0, '~/SmartBike/Sensing_System/BLE_GATT_Server')
-#import uart_peripheral, uart_Communication, gatt_advertisement, gatt_server
-
-
-#sys.path.insert(1, '~/SmartBike/Sensing_System/Detect_Obstacles')
-#import obstacles_Distances
+import uart_peripheral, uart_Communication, gatt_advertisement, gatt_server, obstacles_Distances
 
 # Import Threads
 import threading
@@ -45,6 +38,7 @@ from datetime import datetime
 
 # ----------------------------------------------------------------------------------- Main function ---------------------------------------------------------------------------------------- #
 
+# Creates a thread that launchs the uart peripheral service
 class thread_UartPeripheral(threading.Thread):
 
     def __init__(self):
@@ -53,12 +47,13 @@ class thread_UartPeripheral(threading.Thread):
 
     def run(self):
         while self.kill_received == False:
-            self.start_UartPeripheral
+            self.start_UartPeripheral()
 
     def start_UartPeripheral(self):
-        uart_peripheral.main()
+          uart_peripheral.main()
 
-'''
+
+# Creates a thread that launchs the obstacle detection
 class thread_ObstaclesDistance(threading.Thread):
 
     def __init__(self):
@@ -68,14 +63,15 @@ class thread_ObstaclesDistance(threading.Thread):
 
     def run(self):
         while self.kill_received == False:
-            self.start_ObstacleDistance
+            self.start_ObstacleDistance()
 
     def start_ObstacleDistance(self):
         print("Comecei a thread dos obstacles")
 
         #while uart_peripheral.RxCharacteristic.Ready_Flag == True:
             #obstacles_Distances.main()
-'''
+
+
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
 
@@ -86,12 +82,19 @@ def main():
     uartPeri = thread_UartPeripheral()
     uartPeri.start()
 
+    while uartPeri.isAlive():
+        try:
+            #Synchronization timeout of threads kill
+            uartPeri.join(1)
+
+        except KeyboardInterrupt:
+            uartPeri.kill_received = True
+
     #obsDist = thread_ObstaclesDistance()
     #obsDist.start()
 
 
 # Main of this python code
-#f __name__ == "__main__":
+if __name__ == "__main__":
 
-    # execute only if run as a script
-    main()
+   main()
