@@ -96,7 +96,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private BluetoothGattCharacteristic tx;
     private BluetoothGattCharacteristic rx;
 
-
     private static final String TAG = "MainActivity";
 
     // Textview to display on the screen
@@ -287,7 +286,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
 
-        String msg = "Updated Location - " +
+        String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
 
@@ -314,7 +313,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             tx.setValue(msg.getBytes(Charset.forName("UTF-8")));
 
             if (gatt.writeCharacteristic(tx)) {
-                writeLine("Sent from App: " + msg);
+                writeLine("App - " + msg);
             }
             else {
                 writeLine("Could not write TX characteristic.");
@@ -376,18 +375,22 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             super.onConnectionStateChange(gatt, status, newState);
 
+            String msgReady = "Ready";
+            String msgEnd = "END";
+
             // Different states that can exist or change to
             if (newState == BluetoothGatt.STATE_CONNECTED) {
 
-                writeLine("Connected to GATT Server - Sensing System :)");
+                writeLine("Connected to GATT Server - Sensing System");
 
                 if (!gatt.discoverServices()) {
 
-                    writeLine("Failed to start discovering services :(");
+                    writeLine("Failed to start discovering services");
                 }
+
             } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
 
-                writeLine("Disconnected from GATT Server.");
+                writeLine("Disconnected from GATT Server");
 
             } else {
 
@@ -440,7 +443,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 
             super.onCharacteristicChanged(gatt, characteristic);
-            writeLine("Received from the Sensing System: " + characteristic.getStringValue(0));
+            writeLine("RPi Zero " + characteristic.getStringValue(0));
         }
     };
 
@@ -484,7 +487,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         if (gatt.writeCharacteristic(tx)) {
 
-            writeLine("Sent from App: " + message);
+            writeLine("App - " + message);
         }
 
         else {

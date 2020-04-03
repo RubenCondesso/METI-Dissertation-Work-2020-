@@ -27,11 +27,6 @@ from gatt_advertisement import register_ad_cb, register_ad_error_cb
 from gatt_server import Service, Characteristic
 from gatt_server import register_app_cb, register_app_error_cb
 
-
-#sys.path.insert(0, '/home/pi/SmartBike/Sensing_System/Detect_Obstacles')
-#import obstacles_Distances
-
-
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
 BLUEZ_SERVICE_NAME =           'org.bluez'
@@ -48,9 +43,10 @@ mainloop = None
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
+# Tx Characteristic Class
 class TxCharacteristic(Characteristic):
 
-    # Init the uart peripheral
+    # Init the Tx Characteristic
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_TX_CHARACTERISTIC_UUID,
                                 ['notify'], service)
@@ -88,13 +84,21 @@ class TxCharacteristic(Characteristic):
         self.notifying = False
 
 
-# Initialize Rx Characteristic
+# Rx Characteristic Class
 class RxCharacteristic(Characteristic):
 
+    # Init the Rx Characteristic
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_RX_CHARACTERISTIC_UUID,
                                 ['write'], service)
 
+        # Flag that indicates if the service is ready or not
+        self.ready_flag = False
+
+        # Number of GPS coordenates received
+        self.count = 0
+
+    # Print the messages received from the Smartphone
     def WriteValue(self, value, options):
 
         # Received message
@@ -102,15 +106,23 @@ class RxCharacteristic(Characteristic):
 
         # Analyze the message received
         self.analyze_Message(msg_received)
-
-        print('Remote: {}'.format(bytearray(value).decode()) + '\n')
+        print('App - {}'.format(bytearray(value).decode()) + '\n')
 
     def analyze_Message(self, msg):
 
         message = msg.split()
 
+        # The connection was made -> is ready to start detect obstacles
+        if self.count > 4:
+            self.ready_flag = True
+
+        # The connection was made -> wait for certain number of GPS coordenates first
+        elif self.count <= 4:
+            self.ready_flag = False
+            self.count += 1
+
         # Received GPS coordenates
-        if len(message) == 3 and message[0] == 'Updated' and message[1] == 'Location:':
+        elif len(message) == 3 and message[0] == 'Updated' and message[1] == 'Location:':
 
             coordenates = message[2]
 
@@ -218,5 +230,6 @@ def main():
     except KeyboardInterrupt:
         adv.Release()
 
-if __name__ == '__main__':
-    main()
+# Main of this python code
+#if __name__ == '__main__':
+    #main()

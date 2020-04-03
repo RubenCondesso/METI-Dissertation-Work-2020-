@@ -154,7 +154,7 @@ class Ultrasonic_Sensor(threading.Thread):
         # Set TRIG as LOW
         GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)
 
-        print "Waiting for the Sensor to settle"
+        #print "Waiting for the Sensor to settle"
 
         # Some gap between measurements
         sleep(1)
@@ -213,7 +213,7 @@ class Ultrasonic_Sensor(threading.Thread):
                 # Add this distance to the text file
                 data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + "GPS Coordenates" + str(gps_coordenates) + "\n")
 
-                print("Obstacle detected")
+                #print("Obstacle detected")
 
                 # Close the text file
                 data_file.close()
@@ -231,7 +231,7 @@ class Ultrasonic_Sensor(threading.Thread):
 
         else:
 
-            print("No obstacle detected")
+            #print("No obstacle detected")
 
             distance = 0
 
