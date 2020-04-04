@@ -19,7 +19,7 @@
 
 # -------------------------------------------------------------------------------------- Libraries ----------------------------------------------------------------------------------------- #
 
-import sys
+import sys, os
 
 import uart_peripheral, uart_Communication, gatt_advertisement, gatt_server, obstacles_Distances
 
@@ -39,7 +39,7 @@ from datetime import datetime
 # ----------------------------------------------------------------------------------- Main function ---------------------------------------------------------------------------------------- #
 
 # Creates a thread that launchs the uart peripheral service
-class thread_UartPeripheral(threading.Thread):
+class thread_thread_uartpheral(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -47,12 +47,16 @@ class thread_UartPeripheral(threading.Thread):
 
     def run(self):
         while self.kill_received == False:
-            self.start_UartPeripheral()
+            self.start_thread_uartperipheral()
 
-    def start_UartPeripheral(self):
-          uart_peripheral.main()
+    def start_thread_uartperipheral(self):
 
+        try:
+            uart_peripheral.main()
+        except:
+            raise
 
+'''
 # Creates a thread that launchs the obstacle detection
 class thread_ObstaclesDistance(threading.Thread):
 
@@ -66,11 +70,12 @@ class thread_ObstaclesDistance(threading.Thread):
             self.start_ObstacleDistance()
 
     def start_ObstacleDistance(self):
-        print("Comecei a thread dos obstacles")
+
+        print(uart_peripheral.count)
 
         #while uart_peripheral.RxCharacteristic.Ready_Flag == True:
             #obstacles_Distances.main()
-
+'''
 
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
@@ -79,22 +84,30 @@ class thread_ObstaclesDistance(threading.Thread):
 # Main of this python code
 def main():
 
-    uartPeri = thread_UartPeripheral()
-    uartPeri.start()
+    thread_uart = thread_thread_uartpheral()
+    thread_uart.start()
 
-    while uartPeri.isAlive():
+    while thread_uart.isAlive():
         try:
             #Synchronization timeout of threads kill
-            uartPeri.join(1)
+            thread_uart.join(1)
 
         except KeyboardInterrupt:
-            uartPeri.kill_received = True
+            # Ctrl-C handling and send kill to threads
+            thread_uart.kill_received = True
 
-    #obsDist = thread_ObstaclesDistance()
-    #obsDist.start()
+            (uart_peripheral.adv).Release()
+
+            try:
+                sys.exit(0)
+
+            except SystemExit:
+                os._exit(0)
+
+    # thread_obsDist = thread_ObstaclesDistance()
+    #thread_obsDist.start()
 
 
 # Main of this python code
 if __name__ == "__main__":
-
    main()

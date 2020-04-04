@@ -200,6 +200,8 @@ def find_adapter(bus):
 def main():
 
     global mainloop
+    global adv
+
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
     adapter = find_adapter(bus)
@@ -228,6 +230,8 @@ def main():
     try:
         mainloop.run()
     except KeyboardInterrupt:
+
+        # Release advertisement
         adv.Release()
 
 # Main of this python code
