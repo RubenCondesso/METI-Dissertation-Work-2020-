@@ -32,9 +32,14 @@ from time import sleep, time
 # Import datetime class
 from datetime import datetime
 
+# Import GPIO library
+import RPi.GPIO as GPIO
+
 
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
+# Flag that indicates if the detection of obstacles was already started
+flag = 0
 
 # ----------------------------------------------------------------------------------- Main function ---------------------------------------------------------------------------------------- #
 
@@ -50,13 +55,12 @@ class thread_thread_uartpheral(threading.Thread):
             self.start_thread_uartperipheral()
 
     def start_thread_uartperipheral(self):
-
         try:
             uart_peripheral.main()
         except:
             raise
 
-'''
+
 # Creates a thread that launchs the obstacle detection
 class thread_ObstaclesDistance(threading.Thread):
 
@@ -69,13 +73,21 @@ class thread_ObstaclesDistance(threading.Thread):
         while self.kill_received == False:
             self.start_ObstacleDistance()
 
+        print("\n---- Terminating Sensing System program ----")
+        print("Cleaning up GPIO pins...")
+
+        # Clean the GPIO pins
+        GPIO.cleanup()
+
+        print("Done.")
+
+
     def start_ObstacleDistance(self):
 
-        print(uart_peripheral.count)
-
-        #while uart_peripheral.RxCharacteristic.Ready_Flag == True:
-            #obstacles_Distances.main()
-'''
+        try:
+            obstacles_Distances.main()
+        except:
+            raise
 
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
@@ -84,13 +96,27 @@ class thread_ObstaclesDistance(threading.Thread):
 # Main of this python code
 def main():
 
+    global flag
+
     thread_uart = thread_thread_uartpheral()
     thread_uart.start()
 
     while thread_uart.isAlive():
+
         try:
             #Synchronization timeout of threads kill
             thread_uart.join(1)
+
+            # Service is ready to start detecting obstacles
+            if uart_peripheral.ready_flag == True and flag == 0:
+
+                flag = 1
+
+                thread_obsDist = thread_ObstaclesDistance()
+                thread_obsDist.start()
+
+            elif flag == 1:
+                thread_obsDist.join(1)
 
         except KeyboardInterrupt:
             # Ctrl-C handling and send kill to threads
@@ -98,14 +124,15 @@ def main():
 
             (uart_peripheral.adv).Release()
 
+            if flag == 1:
+                thread_obsDist.kill_received = True
+
+            # Exit the function
             try:
                 sys.exit(0)
 
             except SystemExit:
                 os._exit(0)
-
-    # thread_obsDist = thread_ObstaclesDistance()
-    #thread_obsDist.start()
 
 
 # Main of this python code

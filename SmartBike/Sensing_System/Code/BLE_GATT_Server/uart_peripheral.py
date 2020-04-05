@@ -41,6 +41,13 @@ LOCAL_NAME =                   'RPi-Sensing_System'
 
 mainloop = None
 
+# Flag that indicates if the service is ready or not
+ready_flag = False
+
+# Number of GPS coordenates received
+count = 0
+
+
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
 # Tx Characteristic Class
@@ -92,12 +99,6 @@ class RxCharacteristic(Characteristic):
         Characteristic.__init__(self, bus, index, UART_RX_CHARACTERISTIC_UUID,
                                 ['write'], service)
 
-        # Flag that indicates if the service is ready or not
-        self.ready_flag = False
-
-        # Number of GPS coordenates received
-        self.count = 0
-
     # Print the messages received from the Smartphone
     def WriteValue(self, value, options):
 
@@ -110,16 +111,19 @@ class RxCharacteristic(Characteristic):
 
     def analyze_Message(self, msg):
 
+        global ready_flag
+        global count
+
         message = msg.split()
 
         # The connection was made -> is ready to start detect obstacles
-        if self.count > 4:
-            self.ready_flag = True
+        if count > 4:
+            ready_flag = True
 
         # The connection was made -> wait for certain number of GPS coordenates first
-        elif self.count <= 4:
-            self.ready_flag = False
-            self.count += 1
+        elif count <= 4:
+            ready_flag = False
+            count += 1
 
         # Received GPS coordenates
         elif len(message) == 3 and message[0] == 'Updated' and message[1] == 'Location:':
