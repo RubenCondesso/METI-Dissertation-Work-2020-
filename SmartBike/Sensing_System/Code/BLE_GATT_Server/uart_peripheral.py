@@ -27,6 +27,10 @@ from gatt_advertisement import register_ad_cb, register_ad_error_cb
 from gatt_server import Service, Characteristic
 from gatt_server import register_app_cb, register_app_error_cb
 
+from collections import deque
+
+import calendar
+
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
 BLUEZ_SERVICE_NAME =           'org.bluez'
@@ -47,6 +51,13 @@ ready_flag = False
 # Number of GPS coordenates received
 count = 0
 
+domain = [[None]*2 for _ in range(8)]
+
+# Array with the last 8 GPS coordenates received
+array_GPS = deque(domain)
+
+# Dictionary that converts month name to integer
+abbr_to_num = {name: num for num, name in enumerate(calendar.month_abbr) if num}
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
@@ -113,6 +124,7 @@ class RxCharacteristic(Characteristic):
 
         global ready_flag
         global count
+        global array_GPS
 
         message = msg.split()
 
@@ -126,11 +138,15 @@ class RxCharacteristic(Characteristic):
             count += 1
 
         # Received GPS coordenates
-        elif len(message) == 3 and message[0] == 'Updated' and message[1] == 'Location:':
+        if len(message) == 10 and message[0] == 'Updated' and message[1] == 'Location:':
 
-            coordenates = message[2]
+            # Timestamp received
+            time = str(message[6]) + " " + str(abbr_to_num[message[5]]) + " " + str(message[9]) + " " + str(message[7])
 
-            GPS_coord = (coordenates.split())
+            # Array FIFO
+            array_GPS.popleft()
+            array_GPS.append((str(message[2]), time))
+
 
 # UART Service initialize with two characteristics
 class UartService(Service):
