@@ -40,11 +40,9 @@ fi
 
 #################################################################################### NTP Client Configuration ########################################################################################
 
-
 sudo systemctl stop systemd-timesyncd
 sudo systemctl disable systemd-timesyncd
-​sudo /etc/init.d/ntp stop
-​sudo /etc/init.d/ntp start
+
 
 # Configure /etc/ntp.conf
 sudo bash -c 'cat > /etc/ntp.conf' << EOF
@@ -59,7 +57,7 @@ filegen peerstats file peerstats type day enable
 filegen clockstats file clockstats type day enable
 
 # You do need to talk to an NTP server or two (or three).
-server 192.168.0.2
+server 192.168.0.4 prefer iburst
 
 # pool.ntp.org maps to more than 300 low-stratum NTP servers.
 # Your server will pick a different set every time it starts up.
@@ -69,12 +67,12 @@ server 192.168.0.2
 
 # By default, exchange time with everybody, but don't allow configuration.
 # See /usr/share/doc/ntp-doc/html/accopt.html for details.
-restrict -4 default kod notrap nomodify nopeer noquery
-restrict -6 default kod notrap nomodify nopeer noquery
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
 
 # Local users may interrogate the ntp server more closely.
 restrict 127.0.0.1
-restrict ::1
+restrict -6 ::1
 
 # Clients from this (example!) subnet have unlimited access,
 # but only if cryptographically authenticated
@@ -91,8 +89,10 @@ restrict ::1
 #broadcastclient
 EOF
 
-# Restart ntp service
-sudo service ntp reload
+# Restart NTP service
+sudo systemctl restart ntp
 
-# Check ntp service running
-sudo ntpq -p
+# Enable the NTP service
+sudo systemctl enable ntp
+
+

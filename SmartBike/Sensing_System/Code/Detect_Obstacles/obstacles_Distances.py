@@ -110,24 +110,9 @@ class Ultrasonic_Sensor(threading.Thread):
         dateTimeObj = datetime.now()
 
         # Timestamp with date and hour
-        total_timestamp = [0, 0]
+        total_timestamp = []
 
-        # Date of the obstacle detection
-        current_date = []
-
-        current_date.append(dateTimeObj.day)
-        current_date.append(dateTimeObj.month)
-        current_date.append(dateTimeObj.year)
-
-        # Hour of the obstacle detection
-        current_hour = []
-        current_hour.append(dateTimeObj.hour)
-        current_hour.append(dateTimeObj.minute)
-        current_hour.append(dateTimeObj.second)
-        current_hour.append(dateTimeObj.microsecond)
-
-        total_timestamp[0] = current_date
-        total_timestamp[1] = current_hour
+        total_timestamp = str(dateTimeObj.day) + " " + str(dateTimeObj.month) + str(dateTimeObj.year) + str(dateTimeObj.hour) + str(dateTimeObj.minute) + str(dateTimeObj.second)
 
         return total_timestamp
 
@@ -207,6 +192,8 @@ class Ultrasonic_Sensor(threading.Thread):
 
                 # Get the timestamp of this exact moment
                 present_timestamp = self.timestamp()
+
+                print(present_timestamp)
 
                 # Add this distance to the text file
                 data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordenates: " + str(gps_coordenates) + "\n")

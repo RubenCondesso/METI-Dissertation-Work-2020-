@@ -59,17 +59,17 @@ filegen clockstats file clockstats type day enable
 # Your server will pick a different set every time it starts up.
 # *** Please consider joining the pool! ***
 # *** ***
-server 2.pt.pool.ntp.org
-server 3.europe.pool.ntp.org
-server 1.europe.pool.ntp.org
+server 0.pt.pool.ntp.org iburst
+server 2.europe.pool.ntp.org iburst iburst
+server 1.europe.pool.ntp.org iburst
 
 # By default, exchange time with everybody, but don't allow configuration.
 # See /usr/share/doc/ntp-doc/html/accopt.html for details.
-restrict -4 default kod notrap nomodify nopeer noquery
-restrict -6 default kod notrap nomodify nopeer noquery
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
 
 # Check the laptop's IP when connected to the AP of RPi Zero
-restrict 192.168.0.4 mask 255.255.255.0 modify notrap
+restrict 192.168.0.0 mask 255.255.255.0 nomodify notrap
 
 # Local users may interrogate the ntp server more closely.
 restrict 127.0.0.1
@@ -90,5 +90,10 @@ restrict ::1
 #broadcastclient
 EOF
 
-# Restart ntp service
-sudo service ntp reload
+
+# Restart NTP service
+sudo systemctl restart ntp
+
+# Enable the NTP service
+sudo systemctl enable ntp
+
