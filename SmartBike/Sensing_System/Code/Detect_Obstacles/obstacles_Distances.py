@@ -109,10 +109,13 @@ class Ultrasonic_Sensor(threading.Thread):
         # Datetime object containing the local date and time
         dateTimeObj = datetime.now()
 
+        if len(str(dateTimeObj.day)) == 1:
+            dayTime = "0" + str(dateTimeObj.day)
+
         # Timestamp with date and hour
         total_timestamp = []
 
-        total_timestamp = str(dateTimeObj.day) + " " + str(dateTimeObj.month) + str(dateTimeObj.year) + str(dateTimeObj.hour) + str(dateTimeObj.minute) + str(dateTimeObj.second)
+        total_timestamp = str(dayTime) + " " + str(dateTimeObj.month) + " " + str(dateTimeObj.year) + " " + str(dateTimeObj.hour) + ":" + str(dateTimeObj.minute) + ":" + str(dateTimeObj.second)
 
         return total_timestamp
 
