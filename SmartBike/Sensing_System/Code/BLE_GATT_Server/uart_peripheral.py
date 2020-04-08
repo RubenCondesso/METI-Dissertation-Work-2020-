@@ -143,8 +143,6 @@ class RxCharacteristic(Characteristic):
             # Timestamp received
             time = str(message[6]) + " " + str(abbr_to_num[message[5]]) + " " + str(message[9]) + " " + str(message[7])
 
-            print(time)
-
             # Array FIFO
             array_GPS.popleft()
             array_GPS.append((str(message[2]), time))

@@ -50,14 +50,14 @@ import os.path
 # Import sys
 import sys
 
+import uart_peripheral
+
 
 # --------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
 # Lock to be used in accessing to data files
 lock = threading.Semaphore()
 
-# GPS coordenates of the Smartphone when detection the obstacle
-gps_coordenates = "EMPTY"
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
@@ -135,8 +135,6 @@ class Ultrasonic_Sensor(threading.Thread):
     # Get the distance measurement to the obstacle detected
     def echo_signal(self):
 
-        global gps_coordenates
-
         # Set TRIG as LOW
         GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)
 
@@ -196,10 +194,11 @@ class Ultrasonic_Sensor(threading.Thread):
                 # Get the timestamp of this exact moment
                 present_timestamp = self.timestamp()
 
-                print(present_timestamp)
+                # GPS coordenates of the Smartphone when the obstacle was detected
+                gps_coordenates = self.setGPS_Coordenates(uart_peripheral.array_GPS, present_timestamp)
 
                 # Add this distance to the text file
-                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordenates: " + str(gps_coordenates) + "\n")
+                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordenates: " + str(gps_coordenates[0]) + "\n")
 
                 #print("Obstacle detected")
 
@@ -224,6 +223,53 @@ class Ultrasonic_Sensor(threading.Thread):
             distance = 0
 
         return str(distance)
+
+    # Set the GPS coordenates received from the smartphone for the timestamp in handle when the obstacle was detected
+    def setGPS_Coordenates(self, gpsDeque, timestamp_App):
+        '''
+            Check the time difference between the current timestamp with the timestamp of the GPS coordenates received
+            If the difference is small -> Save the GPS coordenates to current obstacle detected (write to file)
+            If the difference is too big -> Read the GPS coordenates save in the list, make prediction of the user's position (taking into account his speed)
+        '''
+
+        # Count of iterations
+        count = 0
+
+        for i in gpsDeque:
+
+            # GPS coordenate of the current timestamp -> last one of the deque
+            if count == (len(gpsDeque)-1):
+
+                time_deque = i[1].split()
+                time_current = timestamp_App.split()
+
+                # Time saved on deque -> Datetime object
+                time_deque_object = datetime.strptime(time_deque[len(time_deque)-1], '%H:%M:%S')
+
+                # Current time -> Date time object
+                time_current_object = datetime.strptime(time_current[len(time_current)-1], '%H:%M:%S')
+
+                # Difference between both objects in seconds
+                time_difference = (abs(time_current_object - time_deque_object)).total_seconds()
+
+                # Time difference is acceptable
+                if time_difference <= 4:
+
+                    # GPS coordenates
+                    return i
+
+                # Time difference is too big -> too much time withou receiving GPS coordenates
+                else:
+
+                    # Make GPS coordenates prediction taking into account the positions registered in the GPS list
+
+                    # TO COMPLETE
+
+                    print("Prediction to be made")
+
+            count += 1
+
+        return None
 
 
 # HandlerState class
