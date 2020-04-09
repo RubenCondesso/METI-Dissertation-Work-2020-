@@ -129,11 +129,11 @@ class RxCharacteristic(Characteristic):
         message = msg.split()
 
         # The connection was made -> is ready to start detect obstacles
-        if count > 4:
+        if count > 7:
             ready_flag = True
 
         # The connection was made -> wait for certain number of GPS coordenates first
-        elif count <= 4:
+        elif count <= 7:
             ready_flag = False
             count += 1
 

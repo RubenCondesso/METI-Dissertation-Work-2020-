@@ -50,6 +50,10 @@ import os.path
 # Import sys
 import sys
 
+# Import Math
+import math
+
+# Import uart_peripheral code
 import uart_peripheral
 
 
@@ -232,6 +236,10 @@ class Ultrasonic_Sensor(threading.Thread):
             If the difference is too big -> Read the GPS coordenates save in the list, make prediction of the user's position (taking into account his speed)
         '''
 
+        #print(self.calculate_distance(gpsDeque))
+        self.calculate_time(gpsDeque)
+
+
         # Count of iterations
         count = 0
 
@@ -243,14 +251,7 @@ class Ultrasonic_Sensor(threading.Thread):
                 time_deque = i[1].split()
                 time_current = timestamp_App.split()
 
-                # Time saved on deque -> Datetime object
-                time_deque_object = datetime.strptime(time_deque[len(time_deque)-1], '%H:%M:%S')
-
-                # Current time -> Date time object
-                time_current_object = datetime.strptime(time_current[len(time_current)-1], '%H:%M:%S')
-
-                # Difference between both objects in seconds
-                time_difference = (abs(time_current_object - time_deque_object)).total_seconds()
+                time_difference = self.calculate_diffTime(time_deque, time_current)
 
                 # Time difference is acceptable
                 if time_difference <= 4:
@@ -267,9 +268,84 @@ class Ultrasonic_Sensor(threading.Thread):
 
                     print("Prediction to be made")
 
+
             count += 1
 
         return None
+
+
+    # Difference between two datetime objects in seconds
+    def calculate_diffTime(self, time1, time2):
+
+        # Time saved on deque -> Datetime object
+        time_deque_object = datetime.strptime(time1[len(time1)-1], '%H:%M:%S')
+
+        # Current time -> Date time object
+        time_current_object = datetime.strptime(time2[len(time2)-1], '%H:%M:%S')
+
+        return (abs(time_current_object - time_deque_object)).total_seconds()
+
+
+    # Haversine distance function
+    def calculate_distance(self, list_GPS):
+        '''
+            Calculate geographic distance between list of coodinates(latitude, longitude)
+        '''
+
+        results = []
+
+        for i in range(1, len(list_GPS)):
+
+            list_loc1 = []
+            for z in ((list_GPS[i-1])[0]).split(','):
+                z = float(z)
+                list_loc1.append(z)
+
+            lat1 = list_loc1[0]
+            lng1 = list_loc1[1]
+
+            list_loc2 = []
+            for x in ((list_GPS[i])[0]).split(','):
+                x = float(x)
+                list_loc2.append(x)
+
+            lat2 = list_loc2[0]
+            lng2 = list_loc2[1]
+
+            degreesToRadians = (math.pi / 180)
+            latrad1 = lat1 * degreesToRadians
+            latrad2 = lat2 * degreesToRadians
+            dlat = (lat2 - lat1) * degreesToRadians
+            dlng = (lng2 - lng1) * degreesToRadians
+
+            a = math.sin(dlat / 2) * math.sin(dlat / 2) + math.cos(latrad1) * math.cos(latrad2) * math.sin(dlng / 2) * math.sin(dlng / 2)
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+            r = 6371000 # Earth radius
+
+            results.append(r * c)
+
+        # Result in km
+        return (sum(results) / 1000)
+
+
+    # Calculate the time that the user took from the first GPS coordenates until the last ones present on the list
+    def calculate_time(self, list_GPS):
+
+        # First timestamp on the list
+        time_1 = (list_GPS[0])[1]
+
+        # Last timestamp on the list
+        time_2 = (list_GPS[-1])[1]
+
+        start = datetime.strptime(time_1, '%H:%M:%S').time()
+        end = datetime.strptime(time_2, '%H:%M:%S').time()
+
+        print(time1_object)
+        print(time2_object)
+
+        diff = datetime.combine(date.today(), time2_object) - datetime.combine(date.today(), time1_object)
+
+        print(int(diff))
 
 
 # HandlerState class
@@ -366,6 +442,7 @@ class HandlerState(threading.Thread):
 
                 # Unlock
                 lock.release()
+
 
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
