@@ -47,14 +47,17 @@ flag = 0
 class thread_thread_uartpheral(threading.Thread):
 
     def __init__(self):
+
         threading.Thread.__init__(self)
         self.kill_received = False
 
     def run(self):
+
         while self.kill_received == False:
             self.start_thread_uartperipheral()
 
     def start_thread_uartperipheral(self):
+
         try:
             uart_peripheral.main()
         except:
@@ -65,11 +68,13 @@ class thread_thread_uartpheral(threading.Thread):
 class thread_ObstaclesDistance(threading.Thread):
 
     def __init__(self):
+
         threading.Thread.__init__(self)
         self.kill_received = False
 
 
     def run(self):
+
         while self.kill_received == False:
             self.start_ObstacleDistance()
 

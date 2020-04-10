@@ -67,9 +67,11 @@ lock = threading.Semaphore()
 
 # Ultrasonic sensor class
 class Ultrasonic_Sensor(threading.Thread):
-    # Thread that writes the detected obstacle distances to the text file
+    '''
+        Thread that writes the detected obstacle distances to the text file
+    '''
 
-    # Init thread
+    # Init
     def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
 
         threading.Thread.__init__(self)
@@ -107,35 +109,6 @@ class Ultrasonic_Sensor(threading.Thread):
         GPIO.cleanup()
 
 
-    # Get the current timestamp of each obstacle detection
-    def timestamp(self):
-
-        # Datetime object containing the local date and time
-        dateTimeObj = datetime.now()
-
-        if len(str(dateTimeObj.day)) == 1:
-            dayTime = "0" + str(dateTimeObj.day)
-
-        # Timestamp with date and hour
-        total_timestamp = []
-
-        total_timestamp = str(dayTime) + " " + str(dateTimeObj.month) + " " + str(dateTimeObj.year) + " " + str(dateTimeObj.hour) + ":" + str(dateTimeObj.minute) + ":" + str(dateTimeObj.second)
-
-        return total_timestamp
-
-
-    # Get the IP of the Raspberry Pi Zero
-    def getIP_RPizero(self):
-
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-        # Name of the network interface
-        ifname = "wlan0"
-
-        # IP of the Raspberry Pi Zero
-        return socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', ifname[:15]))[20:24])
-
-
     # Get the distance measurement to the obstacle detected
     def echo_signal(self):
 
@@ -169,7 +142,6 @@ class Ultrasonic_Sensor(threading.Thread):
             # Saves the last known time of HIGH pulse
             pulse_end = time()
 
-
         # Time difference between start and arrival - Get pulse duration to a variable
         pulse_duration = pulse_end - pulse_start
 
@@ -196,7 +168,7 @@ class Ultrasonic_Sensor(threading.Thread):
                 rpi_ID = self.getIP_RPizero()
 
                 # Get the timestamp of this exact moment
-                present_timestamp = self.timestamp()
+                present_timestamp = self.current_timestamp()
 
                 # GPS coordenates of the Smartphone when the obstacle was detected
                 gps_coordenates = self.setGPS_Coordenates(uart_peripheral.array_GPS, present_timestamp)
@@ -227,6 +199,38 @@ class Ultrasonic_Sensor(threading.Thread):
             distance = 0
 
         return str(distance)
+
+    # Get the current timestamp of each obstacle detection
+    def current_timestamp(self):
+
+        # Datetime object containing the local date and time
+        dateTimeObj = datetime.now()
+
+        if len(str(dateTimeObj.day)) == 1:
+            dayTime = "0" + str(dateTimeObj.day)
+
+        else:
+            dayTime = str(dateTimeObj.day)
+
+        # Timestamp with date and hour
+        total_timestamp = []
+
+        total_timestamp = str(dayTime) + " " + str(dateTimeObj.month) + " " + str(dateTimeObj.year) + " " + str(dateTimeObj.hour) + ":" + str(dateTimeObj.minute) + ":" + str(dateTimeObj.second)
+
+        return total_timestamp
+
+
+    # Get the IP of the Raspberry Pi Zero
+    def getIP_RPizero(self):
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        # Name of the network interface
+        ifname = "wlan0"
+
+        # IP of the Raspberry Pi Zero
+        return socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', ifname[:15]))[20:24])
+
 
     # Set the GPS coordenates received from the smartphone for the timestamp in handle when the obstacle was detected
     def setGPS_Coordenates(self, gpsDeque, timestamp_App):
@@ -267,7 +271,6 @@ class Ultrasonic_Sensor(threading.Thread):
                     # TO COMPLETE
 
                     print("Prediction to be made")
-
 
             count += 1
 
@@ -332,27 +335,32 @@ class Ultrasonic_Sensor(threading.Thread):
     def calculate_time(self, list_GPS):
 
         # First timestamp on the list
-        time_1 = (list_GPS[0])[1]
+        time_first = str((list_GPS[0])[1])
 
         # Last timestamp on the list
-        time_2 = (list_GPS[-1])[1]
+        time_last = str((list_GPS[-1])[1])
 
-        start = datetime.strptime(time_1, '%H:%M:%S').time()
-        end = datetime.strptime(time_2, '%H:%M:%S').time()
+        print(time_first)
+        print(time_last)
 
-        print(time1_object)
-        print(time2_object)
+        start = datetime.datetime.strptime(time_first, '%d %m %Y %H:%M:%S')
+        end = datetime.datetime.strptime(time_last, '%d %m %Y %H:%M:%S')
 
-        diff = datetime.combine(date.today(), time2_object) - datetime.combine(date.today(), time1_object)
+        print(start)
+        print(end)
 
-        print(int(diff))
+        #diff = datetime.combine(date.today(), end) - datetime.combine(date.today(), start)
+
+        #print(int(diff))
 
 
 # HandlerState class
 class HandlerState(threading.Thread):
-    # Thread responsible for read the text files and change the obstacle state - Idle or Active
+    '''
+        Thread responsible for read the text files and change the obstacle state - Idle or Active
+    '''
 
-    # Init thread
+    # Init
     def __init__(self):
 
         threading.Thread.__init__(self)
@@ -471,7 +479,6 @@ def main():
     while sensor.isAlive():
 
         try:
-
             # Synchronization timeout of threads kill
             sensor.join(1)
             state.join(1)
