@@ -403,7 +403,7 @@ class Ultrasonic_Sensor(threading.Thread):
 
         latrad1 = lat1 * degreesToRadians
         latrad2 = lat2 * degreesToRadians
-        lngrad1 = lng1 * degreesToRadians
+        lngrad2 = lng2 * degreesToRadians
 
         dlat = (lat2 - lat1) * degreesToRadians
         dlng = (lng2 - lng1) * degreesToRadians
@@ -411,9 +411,9 @@ class Ultrasonic_Sensor(threading.Thread):
         angle = math.sin(dlat / 2) * math.sin(dlat / 2) + math.cos(latrad1) * math.cos(latrad2) * math.sin(dlng / 2) * math.sin(dlng / 2)
         anglerad = angle * degreesToRadians
 
-        startLatCos = math.cos(latrad1)
-        startLatSin = math.sin(latrad1)
-        startLonRad = math.sin(lngrad1)
+        startLatCos = math.cos(latrad2)
+        startLatSin = math.sin(latrad2)
+        startLonRad = math.sin(lngrad2)
 
         endLatRads = math.asin((startLatSin * distRatioCosine) + (startLatCos * distRatioSine * math.cos(angle)))
         endLonRads = startLonRad + math.atan2(math.sin(angle) * distRatioSine * startLatCos, distRatioCosine - startLatSin * math.sin(endLatRads))
