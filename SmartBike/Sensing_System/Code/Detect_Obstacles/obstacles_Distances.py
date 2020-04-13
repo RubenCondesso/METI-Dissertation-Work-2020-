@@ -240,12 +240,6 @@ class Ultrasonic_Sensor(threading.Thread):
             If the difference is too big -> Read the GPS coordenates save in the list, make prediction of the user's position (taking into account his speed)
         '''
 
-        # Time between first timestamp and last timestamp (from list)
-        self.calculate_time(gpsDeque)
-
-        # Distance travelled in the last coordinates received (from list)
-        self.calculate_distance(gpsDeque)
-
         # Count of iterations
         count = 0
 
@@ -267,12 +261,21 @@ class Ultrasonic_Sensor(threading.Thread):
 
                 # Time difference is too big -> too much time withou receiving GPS coordenates
                 else:
+                    '''
+                        Make GPS coordenates prediction taking into account the positions registered in the GPS list
+                    '''
 
-                    # Make GPS coordenates prediction taking into account the positions registered in the GPS list
+                    # Distance travelled in the last coordinates received (from list) - in km
+                    distance_total = self.calculate_distance(gpsDeque)
 
-                    # TO COMPLETE
+                    # Time between first timestamp and last timestamp (from list) - in hours
+                    time_total = self.calculate_time(gpsDeque)
 
-                    print("Prediction to be made")
+                    # Prediction of the user's speed -> Speed = distance/time
+                    speed = int(distance_total) / (float(time_total))
+
+                    # Get prediction of the user's location
+                    self.predict_location(gpsDeque, speed, time_total)
 
             count += 1
 
@@ -342,9 +345,6 @@ class Ultrasonic_Sensor(threading.Thread):
         # Last timestamp on the list
         time_last = (list_GPS[-1])[1]
 
-        print(time_first)
-        print(time_last)
-
         # Month number has only 1 number
         if len(time_first) == 18 and len(time_last) == 18:
 
@@ -353,7 +353,8 @@ class Ultrasonic_Sensor(threading.Thread):
             start_object = datetime.strptime(time_first, '%H:%M:%S')
             end_object = datetime.strptime(time_last, '%H:%M:%S')
 
-            return (abs(end_object - start_object)).total_seconds()
+            # Result in hours
+            return ((abs(end_object - start_object)).total_seconds())/3600
 
          # Month number has only 2 number
         elif len(time_first) == 19 and len(time_last) == 19:
@@ -363,11 +364,72 @@ class Ultrasonic_Sensor(threading.Thread):
             start_object = datetime.strptime(time_first, '%H:%M:%S')
             end_object = datetime.strptime(time_last, '%H:%M:%S')
 
-            return (abs(end_object - start_object)).total_seconds()
+            # Result in hours
+            return ((abs(end_object - start_object)).total_seconds())/3600
 
         # Something went wrong
         else:
             return None
+
+
+    # Predict the user's location - GPS coordinates
+    def predict_location(self, list_GPS, user_speed, user_time):
+
+        radiusEarthKm = 6371 # Earth radius in km
+
+        # Distance travelled
+        kmdistance = user_speed * user_time
+        distRatio = kmdistance / radiusEarthKm
+
+        distRatioSine = math.sin(distRatio)
+        distRatioCosine = math.cos(distRatio)
+
+        for i in range(1, len(list_GPS)):
+            list_loc1 = []
+            for z in ((list_GPS[i-1])[0]).split(','):
+                z = float(z)
+                list_loc1.append(z)
+            lat1 = list_loc1[0]
+            lng1 = list_loc1[1]
+
+            list_loc2 = []
+            for x in ((list_GPS[i])[0]).split(','):
+                x = float(x)
+                list_loc2.append(x)
+            lat2 = list_loc2[0]
+            lng2 = list_loc2[1]
+
+        degreesToRadians = (math.pi / 180)
+
+        latrad1 = lat1 * degreesToRadians
+        latrad2 = lat2 * degreesToRadians
+        lngrad1 = lng1 * degreesToRadians
+
+        dlat = (lat2 - lat1) * degreesToRadians
+        dlng = (lng2 - lng1) * degreesToRadians
+
+        angle = math.sin(dlat / 2) * math.sin(dlat / 2) + math.cos(latrad1) * math.cos(latrad2) * math.sin(dlng / 2) * math.sin(dlng / 2)
+        anglerad = angle * degreesToRadians
+
+        startLatCos = math.cos(latrad1)
+        startLatSin = math.sin(latrad1)
+        startLonRad = math.sin(lngrad1)
+
+        endLatRads = math.asin((startLatSin * distRatioCosine) + (startLatCos * distRatioSine * math.cos(angle)))
+        endLonRads = startLonRad + math.atan2(math.sin(angle) * distRatioSine * startLatCos, distRatioCosine - startLatSin * math.sin(endLatRads))
+
+        # Expected Latitude
+        newLat = endLatRads / degreesToRadians
+
+        # Excepted Longitude
+        newLong = endLonRads / degreesToRadians
+
+        newCoord = str(newLat) + "," + str(newLong)
+
+        newTimestamp = self.current_timestamp()
+
+        return (newCoord, newTimestamp)
+
 
 
 # HandlerState class
