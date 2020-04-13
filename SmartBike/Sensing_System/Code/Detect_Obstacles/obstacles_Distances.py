@@ -240,9 +240,11 @@ class Ultrasonic_Sensor(threading.Thread):
             If the difference is too big -> Read the GPS coordenates save in the list, make prediction of the user's position (taking into account his speed)
         '''
 
-        #print(self.calculate_distance(gpsDeque))
+        # Time between first timestamp and last timestamp (from list)
         self.calculate_time(gpsDeque)
 
+        # Distance travelled in the last coordinates received (from list)
+        self.calculate_distance(gpsDeque)
 
         # Count of iterations
         count = 0
@@ -335,23 +337,37 @@ class Ultrasonic_Sensor(threading.Thread):
     def calculate_time(self, list_GPS):
 
         # First timestamp on the list
-        time_first = str((list_GPS[0])[1])
+        time_first = (list_GPS[0])[1]
 
         # Last timestamp on the list
-        time_last = str((list_GPS[-1])[1])
+        time_last = (list_GPS[-1])[1]
 
         print(time_first)
         print(time_last)
 
-        start = datetime.datetime.strptime(time_first, '%d %m %Y %H:%M:%S')
-        end = datetime.datetime.strptime(time_last, '%d %m %Y %H:%M:%S')
+        # Month number has only 1 number
+        if len(time_first) == 18 and len(time_last) == 18:
 
-        print(start)
-        print(end)
+            time_first = time_first[10:]
+            time_last = time_last[10:]
+            start_object = datetime.strptime(time_first, '%H:%M:%S')
+            end_object = datetime.strptime(time_last, '%H:%M:%S')
 
-        #diff = datetime.combine(date.today(), end) - datetime.combine(date.today(), start)
+            return (abs(end_object - start_object)).total_seconds()
 
-        #print(int(diff))
+         # Month number has only 2 number
+        elif len(time_first) == 19 and len(time_last) == 19:
+
+            time_first = time_first[11:]
+            time_last = time_last[11:]
+            start_object = datetime.strptime(time_first, '%H:%M:%S')
+            end_object = datetime.strptime(time_last, '%H:%M:%S')
+
+            return (abs(end_object - start_object)).total_seconds()
+
+        # Something went wrong
+        else:
+            return None
 
 
 # HandlerState class
