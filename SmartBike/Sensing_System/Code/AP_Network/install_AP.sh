@@ -2,16 +2,16 @@
 #
 # install_AP.sh - Script for the Raspberry Pi Zero
 #
-# 04 March 2020 - 1.0 
-# 
+# 04 March 2020 - 1.0
+#
 # Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
-# 
+#
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
-# 
+#
 # Script that install and configure an access point in Raspberry Pi Zero
-# 
+#
 #
 
 clear
@@ -24,9 +24,9 @@ echo "================================================================="
 
 ####################################################################################### Install dependencies  ########################################################################################
 
-sudo apt -y update
-sudo apt -y upgrade
-sudo apt -y install dnsmasq dhcpcd hostapd
+#sudo apt -y update
+#sudo apt -y upgrade
+#sudo apt -y install dnsmasq dhcpcd hostapd
 
 
 ############################################################################### Back up existing configuration files #################################################################################
@@ -99,7 +99,7 @@ EOF
 
 # Configure /etc/dnsmasq.conf
 sudo bash -c 'cat > /etc/dnsmasq.conf' << EOF
-interface=wlan0      
+interface=wlan0
   dhcp-range=192.168.0.2,192.168.0.20,255.255.255.0,24h
 EOF
 
