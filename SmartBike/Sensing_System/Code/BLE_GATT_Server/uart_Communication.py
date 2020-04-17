@@ -10,12 +10,12 @@
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
+#
 # BLE GATT UART Service that receives and writes data and serves as a bridge to the UART interface.
 #
+# The peripheral (Raspberry Pi Zero) will be connected to one central device (Smartphone).
 #
-# In this case, this peripheral (Raspberry Pi Zero) will be connected to one central device (Smartphone)
-#
-# The peripheral (GATT Server) holds the ATT lookup data and service and characteristic definitions, and the GATT Client (smarthphone) sends requests to this server.
+# The peripheral holds the ATT lookup data and service and characteristic definitions, and the GATT Client sends requests to this server.
 #
 
 

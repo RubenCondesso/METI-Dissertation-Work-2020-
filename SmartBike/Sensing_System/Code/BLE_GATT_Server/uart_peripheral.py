@@ -2,7 +2,7 @@
 #
 # uart_peripheral.py - Class for the Raspberry Pi Zero
 #
-# 24 March 2020 - 2.0
+# 30 March 2020 - 2.0
 #
 # Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -10,7 +10,7 @@
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# Python code that launch the BLE GATT Server and runs the UART Service -> to be connected to the UART Peripheral (Smartphone)
+# Python code that launch the BLE GATT Server and runs the UART Service -> to be connected to a Central Device (Smartphone)
 #
 #
 

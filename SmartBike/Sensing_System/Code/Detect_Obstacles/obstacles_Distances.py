@@ -2,7 +2,7 @@
 #
 # obstacles_Distances.py - Ultrasonic Sensor Class for the Raspberry Pi Zero
 #
-# 01 March 2020 - 2.0
+# 17 april April 2020 - 3.0
 #
 # Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #

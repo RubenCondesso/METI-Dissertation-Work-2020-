@@ -2,7 +2,7 @@
 #
 # cpu_module.py - Class for the Raspberry Pi Zero
 #
-# 24 March 2020 - 2.0
+# 17 April 2020 - 2.0
 #
 # Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -10,9 +10,12 @@
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# TO COMPLETE
 #
-
+# This function represents the "heart" of the Sensing System -> launch/starts this component and shuts it down when needed it
+#
+# It sets up and launches two threads -> they concern the two modules that make up this component: obstacle_detection and uart_peripheral.
+#
+#
 
 # =================================================================================== Code starts here ===================================================================================== #
 
@@ -116,7 +119,6 @@ def main():
             if uart_peripheral.ready_flag == True and flag == 0:
 
                 flag = 1
-
                 thread_obsDist = thread_ObstaclesDistance()
                 thread_obsDist.start()
 
