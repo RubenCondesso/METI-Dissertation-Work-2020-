@@ -24,7 +24,7 @@
 
 import sys, os
 
-import uart_peripheral, uart_Communication, gatt_advertisement, gatt_server, obstacles_Distances
+import uart_peripheral, gatt_advertisement, gatt_server, obstacles_Distances
 
 # Import Threads
 import threading

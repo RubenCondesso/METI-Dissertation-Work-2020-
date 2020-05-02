@@ -27,9 +27,14 @@ from gatt_advertisement import register_ad_cb, register_ad_error_cb
 from gatt_server import Service, Characteristic
 from gatt_server import register_app_cb, register_app_error_cb
 
+# Import deque
 from collections import deque
 
+# Import calendar
 import calendar
+
+# Import Threads
+import threading
 
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
@@ -59,7 +64,12 @@ array_GPS = deque(domain)
 # Dictionary that converts month name to integer
 abbr_to_num = {name: num for num, name in enumerate(calendar.month_abbr) if num}
 
+
+# Lock to be used in accessing to data files
+lock = threading.Semaphore()
+
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
+
 
 # Tx Characteristic Class
 class TxCharacteristic(Characteristic):
@@ -69,25 +79,68 @@ class TxCharacteristic(Characteristic):
         Characteristic.__init__(self, bus, index, UART_TX_CHARACTERISTIC_UUID,
                                 ['notify'], service)
         self.notifying = False
-        GLib.io_add_watch(sys.stdin, GLib.IO_IN, self.on_console_input)
+        GLib.io_add_watch(sys.stdin, GLib.IO_IN, self.read_Data)
 
-    # Read the input on console
-    def on_console_input(self, fd, condition):
+
+    # Read the data obtained by the Sensing System
+    def read_Data(self, fd, condition):
+        '''
+            Each message has {ID, Timestamp, obstacle's distance, obstacle's state, User's GPS coodenates}
+        '''
+
         s = fd.readline()
+
         if s.isspace():
             pass
+
         else:
-            self.send_tx(s)
+
+            # Lock
+            lock.acquire()
+
+            try:
+                # Open the file with the sensor's data information
+                data_file = open("/home/pi/SmartBike/Output/status_obstacles.txt")
+
+                # Read each line of the text file
+                line = data_file.readlines()
+
+                #for x in line:
+
+                    # Send the sensor's data to the smartphone
+                    #self.send_Data(x)
+
+                self.send_Data("Irei enviar mensagens para o Smartphone" + "\n")
+
+            # Handle IOERROR exception
+            except OSError as e:
+                print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+            # Handle other exceptions such as atribute error
+            except:
+                print "Unexpected error: ", sys.exc_info()[0]
+
+            # Unlock
+            lock.release()
+
         return True
 
-    # Send the data received
-    def send_tx(self, s):
+
+    # Send the Sensing System's data to the Smartphone
+    def send_Data(self, s):
+
         if not self.notifying:
             return
+
         value = []
+
         for c in s:
+            # Add the value received to the dbus
             value.append(dbus.Byte(c.encode()))
+
+        # Change properties
         self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
+
 
     # Start Notify
     def StartNotify(self):
@@ -110,7 +163,7 @@ class RxCharacteristic(Characteristic):
         Characteristic.__init__(self, bus, index, UART_RX_CHARACTERISTIC_UUID,
                                 ['write'], service)
 
-    # Print the messages received from the Smartphone
+    # Display the messages received from the Smartphone
     def WriteValue(self, value, options):
 
         # Received message
@@ -118,9 +171,16 @@ class RxCharacteristic(Characteristic):
 
         # Analyze the message received
         self.analyze_Message(msg_received)
+
+        # Print the received message
         print('App - {}'.format(bytearray(value).decode()) + '\n')
 
+
+    # Analyse each message received from the Smartphone
     def analyze_Message(self, msg):
+        '''
+            Check what type of message it was received: GPS coordenates, Start the obstacle detection, other types
+        '''
 
         global ready_flag
         global count

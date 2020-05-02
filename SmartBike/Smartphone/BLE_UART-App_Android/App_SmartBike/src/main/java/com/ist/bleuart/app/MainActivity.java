@@ -449,9 +449,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Called when a remote characteristic changes -> like the RX characteristic
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            // When Smartphone received a message from the Raspberry Pi Zero
 
             super.onCharacteristicChanged(gatt, characteristic);
-            writeLine("RPi Zero " + characteristic.getStringValue(0));
+            writeLine("RPi Zero: " + characteristic.getStringValue(0));
         }
     };
 
@@ -494,12 +495,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         tx.setValue(message.getBytes(Charset.forName("UTF-8")));
 
         if (gatt.writeCharacteristic(tx)) {
-
             writeLine("App - " + message);
         }
 
         else {
-
             writeLine("Could not write TX characteristic.");
         }
     }
