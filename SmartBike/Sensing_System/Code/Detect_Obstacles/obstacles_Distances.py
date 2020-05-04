@@ -472,22 +472,21 @@ class HandlerState(threading.Thread):
                 value_line = line.split()
 
                 # The state of the obstacle has not been defined yet
-                if value_line[17] == "Unknown":
+                if value_line[14] == "Unknown":
 
                     try:
-
                         # If difference between two consecutives measurements is small -> obstacles is  motionless
-                        if abs(float(value_line[14]) - value_previous) < 20:
+                        if abs(float(value_line[11]) - value_previous) < 20:
 
                             # Change the status
-                            line = line.replace(value_line[17], "Immobile")
+                            line = line.replace(value_line[14], "Immobile")
 
                         else:
 
                             # Change the status
-                            line = line.replace(value_line[17], "Moving")
+                            line = line.replace(value_line[14], "Moving")
 
-                        value_previous = float(value_line[14])
+                        value_previous = float(value_line[11])
 
                         newlines.append(line)
 
@@ -503,7 +502,6 @@ class HandlerState(threading.Thread):
                 # Unlock
                 lock.release()
 
-
         # Set the status of detection made
         with open("/home/pi/SmartBike/Output/status_obstacles.txt", 'w') as f:
 
@@ -513,7 +511,6 @@ class HandlerState(threading.Thread):
                 lock.acquire()
 
                 try:
-
                     # Write to the file the detection made with right/real status
                     f.write(line)
 

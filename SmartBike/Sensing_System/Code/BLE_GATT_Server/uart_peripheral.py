@@ -73,27 +73,30 @@ lock = threading.Semaphore()
 
 # Tx Characteristic Class
 class TxCharacteristic(Characteristic):
+    '''
+        Enable notification for the TX Characteristic to receive data from the application
+        The application transmits all data that is received over the UART as notifications
+    '''
 
     # Init the Tx Characteristic
     def __init__(self, bus, index, service):
         Characteristic.__init__(self, bus, index, UART_TX_CHARACTERISTIC_UUID,
                                 ['notify'], service)
         self.notifying = False
-        GLib.io_add_watch(sys.stdin, GLib.IO_IN, self.read_Data)
+
+        # Send the data to Smartphone periodically
+        GLib.timeout_add_seconds(2, self.read_Data)
 
 
     # Read the data obtained by the Sensing System
-    def read_Data(self, fd, condition):
+    def read_Data(self):
         '''
             Each message has {ID, Timestamp, obstacle's distance, obstacle's state, User's GPS coodenates}
         '''
 
-        s = fd.readline()
+        global ready_flag
 
-        if s.isspace():
-            pass
-
-        else:
+        if ready_flag == True:
 
             # Lock
             lock.acquire()
@@ -105,12 +108,12 @@ class TxCharacteristic(Characteristic):
                 # Read each line of the text file
                 line = data_file.readlines()
 
-                #for x in line:
+                for x in line:
+
+                    print(x)
 
                     # Send the sensor's data to the smartphone
                     #self.send_Data(x)
-
-                self.send_Data("Irei enviar mensagens para o Smartphone" + "\n")
 
             # Handle IOERROR exception
             except OSError as e:
@@ -119,6 +122,9 @@ class TxCharacteristic(Characteristic):
             # Handle other exceptions such as atribute error
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
+
+
+            data_file.close()
 
             # Unlock
             lock.release()
@@ -157,6 +163,9 @@ class TxCharacteristic(Characteristic):
 
 # Rx Characteristic Class
 class RxCharacteristic(Characteristic):
+    '''
+        Write data to the RX Characteristic to send it on to the UART interface
+    '''
 
     # Init the Rx Characteristic
     def __init__(self, bus, index, service):
