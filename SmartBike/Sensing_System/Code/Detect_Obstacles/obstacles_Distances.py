@@ -502,6 +502,24 @@ class HandlerState(threading.Thread):
                 # Unlock
                 lock.release()
 
+        # Lock
+        lock.acquire()
+
+        try:
+            # Reset the file's data
+            open("/home/pi/SmartBike/Output/detected_obstacles.txt", "w").close()
+
+        # Handle IOERROR exception
+        except OSError as e:
+            print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+        # Handle other exceptions such as atribute error
+        except:
+            print "Unexpected error: ", sys.exc_info()[0]
+
+        # Unlock
+        lock.release()
+
         # Set the status of detection made
         with open("/home/pi/SmartBike/Output/status_obstacles.txt", 'w') as f:
 

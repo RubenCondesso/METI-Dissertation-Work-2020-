@@ -103,17 +103,18 @@ class TxCharacteristic(Characteristic):
 
             try:
                 # Open the file with the sensor's data information
-                data_file = open("/home/pi/SmartBike/Output/status_obstacles.txt")
+                data_file = open("/home/pi/SmartBike/Output/status_obstacles.txt", "r")
 
                 # Read each line of the text file
                 line = data_file.readlines()
 
+                # Reset the file's data -> after being processed and send to Smartphone
+                open("/home/pi/SmartBike/Output/status_obstacles.txt", "w").close()
+
                 for x in line:
 
-                    print(x)
-
                     # Send the sensor's data to the smartphone
-                    #self.send_Data(x)
+                    self.send_Data(x)
 
             # Handle IOERROR exception
             except OSError as e:
@@ -122,9 +123,6 @@ class TxCharacteristic(Characteristic):
             # Handle other exceptions such as atribute error
             except:
                 print "Unexpected error: ", sys.exc_info()[0]
-
-
-            data_file.close()
 
             # Unlock
             lock.release()
@@ -140,12 +138,21 @@ class TxCharacteristic(Characteristic):
 
         value = []
 
-        for c in s:
-            # Add the value received to the dbus
-            value.append(dbus.Byte(c.encode()))
+        try:
+            for c in s:
+                # Add the value received to the dbus
+                value.append(dbus.Byte(c.encode()))
 
-        # Change properties
-        self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
+            # Change properties
+            self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
+
+        # Handle IOERROR exception
+        except OSError as e:
+            print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+        # Handle other exceptions such as atribute error
+        except:
+            print "Unexpected error: ", sys.exc_info()[0]
 
 
     # Start Notify

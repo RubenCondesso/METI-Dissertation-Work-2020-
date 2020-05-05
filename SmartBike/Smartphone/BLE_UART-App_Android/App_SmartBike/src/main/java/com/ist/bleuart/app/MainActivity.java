@@ -58,6 +58,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
@@ -449,9 +454,21 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Called when a remote characteristic changes -> like the RX characteristic
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            // When Smartphone received a message from the Raspberry Pi Zero
+            /*
+                Data received from the Raspberry Pi Zero
+            */
 
             super.onCharacteristicChanged(gatt, characteristic);
+
+            try {
+                // Call method to save the received data
+                saveCAM_Messages(characteristic.getStringValue(0));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Display on the Smartphone's screen
             writeLine("RPi Zero: " + characteristic.getStringValue(0));
         }
     };
@@ -573,5 +590,53 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+/*
+# ------------------------------------------------------------------------------- CAM Module Functions -------------------------------------------------------------------------------------------- #
+*/
+
+    // Check if the Message received from the Raspberry Pi is a CAM Message
+    private void isCAM_Messages(String data){
+
+    }
+
+    // Save the CAM Message received from the Raspberry Pi Zero to a text file
+    private void saveCAM_Messages(String data) throws IOException {
+
+        // Create buffer writer
+        BufferedWriter bufferedWriter = null;
+
+        String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/camMessages.txt";
+
+        // Create file
+        File camFile = new File (filePath);
+
+        // Check if file exists -> if not, create
+        if (camFile.exists() == false){
+            camFile.createNewFile();
+            System.out.println("The CAM File has been created.");
+        }
+        else{
+            System.out.println("The CAM File already exists.");
+        }
+
+        // Always write to a new line in the text file
+        String myData = "\n" + data;
+
+        try{
+            // Save data to the text file -> append data in a new line to the file
+            bufferedWriter = new BufferedWriter(new FileWriter(camFile, true));
+            bufferedWriter.write(myData);
+
+            System.out.println("CAM Message saved.");
+        }
+        catch (FileNotFoundException e){
+            System.out.println("File not Found");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
