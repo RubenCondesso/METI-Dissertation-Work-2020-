@@ -45,6 +45,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -58,9 +59,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -69,6 +72,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 import androidx.core.app.ActivityCompat;
 
@@ -132,6 +136,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     private static final int MY_PERMISSIONS_REQUEST_READ_FINE_LOCATION = 100;
 
+    // Initialize database
+    DataBase_CAM mDatabase;
+
     // OnCreate -> called once to initialize the activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +158,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         messages = (TextView) findViewById(R.id.messages);
         input = (EditText) findViewById(R.id.input);
 
+        mDatabase = new DataBase_CAM(this);
+
         adapter = BluetoothAdapter.getDefaultAdapter();
 
         //mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
@@ -165,6 +174,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
         checkLocation(); //check whether location service is enable or not in your  phone
+
     }
 
     // OnResume -> called right before UI is displayed
@@ -460,13 +470,13 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             super.onCharacteristicChanged(gatt, characteristic);
 
-            try {
-                // Call method to save the received data
-                saveCAM_Messages(characteristic.getStringValue(0));
+            // Message received from the Raspberry Pi Zero
+            String message = characteristic.getStringValue(0);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // Call method to add the received data
+            addData(message);
+
+            populateDatabaseView();
 
             // Display on the Smartphone's screen
             writeLine("RPi Zero: " + characteristic.getStringValue(0));
@@ -600,6 +610,37 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     }
 
+    // Save the CAM Message received from the Raspberry Pi Zero to the database
+    public void addData(String newEntry){
+        boolean insertData = mDatabase.addData(newEntry);
+
+        if (insertData){
+            System.out.println("Data successfully inserted!");
+        }
+        else{
+            System.out.println("Data was not inserted on the data base. Something went wrong!");
+        }
+    }
+
+    // Get the data presented on the database
+    public void populateDatabaseView(){
+        Log.d(TAG, "populateDatabaseView: Displaying data in the database");
+
+        // Get the data and append to a list
+        Cursor data = mDatabase.getData();
+        ArrayList<String> listData = new ArrayList<>();
+        while (data.moveToNext()){
+            // Get the value from the database in column 1
+            // then add it to the ArrayList
+            listData.add(data.getString(1));
+        }
+
+        for (String el: listData){
+            System.out.println(el);
+        }
+    }
+
+    /*
     // Save the CAM Message received from the Raspberry Pi Zero to a text file
     private void saveCAM_Messages(String data) throws IOException {
 
@@ -638,5 +679,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+     */
 
 }
