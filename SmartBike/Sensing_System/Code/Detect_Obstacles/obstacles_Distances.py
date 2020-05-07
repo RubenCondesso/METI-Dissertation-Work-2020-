@@ -174,7 +174,7 @@ class Ultrasonic_Sensor(threading.Thread):
                 gps_coordenates = self.setGPS_Coordenates(uart_peripheral.array_GPS, present_timestamp)
 
                 # Add this distance to the text file
-                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordenates: " + str(gps_coordenates[0]) + "\n")
+                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordinates: " + str(gps_coordenates[0]) + "\n")
 
                 #print("Obstacle detected")
 

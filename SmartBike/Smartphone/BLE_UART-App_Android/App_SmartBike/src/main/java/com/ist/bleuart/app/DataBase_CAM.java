@@ -10,7 +10,7 @@
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# Java class that sets up the SQLite database to store the CAM messages received from the Raspberry Pi Zero
+# Java class that sets up the SQLite database to store the CAM messages (Periodically Messages) received from the Raspberry Pi Zero
 #
 #
 # */

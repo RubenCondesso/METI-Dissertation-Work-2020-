@@ -225,6 +225,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        
         switch (requestCode) {
             case 200: {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -290,6 +291,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+
         Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
     }
 
@@ -298,6 +300,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      */
     @Override
     protected void onStart() {
+
         super.onStart();
 
         // Start the Google API
@@ -598,6 +601,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      * @param text - Message that contains the data to be written
      */
     private void writeLine(final CharSequence text) {
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -611,6 +615,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      * Work around function from the SO thread to manually parse advertisement data
      */
     private List<UUID> parseUUIDs(final byte[] advertisedData) {
+
         List<UUID> uuids = new ArrayList<UUID>();
 
         int offset = 0;
@@ -676,18 +681,29 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 */
 
     /**
-     * Check if the Message received from the Raspberry Pi is a CAM Message
+     * Check if the Message received from the Raspberry Pi is a CAM's type of Message
      * @param data - String that refers to the message received
+     * @return true if Message is CAM's type -> it has that exact structure: ID, Timestamp, Obstacle Distance, State and GPS Coordinates
+     * @return false if not
      */
-    private void isCAM_Messages(String data){
-    }
+    private boolean isCAM_Messages(String data){
 
+        // Split string by spaces
+        String[] splitStr = data.split("\\s+");
+
+        // Check if message received has this exact structure
+        if (splitStr[0].equals("ID:") || splitStr[3].equals("Timestamp:") || splitStr[9].equals("Obstacle") || splitStr[10].equals("distance:") || splitStr[13].equals("State:") || splitStr[16].equals("GPS") || splitStr[17].equals("Coordinates:")){
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Stores the CAM Message received from the Raspberry Pi Zero to the SQLite database
      * @param newEntry - Entry on the SQLite Database
      */
     public void addData(String newEntry){
+
         boolean insertData = mDatabase.addData(newEntry);
 
         if (insertData){
@@ -702,6 +718,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      * Get the data presented on the SQLite Database
      */
     public void populateDatabaseView(){
+
         Log.d(TAG, "populateDatabaseView: Displaying data in the database");
 
         // Get the data and append to a list
