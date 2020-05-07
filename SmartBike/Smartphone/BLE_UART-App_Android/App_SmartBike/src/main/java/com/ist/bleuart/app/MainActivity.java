@@ -2,7 +2,7 @@
 #
 # MainActivity.java - Java Class of Android App
 #
-# 26 March 2020 - 2.0
+# 7th May 2020 - 3.0
 # 
 # Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -10,11 +10,13 @@
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 # 
-# Java class that represents the main activity of the App
+# Java class that represents the main activity of the SmartBike's app
 #
 # Sends and receives data to a Bluetooth Low Energy UART service, which is running on the Raspberry Pi Zero (BLE GATT Server)
 #
 # Tracks the user's location in time -> GPS coordinates
+#
+# Stores some type of messages received from the Raspberry Pi Zero on a SQLite Database -> CAM Messages
 #
 # */ 
 
@@ -88,7 +90,7 @@ import java.util.Calendar;
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 */
 
-// Main activity of the App
+// Main Activity of the SmartBike's Application
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     // UUIDs for UAT service and associated characteristics
@@ -136,10 +138,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     private static final int MY_PERMISSIONS_REQUEST_READ_FINE_LOCATION = 100;
 
-    // Initialize database
+    // Initialize sql database
     DataBase_CAM mDatabase;
 
-    // OnCreate -> called once to initialize the activity
+    /**
+     *  Called when the activity starts for the first time
+     *  Initialize the needed methods and variables
+     * @param savedInstanceState - Locale-specific object
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -173,12 +179,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
-        checkLocation(); //check whether location service is enable or not in your  phone
+        checkLocation();
 
     }
 
-    // OnResume -> called right before UI is displayed
-    // Start the BLE connection
+    /**
+     *  Called right before UI is displayed
+     *  Start the BLE connection
+     */
     @Override
     protected void onResume() {
 
@@ -190,8 +198,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         adapter.startLeScan(scanCallback);
     }
 
-    // OnStop _> called right before the activity loses foreground focus
-    // Close the BLE connection
+    /**
+     *  Called right before the activity loses foreground focus
+     *  Close the BLE connection
+     */
     @Override
     protected void onStop() {
 
@@ -210,6 +220,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+    /**
+     *  Check the user's permissions to this application -> Location
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -226,7 +239,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 # ------------------------------------------------------------------------------------ GPS Functions -------------------------------------------------------------------------------------------- #
 */
 
-    // When the device is connected on the app
+    /**
+     *  Called  when the device is connected on the application
+     *  Start checking the location of the Smartphone
+     *  Check the application has the needed permissions
+     * @param bundle - Locale-specific object
+     */
     @Override
     public void onConnected(Bundle bundle) {
 
@@ -241,7 +259,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Get current location
         mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if(mLocation == null){
+        if (mLocation == null){
 
             startLocationUpdates();
         }
@@ -257,18 +275,27 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+    /**
+     *  Called  when the BLE connection is suspended
+     */
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Connection Suspended");
         mGoogleApiClient.connect();
     }
 
+    /**
+     *  Called  when the BLE connection failed
+     * @param connectionResult - Result of the current connection
+     */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
     }
 
-    // When app is started
+    /**
+     *  Called  when the BLE connection starts
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -279,7 +306,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    // Update the device's location (GPS Coordinates) in time
+    /**
+     *  Update the device's location (GPS Coordinates) periodically (one second)
+     */
     protected void startLocationUpdates() {
 
         // Create the location request
@@ -297,11 +326,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         // Get the updated location of the device
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-
-        Log.d("reque", "--->>>>");
     }
 
-    // Location has changed
+    /**
+     *  Get the (current) changed location of the Smartphone
+     *  Associate with the current timestamp
+     *  Send new location to the Raspberry Pi Zero (GATT Server)
+     * @param location - Location of the Smartphone
+     */
     @Override
     public void onLocationChanged(Location location) {
 
@@ -344,7 +376,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    // Check location
+    /**
+     *  Check location
+     * @return result of the check to the location
+     */
     private boolean checkLocation() {
 
         if(!isLocationEnabled())
@@ -352,6 +387,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         return isLocationEnabled();
     }
 
+    /**
+     *  Shows alerts
+     */
     private void showAlert() {
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -375,7 +413,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         dialog.show();
     }
 
-    // Check if location is enabled
+    /**
+     *  Check if the location is enabled
+     * @return result of if location is enabled (or not)
+     */
     private boolean isLocationEnabled() {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -389,10 +430,15 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 # ------------------------------------------------------------------------------------ BLE Functions -------------------------------------------------------------------------------------------- #
 */
 
-    // BLE device callbacks -> Handles the main logic of this class
+    /**
+     *  BLE device callbacks -> Handles the main logic of this class
+     */
     private BluetoothGattCallback callback = new BluetoothGattCallback() {
 
-        // Function called whenever the device connection state changes -> from disconnected state to connected state
+        /**
+         *  Called whenever the device connection state changes -> from disconnected state to connected state
+         * @param gatt - Object to the BLE Connection
+         */
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 
@@ -421,7 +467,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             }
         }
 
-        // Function called when service have been discovered on the remote device (Raspberry Pi Zero)
+        /**
+         *  Called when UART Service have been discovered on the remote device (Raspberry Pi Zero -> GATT Server)
+         *  @param gatt - Object to the BLE Connection
+         */
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
@@ -461,11 +510,15 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             }
         }
 
-        // Called when a remote characteristic changes -> like the RX characteristic
+        /**
+         *  Called when a remote characteristic changes -> like the RX characteristic
+         *  @param gatt - Object to the BLE Connection
+         *  @param characteristic - Characteristic that changed
+         */
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             /*
-                Data received from the Raspberry Pi Zero
+                Data received from the Raspberry Pi Zero (GATT Server)
             */
 
             super.onCharacteristicChanged(gatt, characteristic);
@@ -483,10 +536,16 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     };
 
-    // BLE device scanning callback
+    /**
+     *  BLE device scanning callback
+     */
     private LeScanCallback scanCallback = new LeScanCallback() {
 
-        // Function called when the GATT Server (RPi Zero) is found
+        /**
+         *  Called when the Raspberry Pi Zero (GATT Server) is found
+         *  @param bluetoothDevice - Bluetooth device present on the connection
+         *
+         */
         @Override
         public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
 
@@ -507,7 +566,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     };
 
-    // Handler for click on the send button
+    /**
+     *  Handler for click on the send button
+     *  @param view - Object that refers to action of clicking on button
+     */
     public void sendClick(View view) {
 
         String message = input.getText().toString();
@@ -530,8 +592,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    // Write data to the messages text view
-    // Care is taken to do this on the main UI thread so writeLine can be called from any thread (like the BLE callback)
+    /**
+     * Write data to the messages text view
+     * Care is taken to do this on the main UI thread so writeLine can be called from any thread (like the BLE callback)
+     * @param text - Message that contains the data to be written
+     */
     private void writeLine(final CharSequence text) {
         runOnUiThread(new Runnable() {
             @Override
@@ -542,7 +607,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         });
     }
 
-    // Work around function from the SO thread to manually parse advertisement data
+    /**
+     * Work around function from the SO thread to manually parse advertisement data
+     */
     private List<UUID> parseUUIDs(final byte[] advertisedData) {
         List<UUID> uuids = new ArrayList<UUID>();
 
@@ -592,7 +659,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         return uuids;
     }
 
-    // Boilerplate code from the activity creation
+    /**
+     * Boilerplate code from the activity creation
+     * @param menu - Object that refers to menu of the SmartBike's application
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -605,12 +675,18 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 # ------------------------------------------------------------------------------- CAM Module Functions -------------------------------------------------------------------------------------------- #
 */
 
-    // Check if the Message received from the Raspberry Pi is a CAM Message
+    /**
+     * Check if the Message received from the Raspberry Pi is a CAM Message
+     * @param data - String that refers to the message received
+     */
     private void isCAM_Messages(String data){
-
     }
 
-    // Save the CAM Message received from the Raspberry Pi Zero to the database
+
+    /**
+     * Stores the CAM Message received from the Raspberry Pi Zero to the SQLite database
+     * @param newEntry - Entry on the SQLite Database
+     */
     public void addData(String newEntry){
         boolean insertData = mDatabase.addData(newEntry);
 
@@ -622,7 +698,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    // Get the data presented on the database
+    /**
+     * Get the data presented on the SQLite Database
+     */
     public void populateDatabaseView(){
         Log.d(TAG, "populateDatabaseView: Displaying data in the database");
 
@@ -639,46 +717,4 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             System.out.println(el);
         }
     }
-
-    /*
-    // Save the CAM Message received from the Raspberry Pi Zero to a text file
-    private void saveCAM_Messages(String data) throws IOException {
-
-        // Create buffer writer
-        BufferedWriter bufferedWriter = null;
-
-        String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/camMessages.txt";
-
-        // Create file
-        File camFile = new File (filePath);
-
-        // Check if file exists -> if not, create
-        if (camFile.exists() == false){
-            camFile.createNewFile();
-            System.out.println("The CAM File has been created.");
-        }
-        else{
-            System.out.println("The CAM File already exists.");
-        }
-
-        // Always write to a new line in the text file
-        String myData = "\n" + data;
-
-        try{
-            // Save data to the text file -> append data in a new line to the file
-            bufferedWriter = new BufferedWriter(new FileWriter(camFile, true));
-            bufferedWriter.write(myData);
-
-            System.out.println("CAM Message saved.");
-        }
-        catch (FileNotFoundException e){
-            System.out.println("File not Found");
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-     */
-
 }
