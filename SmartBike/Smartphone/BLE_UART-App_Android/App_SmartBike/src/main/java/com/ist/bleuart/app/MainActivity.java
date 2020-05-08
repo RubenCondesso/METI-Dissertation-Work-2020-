@@ -225,7 +225,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        
+
         switch (requestCode) {
             case 200: {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -529,10 +529,15 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             // Message received from the Raspberry Pi Zero
             String message = characteristic.getStringValue(0);
 
-            // Call method to add the received data
-            addData(message);
+            // If the messages is CAM's type
+            if (isCAM_Messages(message)){
 
-            populateDatabaseView();
+                // Call method to add the received data
+                addData(message);
+
+                // Display data stored on the CAM Database
+                populateDatabaseView();
+            }
 
             // Display on the Smartphone's screen
             writeLine("RPi Zero: " + characteristic.getStringValue(0));
