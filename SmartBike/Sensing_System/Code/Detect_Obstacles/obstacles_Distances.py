@@ -275,11 +275,10 @@ class Ultrasonic_Sensor(threading.Thread):
                     speed = int(distance_total) / (float(time_total))
 
                     # Get prediction of the user's location
-                    self.predict_location(gpsDeque, speed, time_total)
+                    return self.predict_location(gpsDeque, speed, time_total)
 
             count += 1
 
-        return None
 
 
     # Difference between two datetime objects in seconds

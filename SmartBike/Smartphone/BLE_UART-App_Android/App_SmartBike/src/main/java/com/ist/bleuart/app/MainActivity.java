@@ -112,6 +112,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private BluetoothGattCharacteristic rx;
 
     private static final String TAG = "MainActivity";
+    private static final String ADD = "Add Data to SQLite Database";
+    private static final String RESULT = "DEN Message Result";
 
     // Textview to display on the screen
     //private TextView mLatitudeTextView;
@@ -194,7 +196,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         // Scan for all BLE devices
         // The first one with the UART service (RPi Zero) will be chosen
-        writeLine("Scanning for devices...");
+        writeLine("Scanning for Bluetooth devices...");
+
         adapter.startLeScan(scanCallback);
     }
 
@@ -529,14 +532,24 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             // Message received from the Raspberry Pi Zero
             String message = characteristic.getStringValue(0);
 
-            // If the messages is CAM's type
+            // Check if is necessary to send a DEN Message
+            try {
+                boolean result = isDEN_Messages();
+                if (result){
+                    Log.d(RESULT, "DEN Message will be sent -> an obstacle is to close to the user");
+                }
+                else{
+                    Log.d(RESULT, "It is not necessary to a send DEN Message.");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Check if the messages is the CAM's type
             if (isCAM_Messages(message)){
 
                 // Call method to add the received data
                 addData(message);
-
-                // Display data stored on the CAM Database
-                populateDatabaseView();
             }
 
             // Display on the Smartphone's screen
@@ -712,10 +725,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         boolean insertData = mDatabase.addData(newEntry);
 
         if (insertData){
-            System.out.println("Data successfully inserted!");
+            Log.d(ADD, "Data successfully inserted!");
         }
         else{
-            System.out.println("Data was not inserted on the data base. Something went wrong!");
+            Log.d(ADD, "Data was not inserted on the data base. Something went wrong!");
         }
     }
 
@@ -739,4 +752,21 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             System.out.println(el);
         }
     }
+
+/*
+# ------------------------------------------------------------------------------- DEN Module Functions -------------------------------------------------------------------------------------------- #
+*/
+
+    /**
+     * Check if DEN message is needed to be sent (and alert the user) -> An obstacle is very close to the user
+     * @return true if so
+     * @return false if not
+     */
+    private boolean isDEN_Messages() throws InterruptedException {
+
+        boolean result = mDatabase.checkDEN();
+        return result;
+    }
+
+
 }
