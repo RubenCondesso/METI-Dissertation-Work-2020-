@@ -57,6 +57,7 @@ import android.util.Log;
 import android.view.Menu;
 
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -141,7 +142,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private static final int MY_PERMISSIONS_REQUEST_READ_FINE_LOCATION = 100;
 
     // Initialize sql database
-    DataBase_CAM mDatabase;
+    SQLite_Database mDatabase;
 
     /**
      *  Called when the activity starts for the first time
@@ -153,6 +154,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Keep the screen on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // check the user's permissions
         boolean permissionGranted = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -166,7 +170,10 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         messages = (TextView) findViewById(R.id.messages);
         input = (EditText) findViewById(R.id.input);
 
-        mDatabase = new DataBase_CAM(this);
+        mDatabase = new SQLite_Database(this);
+
+        // Clear database when app starts -> is optional
+        mDatabase.clearDataBase("Data_table");
 
         adapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -413,7 +420,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-
                     }
                 });
         dialog.show();
@@ -535,6 +541,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             // Check if is necessary to send a DEN Message
             try {
                 boolean result = isDEN_Messages();
+
                 if (result){
                     Log.d(RESULT, "DEN Message will be sent -> an obstacle is to close to the user");
                 }
@@ -550,6 +557,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
                 // Call method to add the received data
                 addData(message);
+
+                // Just for debug
+                populateDatabaseView();
             }
 
             // Display on the Smartphone's screen
@@ -732,26 +742,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    /**
-     * Get the data presented on the SQLite Database
-     */
-    public void populateDatabaseView(){
-
-        Log.d(TAG, "populateDatabaseView: Displaying data in the database");
-
-        // Get the data and append to a list
-        Cursor data = mDatabase.getData();
-        ArrayList<String> listData = new ArrayList<>();
-        while (data.moveToNext()){
-            // Get the value from the database in column 1
-            // then add it to the ArrayList
-            listData.add(data.getString(1));
-        }
-
-        for (String el: listData){
-            System.out.println(el);
-        }
-    }
 
 /*
 # ------------------------------------------------------------------------------- DEN Module Functions -------------------------------------------------------------------------------------------- #
@@ -769,4 +759,51 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
 
+/*
+# ------------------------------------------------------------------------------- Populate View Functions -------------------------------------------------------------------------------------------- #
+*/
+
+    /**
+     * Get the Data presented on the SQLite Database, in each column
+     * For debug purposes
+     */
+    public void populateDatabaseView(){
+
+        Log.d(TAG, "populateDatabaseView: Displaying data of the database");
+
+        // Get the data and append to a list
+        Cursor data = mDatabase.getData();
+
+        ArrayList<String> listID = new ArrayList<>();
+        ArrayList<String> listTime = new ArrayList<>();
+        ArrayList<String> listDistance = new ArrayList<>();
+        ArrayList<String> listState = new ArrayList<>();
+        ArrayList<String> listGPS = new ArrayList<>();
+
+        while (data.moveToNext()){
+            // Get the value from the database in each column
+            // then add it to the respective ArrayList
+            listID.add(data.getString(1));
+            listTime.add(data.getString(2));
+            listDistance.add(data.getString(3));
+            listState.add(data.getString(4));
+            listGPS.add(data.getString(5));
+        }
+
+        for (String el: listID){
+            System.out.println("Database - ID: " + el);
+        }
+        for (String el: listTime){
+            System.out.println("Database - Timestamp: " + el);
+        }
+        for (String el: listDistance){
+            System.out.println("Database - Distance: " + el);
+        }
+        for (String el: listState){
+            System.out.println("Database - State: " + el);
+        }
+        for (String el: listGPS){
+            System.out.println("Database - GPS: " + el);
+        }
+    }
 }

@@ -195,7 +195,7 @@ class RxCharacteristic(Characteristic):
     # Analyse each message received from the Smartphone
     def analyze_Message(self, msg):
         '''
-            Check what type of message it was received: GPS coordenates, Start the obstacle detection, other types
+            Check if a GPS coordenates was received; Start the obstacle detection when ready
         '''
 
         global ready_flag
