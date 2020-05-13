@@ -154,59 +154,69 @@ public class SQLite_Database extends SQLiteOpenHelper {
         return data;
     }
 
+    /**
+     * Reset the SQLite Database
+     */
+    public void clearDataBase(String name){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM " + name;
+        db.execSQL(deleteQuery);
+    }
 
     /**
      *  Set up Thread that constantly read the data presented on the SQLite Database
      */
-    public void loadData() throws InterruptedException {
+    private void loadData() throws InterruptedException {
 
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                checkDEN();
+                check_Distances();
             };
         });
 
         // Start thread
         t.start();
     }
+/*
+# ------------------------------------------------------------------------------- Auxiliary Functions -------------------------------------------------------------------------------------------- #
+*/
 
     /**
-     *  Constantly read the distances presented on the SQLite Database
-     *  If distances are to low (obstacle is to close to user), give alert -> DEN Message
-     * @return true if is necessary to send DEN Message
-     * @return false if is not
+     *  Gives the distances to the obstacle, presented in the SQLite Database
+     * @return ArrayList with the stored distances
      */
-    public boolean checkDEN(){
+    public ArrayList<String> check_Distances(){
 
         Cursor data = getData();
-        ArrayList<String> listData = new ArrayList<>();
-
-        // Keyword -> Obstacle is on the move
-        String keyword_State = "Moving";
-        // Keyword -> Distance
-        String keyword_Distance = "distance:";
+        ArrayList<String> listDistance = new ArrayList<>();
 
         while (data.moveToNext()){
-            // Get the value from the database in column 1 (data)
-            // then add it to the ArrayList
-            listData.add(data.getString(1));
+            // Get the value from the database in column 3 -> distances to the obstacle
+            // then add it to the respective ArrayList
+            listDistance.add(data.getString(3));
         }
-        for (String el: listData){
-            Boolean stateObstacle = Arrays.asList(el.split(" ")).contains(keyword_State);
-
-            if(stateObstacle){
-                String obstacleDistance = getNextWord(el, keyword_Distance);
-
-                if (obstacleDistance != null){
-
-                    float distance = Float.parseFloat(obstacleDistance);
-                    return check_Distance(distance);
-                }
-            }
-        }
-        return false;
+        return listDistance;
     }
+
+    /**
+     *  Gives the obstacle's state presented in the SQLite Database
+     * @return ArrayList with the stored distances
+     */
+    public ArrayList<String> check_State(){
+
+        Cursor data = getData();
+        ArrayList<String> listState = new ArrayList<>();
+
+        while (data.moveToNext()){
+            // Get the value from the database in column 3 -> Obstacle's state
+            // then add it to the respective ArrayList
+            listState.add(data.getString(4));
+        }
+        return listState;
+    }
+
 
     /**
      * Get word after a specific word in a String
@@ -221,29 +231,5 @@ public class SQLite_Database extends SQLiteOpenHelper {
             return strArr[0];
         }
         return null;
-    }
-
-    /**
-     * Check if a distance is too danger to the user
-     * @return true if so
-     * @return false if not
-     */
-    private static Boolean check_Distance(float distance){
-
-        // Check if the obstacle is up to 5 meters at distance
-        if (distance > 0 && distance < 5){
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Reset the SQLite Database
-     */
-    public void clearDataBase(String name){
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        String deleteQuery = "DELETE FROM " + name;
-        db.execSQL(deleteQuery);
     }
 }

@@ -73,7 +73,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
@@ -457,7 +459,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             super.onConnectionStateChange(gatt, status, newState);
 
             String msgReady = "Ready";
-            String msgEnd = "END";
+            String msgEnd = "End";
 
             // Different states that can exist or change to
             if (newState == BluetoothGatt.STATE_CONNECTED) {
@@ -544,6 +546,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
                 if (result){
                     Log.d(RESULT, "DEN Message will be sent -> an obstacle is to close to the user");
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Pop up alert window
+                            alertUser();
+                        }
+                    });
                 }
                 else{
                     Log.d(RESULT, "It is not necessary to a send DEN Message.");
@@ -559,7 +569,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 addData(message);
 
                 // Just for debug
-                populateDatabaseView();
+                //populateDatabaseView();
             }
 
             // Display on the Smartphone's screen
@@ -749,18 +759,57 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     /**
      * Check if DEN message is needed to be sent (and alert the user) -> An obstacle is very close to the user
-     * @return true if so
+     * @return true if distance to the obstacle is between 0 and 10 meters
      * @return false if not
      */
     private boolean isDEN_Messages() throws InterruptedException {
 
-        boolean result = mDatabase.checkDEN();
-        return result;
+        // Array with the distances to the obstacle presented in the SQLite Database
+        ArrayList<String> result_distances = mDatabase.check_Distances();
+
+        // Array with the obstacle's state presented in the SQLite Database
+        ArrayList<String> result_state = mDatabase.check_State();
+
+        for(int index = 0; index < result_distances.size(); index ++){
+
+            String temp_state = result_state.get(index);
+
+            // Check the state of the obstacle
+            if (temp_state.equals("Moving")){
+
+                // Convert string to float
+                float dist = Float.valueOf(result_distances.get(index));
+
+                // Check if distance is to close to the user
+                if (dist > 0 && dist < 10){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Alert the user about the proximity of an obstacle -> pop an alert text window on the Smartphone
+     */
+    private void alertUser(){
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("ALERT!! Obstacle detected!")
+                .setMessage("An obstacle was detected in your rear that can endanger you.")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+
+        dialog.show();
     }
 
 
 /*
-# ------------------------------------------------------------------------------- Populate View Functions -------------------------------------------------------------------------------------------- #
+# ------------------------------------------------------------------------------- Populate View Function -------------------------------------------------------------------------------------------- #
 */
 
     /**

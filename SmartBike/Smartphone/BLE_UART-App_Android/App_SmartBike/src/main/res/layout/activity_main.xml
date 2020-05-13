@@ -68,41 +68,6 @@
             android:textSize="12sp"
             android:textStyle="bold" />
     </ScrollView>
-
-    <!-- <TextView
-        android:id="@+id/latitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="100dp"
-        android:text="Latitude:"
-        android:textSize="15sp" />
-    <TextView
-        android:id="@+id/latitude_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/latitude"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/latitude"
-        android:textSize="12sp" />
-    <TextView
-        android:id="@+id/longitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="Longitude:"
-        android:layout_marginTop="130dp"
-        android:textSize="15sp" />
-    <TextView
-        android:id="@+id/longitude_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/longitude"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/longitude"
-        android:textSize="12sp"/>
-    -->
-
 </RelativeLayout>
+
+
