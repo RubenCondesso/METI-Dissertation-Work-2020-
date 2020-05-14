@@ -1,8 +1,10 @@
 # Master Thesis in Telecommunications and Computer Engineering
 
-SmartBike System 
+SmartBike System - Safety system for drivers of non-motorised vehicles
 
-## Ruben Condesso
+This work aims to improve road safety by providing to the cyclist the perception of the surrounding environment and advertisement other drivers about his presence.
 
-### Masters Bologna in Telecommunications and Informatics Engineering 
-### 2nd Semester, 2019/2020 - Instituto Superior Técnico
+### Ruben Condesso
+
+##### Masters Bologna in Telecommunications and Informatics Engineering 
+##### 2nd Semester, 2019/2020 - INESC-ID/Instituto Superior Tecnico/Universidade de Lisboa
