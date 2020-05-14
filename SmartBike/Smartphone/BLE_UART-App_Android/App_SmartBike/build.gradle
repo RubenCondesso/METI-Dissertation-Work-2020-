@@ -21,4 +21,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.google.android.gms:play-services:9.0.2'
+
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }

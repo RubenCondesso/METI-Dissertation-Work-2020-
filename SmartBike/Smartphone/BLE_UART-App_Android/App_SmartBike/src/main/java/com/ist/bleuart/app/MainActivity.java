@@ -48,17 +48,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +84,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -790,21 +797,32 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     /**
-     * Alert the user about the proximity of an obstacle -> pop an alert text window on the Smartphone
+     * Alert the user about the proximity of an obstacle -> pop an alert dialog on the Smartphone
      */
     private void alertUser(){
 
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("ALERT!! Obstacle detected!")
-                .setMessage("An obstacle was detected in your rear that can endanger you.")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    }
-                });
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(MainActivity.this).inflate(
+                R.layout.layout_warning_dialog, (ConstraintLayout)findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(getResources().getString(R.string.alert));
+        ((TextView) view.findViewById(R.id.textMessage)).setText(getResources().getString(R.string.alertMsg));
+        ((Button) view.findViewById(R.id.buttonAction)).setText(getResources().getString(R.string.ok));
+        ((ImageView) view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_warning);
 
-        dialog.show();
+        final AlertDialog alertDialog = builder.create();
+        view.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 
 

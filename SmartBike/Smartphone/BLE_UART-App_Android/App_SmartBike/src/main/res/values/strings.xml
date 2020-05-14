@@ -5,4 +5,9 @@
     <string name="location">Location</string>
     <string name="bluetooth">Bluetooth</string>
 
+    <string name="warning_title">This is a warning title</string>
+    <string name="alert">ALERT!! Obstacle detected!</string>
+    <string name="alertMsg">An obstacle was detected in your rear that can endanger you.</string>
+    <string name="ok">Ok</string>
+
 </resources>
