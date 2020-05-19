@@ -74,8 +74,9 @@ lock = threading.Semaphore()
 # Tx Characteristic Class
 class TxCharacteristic(Characteristic):
     '''
-        Enable notification for the TX Characteristic to receive data from the application
-        The application transmits all data that is received over the UART as notifications
+        It has the write permission enable so a client can write data
+        The client can send data to the device by writting to the TX Characteristic of the Service
+        The data is sent out on the UART interface
     '''
 
     # Init the Tx Characteristic
@@ -88,7 +89,7 @@ class TxCharacteristic(Characteristic):
         GLib.timeout_add_seconds(2, self.read_Data)
 
 
-    # Read the data obtained by the Sensing System
+    # Read the data obtained by the Sensing System from the text file
     def read_Data(self):
         '''
             Each message has {ID, Timestamp, obstacle's distance, obstacle's state, User's GPS coodenates}
@@ -171,7 +172,9 @@ class TxCharacteristic(Characteristic):
 # Rx Characteristic Class
 class RxCharacteristic(Characteristic):
     '''
-        Write data to the RX Characteristic to send it on to the UART interface
+        Read the data received from the application
+        Notifications is enabled for the RX Characteristic- > the application can send data to the peer as notifications
+        The application will transmit all data received over UART as notifications
     '''
 
     # Init the Rx Characteristic
