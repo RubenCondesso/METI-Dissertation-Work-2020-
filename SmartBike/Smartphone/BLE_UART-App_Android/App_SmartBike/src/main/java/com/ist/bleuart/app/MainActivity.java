@@ -145,8 +145,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     // Receives notifications from the api when the location has changed
     private com.google.android.gms.location.LocationListener listener;
 
-    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    // Time interval between location requests -> 5 seconds
+    private long UPDATE_INTERVAL = 2 * 500;
+
+    // Fastest time interval between location requests -> 1 second
+    private long FASTEST_INTERVAL = 1000;
 
     private static final int MY_PERMISSIONS_REQUEST_READ_FINE_LOCATION = 100;
 
