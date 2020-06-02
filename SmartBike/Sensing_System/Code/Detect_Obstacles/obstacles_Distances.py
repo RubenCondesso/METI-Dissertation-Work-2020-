@@ -2,7 +2,7 @@
 #
 # obstacles_Distances.py - Ultrasonic Sensor Class for the Raspberry Pi Zero
 #
-# 17 april April 2020 - 3.0
+# 17 April 2020 - 3.0
 #
 # Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -556,7 +556,6 @@ def main():
         # Create the file for measures
         file_create = open("/home/pi/SmartBike/Output/detected_obstacles.txt","w+")
         file_create.close()
-
 
     # Run the ultrasonic sensor wtih this GPIO pins: Trigger - 18 & Echo - 24
     sensor = Ultrasonic_Sensor(18, 24)
