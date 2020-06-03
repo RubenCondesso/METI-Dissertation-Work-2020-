@@ -13,11 +13,16 @@
 #
 # Obstacle (wall) is immobile and at 150cm from the sensor
 #
+# Ultrasonic sensor is 1 meter high -> about the height of a bicycle
+#
+# The wall is 3.20 x 2.50 meters
+#
+# The mean, variance and standard variation of the collected values are calculated
+#
 
-# =================================================================================== Code starts here ===================================================================================== #
 
+# =================================================================================== Output starts here ===================================================================================== #
 
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:49:46 | Obstacle distance: 150.54 | State: Moving | GPS Coordinates: 38.7366814,-9.3089568
 ID: 192.168.0.1 | Timestamp: 02 6 2020 17:49:47 | Obstacle distance: 150.47 | State: Immobile | GPS Coordinates: 38.7366818,-9.3089564
 ID: 192.168.0.1 | Timestamp: 02 6 2020 17:49:48 | Obstacle distance: 150.81 | State: Immobile | GPS Coordinates: 38.7366818,-9.3089563
 ID: 192.168.0.1 | Timestamp: 02 6 2020 17:49:50 | Obstacle distance: 150.5 | State: Immobile | GPS Coordinates: 38.7366819,-9.3089563
@@ -58,32 +63,20 @@ ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:25 | Obstacle distance: 150.57 | St
 ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:26 | Obstacle distance: 60.08 | State: Moving | GPS Coordinates: 38.7366831,-9.3089591
 ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:27 | Obstacle distance: 150.54 | State: Moving | GPS Coordinates: 38.7366831,-9.3089594
 ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:28 | Obstacle distance: 251.78 | State: Moving | GPS Coordinates: 38.7366831,-9.3089594
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:29 | Obstacle distance: 150.36 | State: Moving | GPS Coordinates: 38.7366832,-9.3089593
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:30 | Obstacle distance: 187.74 | State: Moving | GPS Coordinates: 38.7366832,-9.3089593
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:31 | Obstacle distance: 150.34 | State: Moving | GPS Coordinates: 38.7366832,-9.3089592
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:32 | Obstacle distance: 119.76 | State: Moving | GPS Coordinates: 38.7366832,-9.3089592
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:34 | Obstacle distance: 150.41 | State: Moving | GPS Coordinates: 38.7366832,-9.3089592
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:35 | Obstacle distance: 260.41 | State: Moving | GPS Coordinates: 38.7366832,-9.3089592
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:36 | Obstacle distance: 150.48 | State: Moving | GPS Coordinates: 38.7366832,-9.3089592
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:37 | Obstacle distance: 150.43 | State: Immobile | GPS Coordinates: 38.7366832,-9.3089593
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:38 | Obstacle distance: 150.34 | State: Immobile | GPS Coordinates: 38.7366832,-9.3089593
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:39 | Obstacle distance: 150.95 | State: Immobile | GPS Coordinates: 38.7366832,-9.3089593
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:40 | Obstacle distance: 151.05 | State: Immobile | GPS Coordinates: 38.7366832,-9.3089593
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:41 | Obstacle distance: 150.52 | State: Immobile | GPS Coordinates: 38.7366833,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:42 | Obstacle distance: 150.64 | State: Immobile | GPS Coordinates: 38.7366833,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:43 | Obstacle distance: 281.16 | State: Moving | GPS Coordinates: 38.7366833,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:44 | Obstacle distance: 150.47 | State: Moving | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:45 | Obstacle distance: 150.47 | State: Immobile | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:46 | Obstacle distance: 150.42 | State: Immobile | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:47 | Obstacle distance: 229.18 | State: Moving | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:48 | Obstacle distance: 150.57 | State: Moving | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:49 | Obstacle distance: 150.54 | State: Immobile | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:50 | Obstacle distance: 150.52 | State: Immobile | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:51 | Obstacle distance: 150.83 | State: Immobile | GPS Coordinates: 38.7366834,-9.308959
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:52 | Obstacle distance: 150.55 | State: Immobile | GPS Coordinates: 38.7366834,-9.26805802954
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:53 | Obstacle distance: 150.6 | State: Immobile | GPS Coordinates: 38.7366835,-9.3089587
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:54 | Obstacle distance: 150.98 | State: Immobile | GPS Coordinates: 38.7366835,-9.3089587
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:55 | Obstacle distance: 150.65 | State: Immobile | GPS Coordinates: 38.7366835,-9.3089587
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:56 | Obstacle distance: 150.4 | State: Immobile | GPS Coordinates: 38.7366835,-9.3089587
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:57 | Obstacle distance: 151.07 | State: Immobile | GPS Coordinates: 38.7366835,-9.3089587
-ID: 192.168.0.1 | Timestamp: 02 6 2020 17:50:58 | Obstacle distance: 152.47 | State: Immobile | GPS Coordinates: 38.7366835,-9.2680577335
+
+
+# =================================================================================== Results ===================================================================================== #
+
+Time interval: 17:49:47 - 17:50:28 -> 0.81 minutes
+
+Number of samples: 40
+
+Minimum number: 37.51
+
+Maximum number: 251.78
+
+Mean of the obstacle's distance measured: 148.19975
+
+Standard variation of the obstacle's distance measured: 28.212404117510857
+
+Variance of the obstacle's distance measured: 795.9397460897436
