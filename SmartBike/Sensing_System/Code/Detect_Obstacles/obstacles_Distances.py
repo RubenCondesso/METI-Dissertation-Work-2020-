@@ -501,9 +501,6 @@ class HandlerState(threading.Thread):
                 # Unlock
                 lock.release()
 
-
-
-        '''
         # Lock
         lock.acquire()
 
@@ -521,9 +518,6 @@ class HandlerState(threading.Thread):
 
         # Unlock
         lock.release()
-        '''
-
-
 
         # Set the status of detection made
         with open("/home/pi/SmartBike/Output/status_obstacles.txt", 'w') as f:
