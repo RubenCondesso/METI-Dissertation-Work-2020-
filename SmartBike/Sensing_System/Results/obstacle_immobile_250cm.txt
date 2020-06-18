@@ -90,9 +90,9 @@ ID: 192.168.0.1 | Timestamp: 16 6 2020 16:53:22 | Obstacle distance: 249.17 | St
 
 Height (from ground): 75cm
 
-Time interval:
+Time interval: 1 minute
 
-Number of samples:
+Number of measurements: 60
 
 Mininum number:
 
@@ -104,4 +104,4 @@ Standard variation of the obstacle's distance measured:
 
 Variance of the obstacle's distance measured:
 
-Error:
+Standard Error:
