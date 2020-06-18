@@ -83,26 +83,25 @@ ID: 192.168.0.1 | Timestamp: 16 6 2020 17:13:47 | Obstacle distance: 399.15 | St
 ID: 192.168.0.1 | Timestamp: 16 6 2020 17:13:48 | Obstacle distance: 399.55 | State: Immobile | GPS Coordinates: 38.7366816,-9.3089952
 ID: 192.168.0.1 | Timestamp: 16 6 2020 17:13:49 | Obstacle distance: 399.62 | State: Immobile | GPS Coordinates: 38.7366816,-9.3089952
 ID: 192.168.0.1 | Timestamp: 16 6 2020 17:13:50 | Obstacle distance: 398.67 | State: Immobile | GPS Coordinates: 38.7366816,-9.3089952
-ID: 192.168.0.1 | Timestamp: 16 6 2020 17:13:52 | Obstacle distance: 399.15 | State: Immobile | GPS Coordinates: 38.7366816,-9.3089952
 
 
 # =================================================================================== Results ===================================================================================== #
 
 Height (from ground): 75cm
 
-Time interval:
+Time interval: 1 minute
 
-Number of samples:
+Number of measurements: 60
 
-Mininum number:
+Mininum number: 314.43
 
-Maximum number:
+Maximum number: 400.18
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: 396.01466666666664
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: 14.956371293194314
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: 223.69304225988697
 
-Error:
+Standard Error: 1.930859231274542
 
