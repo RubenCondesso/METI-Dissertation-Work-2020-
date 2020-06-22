@@ -1,5 +1,5 @@
 #
-# obstacle_immobile_300cm.txt - Text file for the Sensing System
+# obstacle_immobile_350cm_90º.txt - Text file for the Sensing System
 #
 # 2 June 2020 - 1.0
 #
@@ -14,6 +14,8 @@
 # Obstacle (wall) is immobile and at 350cm from the sensor
 #
 # Ultrasonic sensor is 1 meter high -> about the height of a bicycle
+#
+# The angle between the sensor and the obstacle is 90º
 #
 # The wall is 3.20 x 2.50 meters
 #
