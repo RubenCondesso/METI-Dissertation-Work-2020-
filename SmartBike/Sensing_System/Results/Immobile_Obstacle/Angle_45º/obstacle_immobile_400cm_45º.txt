@@ -19,7 +19,7 @@
 #
 # The wall is 3.20 x 2.50 meters
 #
-# The sensor is placed facing the middle of the wall
+# The sensor is placed slightly to the left of the wall
 #
 # The mean, variance and standard variation of the collected values are calculated
 #
@@ -27,16 +27,16 @@
 
 # =================================================================================== Output starts here ===================================================================================== #
 
-
+Can not detect neither the obstacle neither the hypotenuse (because the distance is bigger than 4 meters)
 
 
 # =================================================================================== Results ===================================================================================== #
 
 Height (from ground): 75cm
 
-Time interval: 1 minute
+Time interval: ?? minute
 
-Number of measurements: 60
+Number of measurements: ??
 
 Mininum number:
 

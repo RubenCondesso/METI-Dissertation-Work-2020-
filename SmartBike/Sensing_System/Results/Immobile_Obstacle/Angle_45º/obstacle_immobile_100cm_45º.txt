@@ -39,6 +39,7 @@ ID: 192.168.0.1 | Timestamp: 22 6 2020 17:59:51 | Obstacle distance: 102.12 | St
 ID: 192.168.0.1 | Timestamp: 22 6 2020 18:0:4 | Obstacle distance: 102.07 | State: Immobile | GPS Coordinates: 38.7366751,-9.3090166
 ID: 192.168.0.1 | Timestamp: 22 6 2020 18:0:11 | Obstacle distance: 191.6 | State: Moving | GPS Coordinates: 38.736675,-9.3090167
 
+- This values are too random and do not make sense for this distance -> the sensor could not detect the obstacle or its hypotenuse
 
 # =================================================================================== Results ===================================================================================== #
 

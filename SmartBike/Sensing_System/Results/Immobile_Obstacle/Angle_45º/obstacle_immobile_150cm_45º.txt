@@ -38,6 +38,11 @@ ID: 192.168.0.1 | Timestamp: 22 6 2020 18:25:15 | Obstacle distance: 244.15 | St
 ID: 192.168.0.1 | Timestamp: 22 6 2020 18:25:16 | Obstacle distance: 245.47 | State: Immobile | GPS Coordinates: 38.7366373,-9.26811605517
 ID: 192.168.0.1 | Timestamp: 22 6 2020 18:26:6 | Obstacle distance: 244.44 | State: Immobile | GPS Coordinates: 38.7366406,-9.3090014
 
+- The sensor could not detected the obstacle
+
+- The sensor only could do a few measurements, where it took too long to make (2 minutes) -> rest of the values were above the maximum range of the sensor
+
+- The hypotenuse is about 212.13cm, where the possible values are above this value -> the sensor could not also detect the hypotenuse
 
 # =================================================================================== Results ===================================================================================== #
 

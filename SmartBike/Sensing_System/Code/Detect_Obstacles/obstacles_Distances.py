@@ -151,8 +151,8 @@ class Ultrasonic_Sensor(threading.Thread):
         # Round to two decimal points
         distance = round(distance, 2)
 
-        # Check whether the distance is within the sensor's range
-        if distance > 2 and distance < 400:
+        # Check whether the distance is within the sensor's range + some compensation
+        if distance > 2 and distance < 420:
 
             distance = distance + self.GPIO_OFFSET
 

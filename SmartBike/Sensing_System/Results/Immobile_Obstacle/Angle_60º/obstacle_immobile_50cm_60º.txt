@@ -88,6 +88,7 @@ ID: 192.168.0.1 | Timestamp: 22 6 2020 17:31:29 | Obstacle distance: 52.55 | Sta
 ID: 192.168.0.1 | Timestamp: 22 6 2020 17:31:30 | Obstacle distance: 52.19 | State: Immobile | GPS Coordinates: 38.7366665,-9.26808141742
 ID: 192.168.0.1 | Timestamp: 22 6 2020 17:31:31 | Obstacle distance: 52.5 | State: Immobile | GPS Coordinates: 38.7366665,-9.26808141742
 
+- This distances are not the hypotenuse but also their are the correct distance (= 50cm) -> measurements have an significant error for this distance with this angle direction
 
 # =================================================================================== Results ===================================================================================== #
 
