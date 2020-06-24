@@ -37,9 +37,10 @@ ID: 192.168.0.1 | Timestamp: 22 6 2020 17:59:45 | Obstacle distance: 320.39 | St
 ID: 192.168.0.1 | Timestamp: 22 6 2020 17:59:50 | Obstacle distance: 275.33 | State: Moving | GPS Coordinates: 38.736676,-9.3090167
 ID: 192.168.0.1 | Timestamp: 22 6 2020 17:59:51 | Obstacle distance: 102.12 | State: Moving | GPS Coordinates: 38.736676,-9.3090167
 ID: 192.168.0.1 | Timestamp: 22 6 2020 18:0:4 | Obstacle distance: 102.07 | State: Immobile | GPS Coordinates: 38.7366751,-9.3090166
-ID: 192.168.0.1 | Timestamp: 22 6 2020 18:0:11 | Obstacle distance: 191.6 | State: Moving | GPS Coordinates: 38.736675,-9.3090167
 
 - This values are too random and do not make sense for this distance -> the sensor could not detect the obstacle or its hypotenuse
+
+- The sensor take too long for its measured and only did 10 measures
 
 # =================================================================================== Results ===================================================================================== #
 
@@ -49,14 +50,14 @@ Time interval: ?? minute
 
 Number of measurements: ??
 
-Minimum number:
+Minimum number: NA
 
-Maximum number:
+Maximum number: NA
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: NA
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: NA
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: NA
 
-Standard Error:
+Standard Error: NA
