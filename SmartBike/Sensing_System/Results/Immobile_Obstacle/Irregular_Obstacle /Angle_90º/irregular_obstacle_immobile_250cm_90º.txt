@@ -1,0 +1,57 @@
+#
+# irregular_obstacle_immobile_250cm_90º.txt - Text file for the Sensing System
+#
+# 29 June 2020 - 1.0
+#
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
+# Output of the results from the detection of a irregular immobile obstacle, in a simulated environment
+#
+
+# =================================================================================== Scenario conditions ===================================================================================== #
+
+# Environment - simulated
+#
+# Obstacle - Car
+# Obstacle's caractheristics - Irregular immobile obstacle, 1.60 x 1.50
+$
+# Distance (from the sensor) - 250cm
+#
+# Angle (between the sensor and the obstacle) - 90º
+#
+# The sensor is placed facing the center of the car
+#
+# The mean, variance, standard variation, standard error and percentage error of the collected values are calculated
+#
+
+
+# =================================================================================== Output starts here ===================================================================================== #
+
+
+
+
+# =================================================================================== Results ===================================================================================== #
+
+Height (from ground): 75cm
+
+Time interval: 1 minute
+
+Number of measurements: 60
+
+Mininum number:
+
+Maximum number:
+
+Mean of the obstacle's distance measured:
+
+Standard variation of the obstacle's distance measured:
+
+Variance of the obstacle's distance measured:
+
+Standard Error:
+
+Percentage Error:

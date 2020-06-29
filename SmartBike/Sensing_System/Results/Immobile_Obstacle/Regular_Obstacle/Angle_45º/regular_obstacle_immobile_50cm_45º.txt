@@ -1,0 +1,68 @@
+#
+# regular_obstacle_immobile_50cm_45º.txt - Text file for the Sensing System
+#
+# 23 June 2020 - 2.0
+#
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
+# Output of the results from the detection of a regular immobile obstacle, in a simulated environment
+#
+
+# =================================================================================== Scenario conditions ===================================================================================== #
+
+# Environment - simulated
+#
+# Obstacle - Wall
+# Obstacle's caractheristics - Regular immobile obstacle, 3.20 x 2.50
+$
+# Distance (from the sensor) - 50cm
+#
+# Angle (between the sensor and the obstacle) - 45º
+#
+# The sensor is placed slightly to the left of the wall
+#
+# The mean, variance, standard variation, standard error and percentage error of the collected values are calculated
+#
+
+# =================================================================================== Output starts here ===================================================================================== #
+
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:45:3 | Obstacle distance: 375.99 | State: Moving | GPS Coordinates: 38.7366442,-9.3090103
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:45:7 | Obstacle distance: 205.67 | State: Moving | GPS Coordinates: 38.7366447,-9.3090107
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:46:10 | Obstacle distance: 346.85 | State: Moving | GPS Coordinates: 38.7366888,-9.3090295
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:46:11 | Obstacle distance: 268.25 | State: Moving | GPS Coordinates: 38.7366882,-9.3090289
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:46:47 | Obstacle distance: 374.87 | State: Moving | GPS Coordinates: 38.7366837,-9.3090264
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:46:53 | Obstacle distance: 115.37 | State: Moving | GPS Coordinates: 38.7366832,-9.3090256
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:47:16 | Obstacle distance: 377.88 | State: Moving | GPS Coordinates: 38.736682,-9.3090232
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:47:17 | Obstacle distance: 288.4 | State: Moving | GPS Coordinates: 38.736682,-9.3090232
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:47:18 | Obstacle distance: 298.86 | State: Immobile | GPS Coordinates: 38.736682,-9.3090232
+ID: 192.168.0.1 | Timestamp: 22 6 2020 17:47:30 | Obstacle distance: 365.61 | State: Moving | GPS Coordinates: 38.7366807,-9.3090221
+
+- This values are too random and do not make sense for this distance -> the sensor could not detect the obstacle or its hypotenuse
+
+- The sensor take too long for its measured and only did 10 measures
+
+# =================================================================================== Results ===================================================================================== #
+
+Height (from ground): 75cm
+
+Time interval: ?? minute
+
+Number of measurements: ??
+
+Minimum number: NA
+
+Maximum number: NA
+
+Mean of the obstacle's distance measured: NA
+
+Standard variation of the obstacle's distance measured: NA
+
+Variance of the obstacle's distance measured: NA
+
+Standar Error: NA
+
+Percentage Error: NA

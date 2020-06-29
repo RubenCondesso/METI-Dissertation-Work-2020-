@@ -1,0 +1,57 @@
+#
+# regular_obstacle_immobile_350cm_45º.txt - Text file for the Sensing System
+#
+# 23 June 2020 - 2.0
+#
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
+# Output of the results from the detection of a regular immobile obstacle, in a simulated environment
+#
+
+# =================================================================================== Scenario conditions ===================================================================================== #
+
+# Environment - simulated
+#
+# Obstacle - Wall
+# Obstacle's caractheristics - Regular immobile obstacle, 3.20 x 2.50
+$
+# Distance (from the sensor) - 350cm
+#
+# Angle (between the sensor and the obstacle) - 45º
+#
+# The sensor is placed slightly to the left of the wall
+#
+# The mean, variance, standard variation, standard error and percentage error of the collected values are calculated
+#
+
+
+# =================================================================================== Output starts here ===================================================================================== #
+
+Can not detect neither the obstacle neither the hypotenuse (because the distance is bigger than 4 meters)
+
+# =================================================================================== Results ===================================================================================== #
+
+Height (from ground): 75cm
+
+Time interval: ?? minute
+
+Number of measurements: ??
+
+Mininum number: NA
+
+Maximum number: NA
+
+Mean of the obstacle's distance measured: NA
+
+Standard variation of the obstacle's distance measured: NA
+
+Variance of the obstacle's distance measured: NA
+
+Standard Error: NA
+
+Percentage Error: NA
+
