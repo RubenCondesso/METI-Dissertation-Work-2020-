@@ -1,0 +1,71 @@
+#
+# irregular_obstacle_immobile_150cm_60º_75cmHigh.txt - Text file for the Sensing System
+#
+# 29 June 2020 - 1.0
+#
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
+# Output of the results from the detection of a irregular immobile obstacle, in a simulated environment
+#
+
+# =================================================================================== Scenario conditions ===================================================================================== #
+
+# Environment - simulated
+#
+# Obstacle - Car
+# Obstacle's caractheristics - Irregular immobile obstacle, 1.60 x 1.50
+$
+# Distance (from the sensor) - 150cm
+#
+# Angle (between the sensor and the obstacle) - 60º
+#
+# The sensor is placed facing the center of the car
+#
+# The sensor is 75cm high
+#
+# The mean, variance, standard variation, standard error and percentage error of the collected values are calculated
+#
+
+
+# =================================================================================== Output starts here ===================================================================================== #
+
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:57:27 | Obstacle distance: 173.02 | State: Moving | GPS Coordinates: 39.7490275,-8.8172563
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:57:39 | Obstacle distance: 177.89 | State: Immobile | GPS Coordinates: 39.7490927,-8.8174604
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:57:48 | Obstacle distance: 176.69 | State: Immobile | GPS Coordinates: 39.7490794,-8.8174713
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:57:51 | Obstacle distance: 177.1 | State: Immobile | GPS Coordinates: 39.7490746,-8.8174737
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:58:28 | Obstacle distance: 176.84 | State: Immobile | GPS Coordinates: 39.7490874,-8.8174764
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:58:32 | Obstacle distance: 177.48 | State: Immobile | GPS Coordinates: 39.7490874,-8.8174759
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:58:44 | Obstacle distance: 176.05 | State: Immobile | GPS Coordinates: 39.7490852,-8.8174766
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:58:45 | Obstacle distance: 177.29 | State: Immobile | GPS Coordinates: 39.7490852,-8.8174766
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:59:14 | Obstacle distance: 176.92 | State: Immobile | GPS Coordinates: 39.7490831,-8.8174773
+ID: 192.168.0.1 | Timestamp: 30 6 2020 16:59:20 | Obstacle distance: 177.6 | State: Immobile | GPS Coordinates: 39.7490826,-8.8174776
+ID: 192.168.0.1 | Timestamp: 30 6 2020 17:0:10 | Obstacle distance: 247.03 | State: Moving | GPS Coordinates: 39.7490816,-8.8174779
+ID: 192.168.0.1 | Timestamp: 30 6 2020 17:0:20 | Obstacle distance: 176.51 | State: Moving | GPS Coordinates: 39.7490814,-8.8174779
+ID: 192.168.0.1 | Timestamp: 30 6 2020 17:0:37 | Obstacle distance: 247.54 | State: Moving | GPS Coordinates: 39.7490808,-8.8174782
+
+
+# =================================================================================== Results ===================================================================================== #
+
+Height (from ground): 75cm
+
+Time interval: 180 seconds
+
+Number of measurements: 13
+
+Minimum number:
+
+Maximum number:
+
+Mean of the obstacle's distance measured:
+
+Standard variation of the obstacle's distance measured:
+
+Variance of the obstacle's distance measured:
+
+Standard Error:
+
+Percentage Error:
