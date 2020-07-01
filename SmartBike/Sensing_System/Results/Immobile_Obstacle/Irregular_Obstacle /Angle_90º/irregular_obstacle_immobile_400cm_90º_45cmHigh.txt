@@ -1,5 +1,5 @@
 #
-# irregular_obstacle_immobile_300cm_60º_??cmHigh.txt - Text file for the Sensing System
+# irregular_obstacle_immobile_400cm_90º_45cmHigh.txt - Text file for the Sensing System
 #
 # 29 June 2020 - 1.0
 #
@@ -19,13 +19,13 @@
 # Obstacle - Car
 # Obstacle's caractheristics - Irregular immobile obstacle, 1.60 x 1.50
 $
-# Distance (from the sensor) - 300cm
+# Distance (from the sensor) - 400cm
 #
-# Angle (between the sensor and the obstacle) - 60º
+# Angle (between the sensor and the obstacle) - 90º
 #
 # The sensor is placed facing the center of the car
 #
-# The sensor is ??cm high
+# The sensor is 45cm high
 #
 # The mean, variance, standard variation, standard error and percentage error of the collected values are calculated
 #
@@ -33,26 +33,26 @@ $
 
 # =================================================================================== Output starts here ===================================================================================== #
 
-
+- The sensor could not detect correctly the obstacle
 
 # =================================================================================== Results ===================================================================================== #
 
-Height (from ground): ??cm
+Height (from ground): 45cm
 
-Time interval:
+Time interval: NA
 
-Number of measurements:
+Number of measurements: NA
 
-Minimum number:
+Mininum number: NA
 
-Maximum number:
+Maximum number: NA
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: NA
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: NA
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: NA
 
-Standard Error:
+Standard Error: NA
 
-Percentage Error:
+Percentage Error: NA
