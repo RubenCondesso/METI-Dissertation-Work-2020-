@@ -77,26 +77,15 @@ ID: 192.168.0.1 | Timestamp: 30 6 2020 18:38:55 | Obstacle distance: 431.0 | Sta
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:38:59 | Obstacle distance: 262.22 | State: Moving | GPS Coordinates: 39.7490409,-8.78284977513
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:1 | Obstacle distance: 579.0 | State: Moving | GPS Coordinates: 39.7490409,-8.78284967631
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:2 | Obstacle distance: 359.9 | State: Moving | GPS Coordinates: 39.7490409,-8.78284967631
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:3 | Obstacle distance: 214.42 | State: Moving | GPS Coordinates: 39.7490409,-8.7828495775
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:5 | Obstacle distance: 132.43 | State: Moving | GPS Coordinates: 39.7490409,-8.7828495775
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:6 | Obstacle distance: 417.22 | State: Moving | GPS Coordinates: 39.7490409,-8.7828495775
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:7 | Obstacle distance: 360.3 | State: Moving | GPS Coordinates: 39.749041,-8.78284888577
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:8 | Obstacle distance: 1387.81 | State: Moving | GPS Coordinates: 39.749041,-8.78284888577
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:9 | Obstacle distance: 359.94 | State: Moving | GPS Coordinates: 39.749041,-8.78284888577
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:13 | Obstacle distance: 358.26 | State: Immobile | GPS Coordinates: 39.749041,-8.78284888577
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:15 | Obstacle distance: 184.65 | State: Moving | GPS Coordinates: 39.749041,-8.78284888577
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:39:17 | Obstacle distance: 413.95 | State: Moving | GPS Coordinates: 39.749041,-8.78284888577
-
-- Altough the sensor made some measurments, the (majority) collect data does not match the actual distance from the obstacle -> the sensor could not detect correctly the obstacle
 
 
 # =================================================================================== Results ===================================================================================== #
 
 Height (from ground): 45cm
 
-Time interval: 135 seconds
+Time interval: 120 seconds
 
-Number of measurements: 53
+Number of measurements: 44
 
 Mininum number:
 

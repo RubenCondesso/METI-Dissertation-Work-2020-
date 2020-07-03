@@ -80,25 +80,16 @@ ID: 192.168.0.1 | Timestamp: 30 6 2020 17:14:52 | Obstacle distance: 268.02 | St
 ID: 192.168.0.1 | Timestamp: 30 6 2020 17:14:56 | Obstacle distance: 360.77 | State: Moving | GPS Coordinates: 39.7490384,-8.8174976
 ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:2 | Obstacle distance: 288.62 | State: Moving | GPS Coordinates: 39.7490393,-8.817497
 ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:5 | Obstacle distance: 265.07 | State: Moving | GPS Coordinates: 39.7490404,-8.8174967
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:15 | Obstacle distance: 266.95 | State: Immobile | GPS Coordinates: 39.7490421,-8.817496
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:16 | Obstacle distance: 267.9 | State: Immobile | GPS Coordinates: 39.7490421,-8.817496
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:17 | Obstacle distance: 267.45 | State: Immobile | GPS Coordinates: 39.7490421,-8.78273237917
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:18 | Obstacle distance: 267.93 | State: Immobile | GPS Coordinates: 39.7490421,-8.78273237917
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:19 | Obstacle distance: 267.07 | State: Immobile | GPS Coordinates: 39.7490421,-8.78273237917
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:22 | Obstacle distance: 267.19 | State: Immobile | GPS Coordinates: 39.7490421,-8.78273237917
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:23 | Obstacle distance: 266.66 | State: Immobile | GPS Coordinates: 39.7490421,-8.78273237917
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:24 | Obstacle distance: 267.77 | State: Immobile | GPS Coordinates: 39.7490421,-8.78273237917
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:25 | Obstacle distance: 267.5 | State: Immobile | GPS Coordinates: 39.7490433,-8.8174958
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:15:26 | Obstacle distance: 267.29 | State: Immobile | GPS Coordinates: 39.7490433,-8.8174958
+
 
 
 # =================================================================================== Results ===================================================================================== #
 
 Height (from ground): 75cm
 
-Time interval: 139 seconds
+Time interval: 120 seconds
 
-Number of measurements: 57
+Number of measurements: 47
 
 Mininum number:
 

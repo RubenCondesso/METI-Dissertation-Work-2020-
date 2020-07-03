@@ -81,9 +81,6 @@ ID: 192.168.0.1 | Timestamp: 30 6 2020 18:6:43 | Obstacle distance: 365.04 | Sta
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:6:45 | Obstacle distance: 256.87 | State: Moving | GPS Coordinates: 39.7490269,-8.78285185031
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:6:53 | Obstacle distance: 399.27 | State: Moving | GPS Coordinates: 39.7490269,-8.78285185031
 
-- Altough the sensor made some measurments, the (majority) collect data does not match the actual distance from the obstacle -> the sensor could not detect correctly the obstacle
-
-
 # =================================================================================== Results ===================================================================================== #
 
 Height (from ground): 45cm

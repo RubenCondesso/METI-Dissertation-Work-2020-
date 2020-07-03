@@ -48,10 +48,7 @@ ID: 192.168.0.1 | Timestamp: 30 6 2020 18:22:45 | Obstacle distance: 357.01 | St
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:22:46 | Obstacle distance: 58.02 | State: Moving | GPS Coordinates: 39.7490255,-8.78281281715
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:22:56 | Obstacle distance: 228.14 | State: Moving | GPS Coordinates: 39.7490266,-8.78281024788
 ID: 192.168.0.1 | Timestamp: 30 6 2020 18:22:57 | Obstacle distance: 393.17 | State: Moving | GPS Coordinates: 39.7490266,-8.78281024788
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:23:10 | Obstacle distance: 185.03 | State: Moving | GPS Coordinates: 39.7490284,-8.78280688806
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:23:11 | Obstacle distance: 229.01 | State: Moving | GPS Coordinates: 39.7490291,-8.78280560343
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:23:13 | Obstacle distance: 177.67 | State: Moving | GPS Coordinates: 39.7490292,-8.78280550461
-ID: 192.168.0.1 | Timestamp: 30 6 2020 18:23:14 | Obstacle distance: 153.3 | State: Moving | GPS Coordinates: 39.7490291,-8.78280560343
+
 
 - Altough the sensor made some measurments, the collect data does not match the actual distance from the obstacle -> the sensor could not detect correctly the obstacle
 
@@ -59,20 +56,20 @@ ID: 192.168.0.1 | Timestamp: 30 6 2020 18:23:14 | Obstacle distance: 153.3 | Sta
 
 Height (from ground): 45cm
 
-Time interval: 127 seconds
+Time interval: 120 seconds
 
-Number of measurements: 19
+Number of measurements: 15
 
-Minimum number:
+Minimum number: NA
 
-Maximum number:
+Maximum number: NA
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: NA
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: NA
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: NA
 
-Standard Error:
+Standard Error: NA
 
-Percentage Error:
+Percentage Error: NA

@@ -43,18 +43,15 @@ ID: 192.168.0.1 | Timestamp: 30 6 2020 16:58:44 | Obstacle distance: 176.05 | St
 ID: 192.168.0.1 | Timestamp: 30 6 2020 16:58:45 | Obstacle distance: 177.29 | State: Immobile | GPS Coordinates: 39.7490852,-8.8174766
 ID: 192.168.0.1 | Timestamp: 30 6 2020 16:59:14 | Obstacle distance: 176.92 | State: Immobile | GPS Coordinates: 39.7490831,-8.8174773
 ID: 192.168.0.1 | Timestamp: 30 6 2020 16:59:20 | Obstacle distance: 177.6 | State: Immobile | GPS Coordinates: 39.7490826,-8.8174776
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:0:10 | Obstacle distance: 247.03 | State: Moving | GPS Coordinates: 39.7490816,-8.8174779
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:0:20 | Obstacle distance: 176.51 | State: Moving | GPS Coordinates: 39.7490814,-8.8174779
-ID: 192.168.0.1 | Timestamp: 30 6 2020 17:0:37 | Obstacle distance: 247.54 | State: Moving | GPS Coordinates: 39.7490808,-8.8174782
 
 
 # =================================================================================== Results ===================================================================================== #
 
 Height (from ground): 75cm
 
-Time interval: 180 seconds
+Time interval: 120
 
-Number of measurements: 13
+Number of measurements: 10
 
 Minimum number:
 
