@@ -85,20 +85,20 @@ ID: 192.168.0.1 | Timestamp: 30 6 2020 18:6:53 | Obstacle distance: 399.27 | Sta
 
 Height (from ground): 45cm
 
-Time interval: 92 seconds
+Time interval: 100 seconds
 
 Number of measurements: 47
 
-Minimum number:
+Minimum number: 127.06
 
-Maximum number:
+Maximum number: 401.23
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: 287.64829787234044
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: 71.28198090252265
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: 5081.120801387604
 
-Standard Error:
+Standard Error: 9.202464164004844
 
-Percentage Error:
+Percentage Error: 15.05932
