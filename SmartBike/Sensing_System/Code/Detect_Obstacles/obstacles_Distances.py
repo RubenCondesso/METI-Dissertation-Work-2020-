@@ -53,6 +53,9 @@ import sys
 # Import Math
 import math
 
+# Import Numpy
+import numpy as np
+
 # Import uart_peripheral code
 import uart_peripheral
 
@@ -61,7 +64,6 @@ import uart_peripheral
 
 # Lock to be used in accessing to data files
 lock = threading.Semaphore()
-
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
@@ -72,7 +74,7 @@ class Ultrasonic_Sensor(threading.Thread):
     '''
 
     # Init
-    def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
+    def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5, list_distances):
 
         threading.Thread.__init__(self)
         self.kill_received = False
@@ -92,6 +94,9 @@ class Ultrasonic_Sensor(threading.Thread):
         # GPIO setup
         GPIO.setup(self.GPIO_TRIGGER, GPIO.OUT)
         GPIO.setup(self.GPIO_ECHO, GPIO.IN)
+
+        # List with last 5 distances measured -> FIFO list
+        self.list_distances = deque([None] * 5)
 
 
     def __str__(self):
@@ -154,32 +159,39 @@ class Ultrasonic_Sensor(threading.Thread):
         # Check whether the distance is within the sensor's range + some compensation
         if distance > 2 and distance < 450:
 
+            # Distance measured by the Ultrasonic Sensor
             distance = distance + self.GPIO_OFFSET
 
-            # Lock
-            lock.acquire()
+            # Check if the weighted average was calculated
+            if self.weighted_average(distance) != 0:
 
-            try:
+                # Lock
+                lock.acquire()
 
-                # Open the text file
-                data_file = open("/home/pi/SmartBike/Output/detected_obstacles.txt","a")
+                try:
 
-                # Get the ID of Raspberry Pi Zero
-                rpi_ID = self.getIP_RPizero()
+                    # Transform measured distance in the weighted of that distance
+                    distance = self.weighted_average(distance)
 
-                # Get the timestamp of this exact moment
-                present_timestamp = self.current_timestamp()
+                    # Open the text file
+                    data_file = open("/home/pi/SmartBike/Output/detected_obstacles.txt","a")
 
-                # GPS coordenates of the Smartphone when the obstacle was detected
-                gps_coordenates = self.setGPS_Coordenates(uart_peripheral.array_GPS, present_timestamp)
+                    # Get the ID of Raspberry Pi Zero
+                    rpi_ID = self.getIP_RPizero()
 
-                # Add this distance to the text file
-                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordinates: " + str(gps_coordenates[0]) + "\n")
+                    # Get the timestamp of this exact moment
+                    present_timestamp = self.current_timestamp()
 
-                #print("Obstacle detected")
+                    # GPS coordenates of the Smartphone when the obstacle was detected
+                    gps_coordenates = self.setGPS_Coordenates(uart_peripheral.array_GPS, present_timestamp)
 
-                # Close the text file
-                data_file.close()
+                    # Add this distance to the text file
+                    data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordinates: " + str(gps_coordenates[0]) + "\n")
+
+                    #print("Obstacle detected")
+
+                    # Close the text file
+                    data_file.close()
 
             # Handle IOERROR exception
             except OSError as e:
@@ -200,6 +212,42 @@ class Ultrasonic_Sensor(threading.Thread):
 
         return str(distance)
 
+    # Get weighted average of last 6 distances measured
+    def weighted_average(self, distance):
+        '''
+            Distances Weights:
+                . current distance - 0.3
+                . last distance measured - 0.15
+                . penultimate distance measured - 0.15
+                . antepenultimate distance measured - 0.1
+                . remaining two distances measured - 0.05 + 0.05
+        '''
+
+        # Save distance in distances list
+        self.list_distances.pop()
+        self.list_distances.appendleft(distance)
+
+        # Check if the sensor already measured 8 distances so far
+        if None not in self.list_distances:
+
+            # Get weigthed average from last 6 distances measured - current distance + last 5 distances measured
+            return np.average([ distance, self.list_distances[0], self.list_distances[1], self.list_distances[2], self.list_distances[3], self.list_distances[4]], weights = [0.5, 0.15, 0.15, 0.10, 0.05, 0.05])
+
+        return 0
+
+
+    # Get the IP of the Raspberry Pi Zero
+    def getIP_RPizero(self):
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        # Name of the network interface
+        ifname = "wlan0"
+
+        # IP of the Raspberry Pi Zero
+        return socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', ifname[:15]))[20:24])
+
+
     # Get the current timestamp of each obstacle detection
     def current_timestamp(self):
 
@@ -218,18 +266,6 @@ class Ultrasonic_Sensor(threading.Thread):
         total_timestamp = str(dayTime) + " " + str(dateTimeObj.month) + " " + str(dateTimeObj.year) + " " + str(dateTimeObj.hour) + ":" + str(dateTimeObj.minute) + ":" + str(dateTimeObj.second)
 
         return total_timestamp
-
-
-    # Get the IP of the Raspberry Pi Zero
-    def getIP_RPizero(self):
-
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-        # Name of the network interface
-        ifname = "wlan0"
-
-        # IP of the Raspberry Pi Zero
-        return socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', ifname[:15]))[20:24])
 
 
     # Set the GPS coordenates received from the smartphone for the timestamp in handle when the obstacle was detected
@@ -501,8 +537,6 @@ class HandlerState(threading.Thread):
                 # Unlock
                 lock.release()
 
-
-        '''
         # Lock
         lock.acquire()
 
@@ -520,9 +554,6 @@ class HandlerState(threading.Thread):
 
         # Unlock
         lock.release()
-        '''
-
-
 
         # Set the status of detection made
         with open("/home/pi/SmartBike/Output/status_obstacles.txt", 'w') as f:

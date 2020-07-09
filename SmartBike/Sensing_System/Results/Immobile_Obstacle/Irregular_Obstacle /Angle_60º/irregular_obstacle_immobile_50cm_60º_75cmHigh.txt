@@ -72,7 +72,7 @@ Mean of the obstacle's distance measured: 83.78954545454545
 
 Standard variation of the obstacle's distance measured: 3.828214151934761
 
-Variance of the obstacle's distance measured: 3.828214151934761
+Variance of the obstacle's distance measured: 14.65522359307358
 
 Standar Error: 0.4942203218719626
 
