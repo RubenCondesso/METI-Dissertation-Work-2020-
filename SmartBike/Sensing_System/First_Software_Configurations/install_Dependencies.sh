@@ -44,6 +44,9 @@ sudo apt install python-pip
 # Install dbus
 sudo apt-get install python-dbus
 
+# Install Numpy
+sudo apt install python-numpy
+
 # ---------------------------------------------------------------------------------------- Install BlueZ --------------------------------------------------------------------------------------------- #
 
 #Download BlueZ source code

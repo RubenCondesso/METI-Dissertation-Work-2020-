@@ -56,6 +56,9 @@ import math
 # Import Numpy
 import numpy as np
 
+# Import deque
+from collections import deque
+
 # Import uart_peripheral code
 import uart_peripheral
 
@@ -64,6 +67,9 @@ import uart_peripheral
 
 # Lock to be used in accessing to data files
 lock = threading.Semaphore()
+
+# List with last 5 distances measured -> FIFO list
+list_distances = deque([None] * 5)
 
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
@@ -74,7 +80,7 @@ class Ultrasonic_Sensor(threading.Thread):
     '''
 
     # Init
-    def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5, list_distances):
+    def __init__(self, GPIO_TRIGGER, GPIO_ECHO, GPIO_OFFSET = 0.5):
 
         threading.Thread.__init__(self)
         self.kill_received = False
@@ -94,9 +100,6 @@ class Ultrasonic_Sensor(threading.Thread):
         # GPIO setup
         GPIO.setup(self.GPIO_TRIGGER, GPIO.OUT)
         GPIO.setup(self.GPIO_ECHO, GPIO.IN)
-
-        # List with last 5 distances measured -> FIFO list
-        self.list_distances = deque([None] * 5)
 
 
     def __str__(self):
@@ -162,6 +165,9 @@ class Ultrasonic_Sensor(threading.Thread):
             # Distance measured by the Ultrasonic Sensor
             distance = distance + self.GPIO_OFFSET
 
+            print("Distance before: ")
+            print(distance)
+
             # Check if the weighted average was calculated
             if self.weighted_average(distance) != 0:
 
@@ -172,6 +178,9 @@ class Ultrasonic_Sensor(threading.Thread):
 
                     # Transform measured distance in the weighted of that distance
                     distance = self.weighted_average(distance)
+
+                    print("Distance after: ")
+                    print(distance)
 
                     # Open the text file
                     data_file = open("/home/pi/SmartBike/Output/detected_obstacles.txt","a")
@@ -193,16 +202,19 @@ class Ultrasonic_Sensor(threading.Thread):
                     # Close the text file
                     data_file.close()
 
-            # Handle IOERROR exception
-            except OSError as e:
-                print "I/O error({0}: {1}".format(e.errno, e.strerror)
+                # Handle IOERROR exception
+                except OSError as e:
+                    print "I/O error({0}: {1}".format(e.errno, e.strerror)
 
-            # Handle other exceptions such as atribute error
-            except:
-                print "Unexpected error: ", sys.exc_info()[0]
+                # Handle other exceptions such as atribute error
+                except:
+                    print "Unexpected error: ", sys.exc_info()[0]
 
-            # Unlock
-            lock.release()
+                # Unlock
+                lock.release()
+
+            else:
+                print("Weight average distance could not be calculated")
 
         else:
 
@@ -224,14 +236,14 @@ class Ultrasonic_Sensor(threading.Thread):
         '''
 
         # Save distance in distances list
-        self.list_distances.pop()
-        self.list_distances.appendleft(distance)
+        list_distances.pop()
+        list_distances.appendleft(distance)
 
         # Check if the sensor already measured 8 distances so far
-        if None not in self.list_distances:
+        if None not in list_distances:
 
             # Get weigthed average from last 6 distances measured - current distance + last 5 distances measured
-            return np.average([ distance, self.list_distances[0], self.list_distances[1], self.list_distances[2], self.list_distances[3], self.list_distances[4]], weights = [0.5, 0.15, 0.15, 0.10, 0.05, 0.05])
+            return np.average([distance, list_distances[0], list_distances[1], list_distances[2], list_distances[3], list_distances[4]], weights = [0.5, 0.15, 0.15, 0.10, 0.05, 0.05])
 
         return 0
 
