@@ -83,6 +83,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -97,7 +98,9 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Calendar;
 
 /*
-# -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
+# ======================================================================================================================================================================================================================================================= #
+# ==============================================================================================================    Functions    ======================================================================================================================== #
+# ======================================================================================================================================================================================================================================================= #
 */
 
 // Main Activity of the SmartBike's Application
@@ -123,7 +126,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     private static final String TAG = "MainActivity";
     private static final String ADD = "Add Data to SQLite Database";
-    private static final String RESULT = "DEN Message Result";
+    private static final String RESULT = "DEN Message result";
+    private static final String VALID = "CAM Message veracity";
+    private static final String TYPE = "Message's type";
 
     // Textview to display on the screen
     //private TextView mLatitudeTextView;
@@ -259,7 +264,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
 
 /*
-# ------------------------------------------------------------------------------------ GPS Functions -------------------------------------------------------------------------------------------- #
+# ================================================================================================================    GPS    ========================================================================================================================== #
 */
 
     /**
@@ -451,7 +456,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
 
 /*
-# ------------------------------------------------------------------------------------ BLE Functions -------------------------------------------------------------------------------------------- #
+# ================================================================================================================    BLE    ========================================================================================================================== #
 */
 
     /**
@@ -552,7 +557,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             // Check if is necessary to send a DEN Message
             try {
-                boolean result = isDEN_Messages();
+                boolean result = isDEN_Message();
 
                 if (result){
                     Log.d(RESULT, "DEN Message will be sent -> an obstacle is to close to the user");
@@ -573,7 +578,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             }
 
             // Check if the messages is the CAM's type
-            if (isCAM_Messages(message)){
+            if (isCAM_Message(message)){
 
                 // Call method to add the received data
                 addData(message);
@@ -725,26 +730,184 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
 /*
-# ------------------------------------------------------------------------------- CAM Module Functions -------------------------------------------------------------------------------------------- #
+# ==============================================================================================================    CAM Module    ======================================================================================================================== #
 */
 
     /**
-     * Check if the Message received from the Raspberry Pi is a CAM's type of Message
+     * Check if the Message received from the Raspberry Pi is a CAM's type of Message and if its a valid CAM message
      * @param data - String that refers to the message received
-     * @return true if Message is CAM's type -> it has that exact structure: ID, Timestamp, Obstacle Distance, State and GPS Coordinates
+     * @return true if Message is CAM's type -> it has that exact structure: ID, Timestamp, Obstacle Distance, State and GPS Coordinates; and if all parameters are valid
      * @return false if not
      */
-    private boolean isCAM_Messages(String data){
+    private boolean isCAM_Message(String data){
 
         // Split string by spaces
         String[] splitStr = data.split("\\s+");
 
         // Check if message received has this exact structure
         if (splitStr[0].equals("ID:") || splitStr[3].equals("Timestamp:") || splitStr[9].equals("Obstacle") || splitStr[10].equals("distance:") || splitStr[13].equals("State:") || splitStr[16].equals("GPS") || splitStr[17].equals("Coordinates:")){
-            return true;
+
+            System.out.println("Going to verify the veracity of the CAM Message" + "\n");
+
+            // Check if all parameters are valid
+            if (msgID_Veracity(splitStr[1]) && msgTimestamp_Veracity(splitStr[4], splitStr[5], splitStr[6]) && msgDistance_Veracity(splitStr[11]) && msgState_Veracity(splitStr[14]) && msgGPS_Veracity(splitStr[18])){
+
+                Log.d(VALID, "CAM message received is valid!");
+
+                return true;
+            }
+            else{
+
+                Log.d(VALID, "CAM message received is not valid!");
+
+                return false;
+            }
         }
+
+        Log.d(TYPE, "Message is not CAM's type!");
+
         return false;
     }
+
+    /**
+     * Check if the ID of the message received is valid
+     * @param id - ID of the message received
+     * @return true if message id is valid -> check if it has right format: X.X.X.X
+     * @return false if not
+     */
+    private boolean msgID_Veracity(String id){
+
+        char idChar = '.';
+        int count = 0;
+
+        for (int i = 0; i < id.length(); i ++){
+            if(id.charAt(i) == idChar){
+                count ++;
+            }
+        }
+        // Id has to have three '.' to have the right format
+        if (count == 3){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Check if the timestamp of the message received is valid
+     * @param day, month, year- timestamp of the message received
+     * @return true if timestamp is valid -> check if it to old
+     * @return false if not
+     */
+    private boolean msgTimestamp_Veracity(String day, String month, String year){
+
+        // Current date
+        Date now_date = new Date();
+
+        // Choose time zone in which you wat to interpret your date
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Lisbon"));
+        cal.setTime(now_date);
+
+        // Current day
+        int current_day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // Current month
+        int current_month = (cal.get(Calendar.MONTH)) + 1;
+
+        // Current year
+        int current_year = cal.get(Calendar.YEAR);
+
+
+        System.out.println("Month received: " + Integer.parseInt(month) + "\n");
+        System.out.println("Current month: " + current_month + "\n");
+
+        // Check timestamp of message received is too old
+        if ((current_day == Integer.parseInt(day)) && (current_month == Integer.parseInt(month)) && (current_year == Integer.parseInt(year))){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Check if the distance of the message received is valid
+     * @param dist - distance of the message received
+     * @return true if Message distance is valid -> check if it has right format: X.X
+     * @return false if not
+     */
+    private boolean msgDistance_Veracity(String dist){
+
+        char idChar = '.';
+        int count = 0;
+
+        for (int i = 0; i < dist.length(); i ++){
+            if(dist.charAt(i) == idChar){
+                count ++;
+            }
+        }
+        // Id has to have one '.' to have the right format
+        if (count == 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Check if the state of the message received is valid
+     * @param state - state of the message received
+     * @return true if message state is valid -> check if it has right format: 'Immobile' || 'Moving'
+     * @return false if not
+     */
+    private boolean msgState_Veracity(String state){
+
+        String str1 = "Moving";
+        String str2 = "Immobile";
+
+        // State must be equal to one of the two possibilities
+        if ((state.equals(str1) || (state.equals(str2)))){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Check if the coordinates of the message received is valid
+     * @param coords - distance of the message received
+     * @return true if coordinates is valid -> check if it has right format: 'X.X,X.X'
+     * @return false if not
+     */
+    private boolean msgGPS_Veracity(String coords){
+
+        char gpsCharA = '.';
+        char gpsCharB = ',';
+        int countA = 0;
+        int countB = 0;
+
+        for (int i = 0; i < coords.length(); i ++) {
+            if (coords.charAt(i) == gpsCharA) {
+                countA++;
+            }
+            if (coords.charAt(i) == gpsCharB) {
+                countB++;
+
+            }
+        }
+        // Id has to have two '.' and one ',' to have the right format
+        if (countA == 2 && countB == 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
 
     /**
      * Stores the CAM Message received from the Raspberry Pi Zero to the SQLite database
@@ -764,7 +927,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
 
 /*
-# ------------------------------------------------------------------------------- DEN Module Functions -------------------------------------------------------------------------------------------- #
+# ==============================================================================================================    DEN Module    ======================================================================================================================== #
 */
 
     /**
@@ -772,7 +935,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      * @return true if distance to the obstacle is between 0 and 10 meters
      * @return false if not
      */
-    private boolean isDEN_Messages() throws InterruptedException {
+    private boolean isDEN_Message() throws InterruptedException {
 
         // Array with the distances to the obstacle presented in the SQLite Database
         ArrayList<String> result_distances = mDatabase.check_Distances();
@@ -830,7 +993,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
 
 /*
-# ------------------------------------------------------------------------------- Populate View Function -------------------------------------------------------------------------------------------- #
+# ==============================================================================================================    Populate View    ======================================================================================================================== #
 */
 
     /**
