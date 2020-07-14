@@ -36,6 +36,9 @@ import calendar
 # Import Threads
 import threading
 
+# Import uart_peripheral code
+import ultrasonic_sensor
+
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
 BLUEZ_SERVICE_NAME =           'org.bluez'
@@ -134,26 +137,57 @@ class TxCharacteristic(Characteristic):
     # Send the Sensing System's data to the Smartphone
     def send_Data(self, s):
 
-        if not self.notifying:
+        global ready_flag
+
+        # The sensor was sending messages but now it can not send -> the Smartphone suffered a failure
+        if ready_flag == True and not self.notifying:
+            '''
+                The variables will be restarted, to start the program again
+                The CAM messages received before the failure are saved on the text file
+            '''
+            global count
+            global domain
+            global array_GPS
+
+            # Restart all values
+            ready_flag = False
+            count = 0
+            domain = [[None]*2 for _ in range(8)]
+            array_GPS = deque(domain)
+            ultrasonic_sensor.list_distances = deque([None] * 5)
+
+            print("\n---- The connection with Smartphone has received a failure ----\n")
+            print("\n---- Restarting the SmartBike System program ----\n")
+
             return
 
-        value = []
+        elif not self.notifying:
+            return
 
-        try:
-            for c in s:
-                # Add the value received to the dbus
-                value.append(dbus.Byte(c.encode()))
+        else:
 
-            # Change properties
-            self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
+            value = []
 
-        # Handle IOERROR exception
-        except OSError as e:
-            print "I/O error({0}: {1}".format(e.errno, e.strerror)
+            # Try to send the message to the Smartphone
+            try:
 
-        # Handle other exceptions such as atribute error
-        except:
-            print "Unexpected error: ", sys.exc_info()[0]
+                for c in s:
+                    # Add the value received to the dbus
+                    value.append(dbus.Byte(c.encode()))
+
+                # Change properties
+                self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
+
+                print("Vou enviar mensagens")
+
+            # Handle IOERROR exception
+            except OSError as e:
+                print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+            # Handle other exceptions such as atribute error
+            except:
+                print "Unexpected error: ", sys.exc_info()[0]
+                print("\n---- Waiting to reconnect with the Smartphone ----\n")
 
 
     # Start Notify

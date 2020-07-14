@@ -24,7 +24,7 @@
 
 import sys, os
 
-import uart_peripheral, gatt_advertisement, gatt_server, obstacles_Distances
+import uart_peripheral, gatt_advertisement, gatt_server, ultrasonic_sensor
 
 # Import Threads
 import threading
@@ -68,7 +68,7 @@ class thread_thread_uartpheral(threading.Thread):
 
 
 # Creates a thread that launchs the obstacle detection
-class thread_ObstaclesDistance(threading.Thread):
+class thread_Ultrasonic_Sensor(threading.Thread):
 
     def __init__(self):
 
@@ -93,7 +93,7 @@ class thread_ObstaclesDistance(threading.Thread):
     def start_ObstacleDistance(self):
 
         try:
-            obstacles_Distances.main()
+            ultrasonic_sensor.main()
         except:
             raise
 
@@ -105,6 +105,8 @@ class thread_ObstaclesDistance(threading.Thread):
 def main():
 
     global flag
+
+    print("\n---- Starting the SmartBike System program ----\n")
 
     thread_uart = thread_thread_uartpheral()
     thread_uart.start()
@@ -119,13 +121,16 @@ def main():
             if uart_peripheral.ready_flag == True and flag == 0:
 
                 flag = 1
-                thread_obsDist = thread_ObstaclesDistance()
+                thread_obsDist = thread_Ultrasonic_Sensor()
                 thread_obsDist.start()
 
             elif flag == 1:
                 thread_obsDist.join(1)
 
         except KeyboardInterrupt:
+
+            print("\n---- Closing the SmartBike System Program ----\n")
+
             # Ctrl-C handling and send kill to threads
             thread_uart.kill_received = True
 
@@ -136,9 +141,16 @@ def main():
 
             # Exit the function
             try:
+
+                print("\n---- SmartBike System Program finished ----\n")
+
                 sys.exit(0)
 
+
             except SystemExit:
+
+                print("\n---- SmartBike System Program finished ----\n")
+
                 os._exit(0)
 
 

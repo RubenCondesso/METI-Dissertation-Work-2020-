@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# obstacles_Distances.py - Ultrasonic Sensor Class for the Raspberry Pi Zero
+# ultrasonic_sensor.py - Ultrasonic Sensor Class for the Raspberry Pi Zero
 #
 # 17 April 2020 - 3.0
 #
@@ -74,7 +74,7 @@ list_distances = deque([None] * 5)
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
 # Ultrasonic sensor class
-class Ultrasonic_Sensor(threading.Thread):
+class Obstacle_Detection (threading.Thread):
     '''
         Thread that writes the detected obstacle distances to the text file
     '''
@@ -165,8 +165,8 @@ class Ultrasonic_Sensor(threading.Thread):
             # Distance measured by the Ultrasonic Sensor
             distance = distance + self.GPIO_OFFSET
 
-            print("Distance before: ")
-            print(distance)
+            #print("Distance before: ")
+            #print(distance)
 
             # Check if the weighted average was calculated
             if self.weighted_average(distance) != 0:
@@ -179,8 +179,8 @@ class Ultrasonic_Sensor(threading.Thread):
                     # Transform measured distance in the weighted of that distance
                     distance = self.weighted_average(distance)
 
-                    print("Distance after: ")
-                    print(distance)
+                    #print("Distance after: ")
+                    #print(distance)
 
                     # Open the text file
                     data_file = open("/home/pi/SmartBike/Output/detected_obstacles.txt","a")
@@ -302,7 +302,7 @@ class Ultrasonic_Sensor(threading.Thread):
                 time_difference = self.calculate_diffTime(time_deque, time_current)
 
                 # Time difference is acceptable
-                if time_difference <= 4:
+                if time_difference <= 15:
 
                     # GPS coordenates
                     return i
@@ -606,14 +606,14 @@ def main():
         file_create.close()
 
     # Run the ultrasonic sensor wtih this GPIO pins: Trigger - 18 & Echo - 24
-    sensor = Ultrasonic_Sensor(18, 24)
+    sensor = Obstacle_Detection(18, 24)
     sensor.start()
 
     # Run the Handler Thread
     state = HandlerState()
     state.start()
 
-    print("\n---- Starting Sensing System program ----\n")
+    print("\n---- Starting the Sensing System ----\n")
 
     while sensor.isAlive():
 
