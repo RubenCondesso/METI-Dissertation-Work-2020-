@@ -43,6 +43,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -77,6 +78,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -129,6 +133,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private static final String RESULT = "DEN Message result";
     private static final String VALID = "CAM Message veracity";
     private static final String TYPE = "Message's type";
+    private static final String GATT_STATE = "GATT_STATE";
+    private static final String ImAlive = "ImAlive veracity";
 
     // Textview to display on the screen
     //private TextView mLatitudeTextView;
@@ -160,6 +166,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     // Initialize sql database
     SQLite_Database mDatabase;
+
+    // Last timestamp received from the Sensing System
+    Date lasTimestamp;
+
+
 
     /**
      *  Called when the activity starts for the first time
@@ -219,9 +230,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onResume();
 
         // Scan for all BLE devices
-        // The first one with the UART service (RPi Zero) will be chosen
         writeLine("Scanning for Bluetooth devices...");
 
+        // Connect to the first device with the UART service -> RPi Zero
         adapter.startLeScan(scanCallback);
     }
 
@@ -387,6 +398,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // LatLng Object can be created for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+
         if (tx == null || msg == null || msg.isEmpty()) {
             // Do nothing if there is no device or message to send
         }
@@ -398,11 +410,27 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             tx.setValue(msg.getBytes(Charset.forName("UTF-8")));
 
             if (gatt.writeCharacteristic(tx)) {
-                writeLine("App - " + msg);
+                //writeLine("App - " + msg);
             }
             else {
                 writeLine("Could not write TX characteristic.");
             }
+        }
+
+        try {
+
+            if (lasTimestamp != null){
+
+                // Constantly checking how long has passed since the last imAlive received
+                if (!timeDiff()){
+
+                    // Last imAlive was received more than 30 seconds ago -> conclude that Sensing System is down
+                    writeLine("Sensing System is down. Restart SmartBike System.");
+                }
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -473,26 +501,26 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             super.onConnectionStateChange(gatt, status, newState);
 
-            String msgReady = "Ready";
-            String msgEnd = "End";
+            switch (newState){
 
-            // Different states that can exist or change to
-            if (newState == BluetoothGatt.STATE_CONNECTED) {
+                // Different states that can exist or change to
+                case BluetoothGatt.STATE_CONNECTED:
 
-                writeLine("Connected to GATT Server - Sensing System");
+                    writeLine("Connected to GATT Server - Sensing System");
+                    gatt.discoverServices();
+                    Log.i(GATT_STATE, "GATT STATE -> Connected");
+                    break;
 
-                if (!gatt.discoverServices()) {
+                case BluetoothGatt.STATE_DISCONNECTED:
 
-                    writeLine("Failed to start discovering services");
-                }
+                    writeLine("Disconnected from GATT Server");
+                    Log.i(GATT_STATE, "GATT STATE -> Disconnected");
+                    break;
 
-            } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+                default:
 
-                writeLine("Disconnected from GATT Server");
-
-            } else {
-
-                writeLine("Connection state changed.  New state: " + newState);
+                    writeLine("Connection state changed.  New state: " + newState);
+                    Log.i(GATT_STATE, "GATT STATE -> Other");
             }
         }
 
@@ -508,7 +536,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 writeLine("Sensing System Service discovery completed.");
             } else {
-                writeLine("Sensing System Service discovery failed with status: " + status);
+                writeLine("Sensing System Service discovery failed -> " + status);
             }
 
             // Save reference to each characteristic -> Read and Write
@@ -534,7 +562,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 }
 
             } else {
-
                 writeLine("Could not get RX client descriptor.");
             }
         }
@@ -557,6 +584,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             // Check if is necessary to send a DEN Message
             try {
+
                 boolean result = isDEN_Message();
 
                 if (result){
@@ -577,7 +605,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 e.printStackTrace();
             }
 
-            // Check if the messages is the CAM's type
+            // Check if the message is the CAM's type
             if (isCAM_Message(message)){
 
                 // Call method to add the received data
@@ -585,6 +613,15 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
                 // Just for debug
                 //populateDatabaseView();
+            }
+
+            // Check if the message is a ImAlive
+            try {
+                if (is_ImAlive(message)){
+                    Log.d(VALID, "Message received is a valid ImAlive!");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
             // Display on the Smartphone's screen
@@ -613,7 +650,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 // Found the device -> stop the scanning
                 adapter.stopLeScan(scanCallback);
 
-                writeLine("Found the UART service.");
+                writeLine("Found the BLE UART Service.");
 
                 // Connect to the GATT Server - Raspberry Pi Zero
                 // Control flow will now go to the callback functions when BLE events occur
@@ -658,6 +695,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 messages.append(text);
                 messages.append("\n");
             }
@@ -730,6 +768,112 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
 /*
+# ==============================================================================================================    ImAlive    ======================================================================================================================== #
+*/
+
+    /**
+     * Check if the Message received from the Raspberry Pi is a ImAlive Message
+     * @param message - String that refers to the message received
+     * @return true if Message is ImAlive's type -> it has that exact structure: "ImAlive" + Timestamp
+     * @return false if not
+     */
+    private boolean is_ImAlive(String message) throws ParseException {
+
+        // Split string by spaces
+        String[] splitStr = message.split("\\s+");
+
+        // Check size of message received
+        if (splitStr.length == 5){
+
+            // Check if message is a ImAlive
+            if (splitStr[0].equals("ImAlive")){
+
+                if (splitStr[2].length() == 1){
+                    splitStr[2] = "0" + splitStr[2];
+                }
+
+                // Check timestamp received
+                if (msgTimestamp_Veracity(splitStr[1], splitStr[2], splitStr[3])){
+
+                    String[] parts = splitStr[4].split(":");
+
+                    // Separate hours, minutes and seconds
+                    if (parts.length == 3){
+
+                        String part1 = parts[0];
+                        String part2 = parts[1];
+                        String part3 = parts[2];
+
+                        String string_timestamp = splitStr[1] + "/" + splitStr[2] + "/" + splitStr[3] + " " + part1 + ":" + part2 + ":" + part3;
+
+                        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+                        // Timestamp from ImAlive received
+                        lasTimestamp = format.parse(string_timestamp);
+
+                        System.out.println("Timestamp:");
+                        System.out.println(lasTimestamp);
+
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Check how much time has passed since the last imAlive received
+     * @return true if time difference is less than 20
+     * @return false if not
+     */
+    private boolean timeDiff() throws ParseException {
+
+        // Current date
+        Date current_date = new Date();
+
+        // Choose time zone in which you wat to interpret your date
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Lisbon"));
+        cal.setTime(current_date);
+
+        // Current day
+        String current_day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+
+        // Current month
+        String current_month = String.valueOf(((cal.get(Calendar.MONTH)) + 1));
+
+        // Current year
+        String current_year = String.valueOf(cal.get(Calendar.YEAR));
+
+        // Current hour
+        String current_hour = String.valueOf(cal.get(Calendar.HOUR_OF_DAY));
+
+        // Current minute
+        String current_minute = String.valueOf(cal.get(Calendar.MINUTE));
+
+        // Current minute
+        String current_seconds = String.valueOf(cal.get(Calendar.SECOND));
+
+        String string_date_now = current_day + "/" + current_month + "/" + current_year + " " + current_hour + ":" + current_minute + ":" + current_seconds;
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        Date date_now = format.parse(string_date_now);
+
+        long difference_Time = date_now.getTime() - lasTimestamp.getTime();
+
+        int difference_Time_Seconds = (int) difference_Time/(1000);
+
+        // Smartphone received an ImAlive less than 31 seconds ago -> correct ImAlive
+        if (difference_Time_Seconds <= 30){
+            return true;
+        }
+        return false;
+    }
+
+
+/*
 # ==============================================================================================================    CAM Module    ======================================================================================================================== #
 */
 
@@ -744,23 +888,23 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Split string by spaces
         String[] splitStr = data.split("\\s+");
 
-        // Check if message received has this exact structure
-        if (splitStr[0].equals("ID:") || splitStr[3].equals("Timestamp:") || splitStr[9].equals("Obstacle") || splitStr[10].equals("distance:") || splitStr[13].equals("State:") || splitStr[16].equals("GPS") || splitStr[17].equals("Coordinates:")){
+        // Check size of message received
+        if (splitStr.length == 19){
 
-            System.out.println("Going to verify the veracity of the CAM Message" + "\n");
+            // Check if message received has this exact structure
+            if (splitStr[0].equals("ID:") || splitStr[3].equals("Timestamp:") || splitStr[9].equals("Obstacle") || splitStr[10].equals("distance:") || splitStr[13].equals("State:") || splitStr[16].equals("GPS") || splitStr[17].equals("Coordinates:")){
 
-            // Check if all parameters are valid
-            if (msgID_Veracity(splitStr[1]) && msgTimestamp_Veracity(splitStr[4], splitStr[5], splitStr[6]) && msgDistance_Veracity(splitStr[11]) && msgState_Veracity(splitStr[14]) && msgGPS_Veracity(splitStr[18])){
+                // Check if all parameters are valid
+                if (msgID_Veracity(splitStr[1]) && msgTimestamp_Veracity(splitStr[4], splitStr[5], splitStr[6]) && msgDistance_Veracity(splitStr[11]) && msgState_Veracity(splitStr[14]) && msgGPS_Veracity(splitStr[18])){
 
-                Log.d(VALID, "CAM message received is valid!");
+                    Log.d(VALID, "CAM message received is valid!");
+                    return true;
+                }
+                else{
 
-                return true;
-            }
-            else{
-
-                Log.d(VALID, "CAM message received is not valid!");
-
-                return false;
+                    Log.d(VALID, "CAM message received is not valid!");
+                    return false;
+                }
             }
         }
 
@@ -768,6 +912,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
         return false;
     }
+
 
     /**
      * Check if the ID of the message received is valid
@@ -794,6 +939,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+
     /**
      * Check if the timestamp of the message received is valid
      * @param day, month, year- timestamp of the message received
@@ -818,10 +964,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Current year
         int current_year = cal.get(Calendar.YEAR);
 
-
-        System.out.println("Month received: " + Integer.parseInt(month) + "\n");
-        System.out.println("Current month: " + current_month + "\n");
-
         // Check timestamp of message received is too old
         if ((current_day == Integer.parseInt(day)) && (current_month == Integer.parseInt(month)) && (current_year == Integer.parseInt(year))){
             return true;
@@ -830,6 +972,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             return false;
         }
     }
+
 
     /**
      * Check if the distance of the message received is valid
@@ -856,6 +999,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
+
     /**
      * Check if the state of the message received is valid
      * @param state - state of the message received
@@ -875,6 +1019,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             return false;
         }
     }
+
 
     /**
      * Check if the coordinates of the message received is valid
@@ -906,7 +1051,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             return false;
         }
     }
-
 
 
     /**

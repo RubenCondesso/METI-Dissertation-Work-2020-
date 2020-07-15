@@ -39,6 +39,9 @@ import threading
 # Import uart_peripheral code
 import ultrasonic_sensor
 
+# Import datetime class
+from datetime import datetime
+
 # -------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
 
 BLUEZ_SERVICE_NAME =           'org.bluez'
@@ -91,6 +94,44 @@ class TxCharacteristic(Characteristic):
         # Send the data to Smartphone periodically
         GLib.timeout_add_seconds(2, self.read_Data)
 
+        # Send the imALive to Smartphone periodically
+        GLib.timeout_add_seconds(30, self.imAlive)
+
+
+    def imAlive(self):
+
+         # Datetime object containing the local date and time
+        dateTimeObj = datetime.now()
+
+        if len(str(dateTimeObj.day)) == 1:
+            dayTime = "0" + str(dateTimeObj.day)
+
+        else:
+            dayTime = str(dateTimeObj.day)
+
+        # Timestamp with date and hour
+        total_timestamp = []
+
+        total_timestamp = str(dayTime) + " " + str(dateTimeObj.month) + " " + str(dateTimeObj.year) + " " + str(dateTimeObj.hour) + ":" + str(dateTimeObj.minute) + ":" + str(dateTimeObj.second)
+
+        try:
+
+            message_ImAlive = "ImAlive" + " " + total_timestamp
+
+            print(message_ImAlive)
+
+            # Send imAlive to the smartphone
+            self.send_Data(message_ImAlive)
+
+        # Handle IOERROR exception
+        except OSError as e:
+            print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+        # Handle other exceptions such as atribute error
+        except:
+            print "Unexpected error: ", sys.exc_info()[0]
+
+        return True
 
     # Read the data obtained by the Sensing System from the text file
     def read_Data(self):
@@ -177,8 +218,6 @@ class TxCharacteristic(Characteristic):
 
                 # Change properties
                 self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
-
-                print("Vou enviar mensagens")
 
             # Handle IOERROR exception
             except OSError as e:
