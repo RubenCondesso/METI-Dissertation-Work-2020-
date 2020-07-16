@@ -85,7 +85,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -135,6 +137,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private static final String TYPE = "Message's type";
     private static final String GATT_STATE = "GATT_STATE";
     private static final String ImAlive = "ImAlive veracity";
+    private static final String GPS = "Location Relevancy";
 
     // Textview to display on the screen
     //private TextView mLatitudeTextView;
@@ -170,7 +173,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     // Last timestamp received from the Sensing System
     Date lasTimestamp;
 
+    // Queue list when more recent 8 GPS coordinates
+    Queue <LatLng> queueGPS;
 
+    // Number of messages sent to the Sensing System
+    int count = 0;
 
     /**
      *  Called when the activity starts for the first time
@@ -197,6 +204,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Grab the references to the UI elements
         messages = (TextView) findViewById(R.id.messages);
         input = (EditText) findViewById(R.id.input);
+
+        // Initialize Queue GPS coordinates
+        queueGPS = new LinkedList<LatLng>();
 
         mDatabase = new SQLite_Database(this);
 
@@ -398,22 +408,46 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // LatLng Object can be created for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+        // Add new LatLng object to the queue
+        addGPS_Coordinates(latLng);
+        
+        // Check if Queue has got 8 locations
+        if (queueGPS.size() == 8){
 
-        if (tx == null || msg == null || msg.isEmpty()) {
-            // Do nothing if there is no device or message to send
-        }
+            // Check if the update location is relevant enough -> bigger that 2 meters; also check if Smartphone already send a solid number of GPS updates before (8)
+            if (averageGPS_Coordinates(latLng) < 2 && count > 8){
 
-        else{
-
-            tx = gatt.getService(UART_UUID).getCharacteristic(TX_UUID);
-
-            tx.setValue(msg.getBytes(Charset.forName("UTF-8")));
-
-            if (gatt.writeCharacteristic(tx)) {
-                //writeLine("App - " + msg);
+                // Update location is not relevant -> do not send to Sensing System
+                Log.i(GPS, "Update Location is not relevant to send to the Sensing System");
             }
+
+
+            // Update location is relevant -> send to Sensing System
             else {
-                writeLine("Could not write TX characteristic.");
+
+                Log.i(GPS, "Update Location is relevant to send to the Sensing System");
+
+                if (tx == null || msg == null || msg.isEmpty()) {
+                    // Do nothing if there is no device or message to send
+                }
+
+                else{
+
+                    tx = gatt.getService(UART_UUID).getCharacteristic(TX_UUID);
+
+                    tx.setValue(msg.getBytes(Charset.forName("UTF-8")));
+
+                    if (gatt.writeCharacteristic(tx)) {
+
+                        // Increase count
+                        count ++;
+
+                        //writeLine("App - " + msg);
+                    }
+                    else {
+                        writeLine("Could not write TX characteristic.");
+                    }
+                }
             }
         }
 
@@ -482,6 +516,87 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
+
+    /**
+     *  Check location
+     * @param tempGPS - receive a new GPS coordinate to add
+     */
+    private void addGPS_Coordinates(LatLng tempGPS) {
+
+        // Queue size has reached the maximum size -> 8
+        if (queueGPS.size() == 8) {
+
+            // Add new GPS coordinate
+            queueGPS.add(tempGPS);
+
+            // Remove older GPS coordinate -> FIFO List
+            queueGPS.remove();
+        }
+        // Queue size is not yet the maximum
+        if (queueGPS.size() < 8) {
+
+            // Add new GPS coordinate
+            queueGPS.add(tempGPS);
+        }
+    }
+
+    /**
+     *  Check location
+     * @param tempGPS - receive a current GPS coordinate
+     * @return average distance (in meters) between the average of the most 8 recent saved GPS coordinates and the current GPS coordinate
+     */
+    private double averageGPS_Coordinates(LatLng tempGPS) {
+
+        double latGPS = 0;
+        double longGPS = 0;
+        int sizeList = queueGPS.size();
+
+        // Get average location of the most recent GPS coordinates
+        for (LatLng point: queueGPS){
+            latGPS += point.latitude;
+            longGPS += point.longitude;
+        }
+
+        // Get average GPS coordinate
+        LatLng averageLocation = new LatLng (latGPS/sizeList, longGPS/sizeList);
+
+        // Return distance (in meters) between average GPS coordinate and current GPS coordinate
+        return distance_between(averageLocation.latitude, averageLocation.longitude, tempGPS.latitude, tempGPS.longitude);
+    }
+
+    /**
+     *  Get the distance, is meters, between two GPS coordinates
+     * @param lat1, lon1, lat2, lon2
+     * @return distance (in Kms) between GPS coordinates
+     */
+    private double distance_between(double lat1, double lon1, double lat2, double lon2) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1000;
+        return dist;
+
+    }
+
+    /**
+     *  Convert degrees in radians
+     * @param deg
+     * @return radians of deg
+     */
+    private double deg2rad (double deg){
+        return (deg * Math.PI / 180.0);
+    }
+
+    /**
+     *  Convert radians in degrees
+     * @param rad
+     * @return degrees of rad
+     */
+    private double rad2deg (double rad){
+        return (rad * 180.0/ Math.PI);
+    }
 
 /*
 # ================================================================================================================    BLE    ========================================================================================================================== #
@@ -618,7 +733,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             // Check if the message is a ImAlive
             try {
                 if (is_ImAlive(message)){
-                    Log.d(VALID, "Message received is a valid ImAlive!");
+                    Log.d(ImAlive, "Message received is a valid ImAlive!");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
