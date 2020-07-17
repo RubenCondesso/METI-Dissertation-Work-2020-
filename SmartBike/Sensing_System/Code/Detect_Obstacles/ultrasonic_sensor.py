@@ -71,12 +71,14 @@ lock = threading.Semaphore()
 # List with last 5 distances measured -> FIFO list
 list_distances = deque([None] * 5)
 
+# List with last 10 measured in the same second
+timeInstance_measures = []
 # -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
 
-# Ultrasonic sensor class
+# Obstacle Detection class
 class Obstacle_Detection (threading.Thread):
     '''
-        Thread that writes the detected obstacle distances to the text file
+        Thread that manages the obstacle detection process
     '''
 
     # Init
@@ -112,7 +114,7 @@ class Obstacle_Detection (threading.Thread):
     def run (self):
 
         while self.kill_received == False:
-            self.echo_signal()
+            self.write_data()
 
         GPIO.cleanup()
 
@@ -124,9 +126,6 @@ class Obstacle_Detection (threading.Thread):
         GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)
 
         #print "Waiting for the Sensor to settle"
-
-        # Some gap between measurements
-        sleep(1)
 
         # Set the Trigger to HIGH
         GPIO.output(self.GPIO_TRIGGER, GPIO.HIGH)
@@ -159,62 +158,86 @@ class Obstacle_Detection (threading.Thread):
         # Round to two decimal points
         distance = round(distance, 2)
 
+        print("Distance measured: ")
+        print(distance)
+
+        return distance
+
+
+    # Calculate the most likely value for each obstacle detection
+    def data_mean(self):
+
+        global timeInstance_measures
+
+        # Get new measures while list has not have 10 measurements
+        while (len(timeInstance_measures) < 10):
+
+            # Append new measure to the list
+            timeInstance_measures.append(self.echo_signal())
+
+        # eliminates values that fall beyond n (=2) standard deviations from the mean of current list
+        correct_list = [x for x in timeInstance_measures if abs(x - np.mean(timeInstance_measures)) < np.std(timeInstance_measures) * 2 ]
+
+        # Reset list
+        timeInstance_measures = []
+
+        return np.mean(correct_list)
+
+
+    # Generate CAM Messages
+    def write_data(self):
+
+        # Some gap between measurements
+        sleep(1.1)
+
+        # Get the distance measured for that time instance
+        distance = self.data_mean()
+
+        print("\n")
+        print("Valor esperado:")
+        print(distance)
+
         # Check whether the distance is within the sensor's range + some compensation
         if distance > 2 and distance < 450:
 
             # Distance measured by the Ultrasonic Sensor
             distance = distance + self.GPIO_OFFSET
 
-            #print("Distance before: ")
-            #print(distance)
+            # Lock
+            lock.acquire()
 
-            # Check if the weighted average was calculated
-            if self.weighted_average(distance) != 0:
+            try:
 
-                # Lock
-                lock.acquire()
+                # Open the text file
+                data_file = open("/home/pi/SmartBike/Output/detected_obstacles.txt","a")
 
-                try:
+                # Get the ID of Raspberry Pi Zero
+                rpi_ID = self.getIP_RPizero()
 
-                    # Transform measured distance in the weighted of that distance
-                    distance = self.weighted_average(distance)
+                # Get the timestamp of this exact moment
+                present_timestamp = self.current_timestamp()
 
-                    #print("Distance after: ")
-                    #print(distance)
+                # GPS coordenates of the Smartphone when the obstacle was detected
+                gps_coordenates = self.setGPS_Coordenates(uart_peripheral.array_GPS, present_timestamp)
 
-                    # Open the text file
-                    data_file = open("/home/pi/SmartBike/Output/detected_obstacles.txt","a")
+                # Add this distance to the text file
+                data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordinates: " + str(gps_coordenates[0]) + "\n")
 
-                    # Get the ID of Raspberry Pi Zero
-                    rpi_ID = self.getIP_RPizero()
+                #print("Obstacle detected")
 
-                    # Get the timestamp of this exact moment
-                    present_timestamp = self.current_timestamp()
+                # Close the text file
+                data_file.close()
 
-                    # GPS coordenates of the Smartphone when the obstacle was detected
-                    gps_coordenates = self.setGPS_Coordenates(uart_peripheral.array_GPS, present_timestamp)
+            # Handle IOERROR exception
+            except OSError as e:
+                print "I/O error({0}: {1}".format(e.errno, e.strerror)
 
-                    # Add this distance to the text file
-                    data_file.write("ID: " + rpi_ID + " | " + "Timestamp: " + str(present_timestamp) + " | " + "Obstacle distance: " + str(distance) + " | " + "State: Unknown" + " | " "GPS Coordinates: " + str(gps_coordenates[0]) + "\n")
+            # Handle other exceptions such as atribute error
+            except:
+                print "Unexpected error: ", sys.exc_info()[0]
 
-                    #print("Obstacle detected")
-
-                    # Close the text file
-                    data_file.close()
-
-                # Handle IOERROR exception
-                except OSError as e:
-                    print "I/O error({0}: {1}".format(e.errno, e.strerror)
-
-                # Handle other exceptions such as atribute error
-                except:
-                    print "Unexpected error: ", sys.exc_info()[0]
-
-                # Unlock
-                lock.release()
-
-            else:
-                print("Weight average distance could not be calculated")
+            # Unlock
+            lock.release()
 
         else:
 
@@ -224,16 +247,10 @@ class Obstacle_Detection (threading.Thread):
 
         return str(distance)
 
+
+    '''
     # Get weighted average of last 6 distances measured
     def weighted_average(self, distance):
-        '''
-            Distances Weights:
-                . current distance - 0.3
-                . last distance measured - 0.15
-                . penultimate distance measured - 0.15
-                . antepenultimate distance measured - 0.1
-                . remaining two distances measured - 0.05 + 0.05
-        '''
 
         # Save distance in distances list
         list_distances.pop()
@@ -246,6 +263,7 @@ class Obstacle_Detection (threading.Thread):
             return np.average([distance, list_distances[0], list_distances[1], list_distances[2], list_distances[3], list_distances[4]], weights = [0.5, 0.15, 0.15, 0.10, 0.05, 0.05])
 
         return 0
+    '''
 
 
     # Get the IP of the Raspberry Pi Zero
@@ -482,7 +500,7 @@ class Obstacle_Detection (threading.Thread):
 # HandlerState class
 class HandlerState(threading.Thread):
     '''
-        Thread responsible for read the text files and change the obstacle state - Idle or Active
+        Thread responsible for setting the obstacle state - Idle or Active
     '''
 
     # Init
