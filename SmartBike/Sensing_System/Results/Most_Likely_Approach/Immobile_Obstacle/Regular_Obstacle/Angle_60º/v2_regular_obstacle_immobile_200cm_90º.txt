@@ -1,0 +1,117 @@
+#
+# v2_regular_obstacle_immobile_200cm_90º.txt - Text file for the Sensing System
+#
+# 16 June 2020 - 2.0
+#
+# Author: Ruben Condesso - 81969 - 2nd Semester (2020)
+#
+#
+# SmartBike System - Master Thesis in Telecommunications and Computer Engineering
+#
+#
+# Output of the results from the detection of a regular immobile obstacle, in a simulated environment, using most 'likely approach'
+#
+
+# =================================================================================== Scenario conditions ===================================================================================== #
+
+# Environment - simulated
+#
+# Obstacle - Wall
+# Obstacle's caractheristics - Regular immobile obstacle, 3.20 x 2.50
+$
+# Distance (from the sensor) - 200cm
+#
+# Angle (between the sensor and the obstacle) - 90º
+#
+# The sensor is placed facing the center of the wall
+#
+# The mean, variance, standard variation, standard error and percentage error of the collected values are calculated
+#
+
+
+# =================================================================================== Output starts here ===================================================================================== #
+
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:1:55 | Obstacle distance: 197.89555555555555 | State: Moving | GPS Coordinates: 38.7550621,-9.1410559
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:1:57 | Obstacle distance: 197.98 | State: Immobile | GPS Coordinates: 38.7550638,-9.1410699
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:1:59 | Obstacle distance: 197.82333333333332 | State: Immobile | GPS Coordinates: 38.755069,-9.1410817
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:1 | Obstacle distance: 198.0475 | State: Immobile | GPS Coordinates: 38.755069,-9.1410817
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:3 | Obstacle distance: 197.935 | State: Immobile | GPS Coordinates: 38.755069,-9.1410817
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:6 | Obstacle distance: 198.06 | State: Immobile | GPS Coordinates: 38.755069,-9.1410817
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:8 | Obstacle distance: 197.9185714285714 | State: Immobile | GPS Coordinates: 38.755069,-9.1410817
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:10 | Obstacle distance: 197.9288888888889 | State: Immobile | GPS Coordinates: 38.755069,-9.1410817
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:12 | Obstacle distance: 197.9633333333333 | State: Immobile | GPS Coordinates: 38.755069,-9.1410817
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:14 | Obstacle distance: 198.07555555555555 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:16 | Obstacle distance: 197.86624999999998 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:19 | Obstacle distance: 198.15333333333334 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:21 | Obstacle distance: 196.17333333333332 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:23 | Obstacle distance: 197.9 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:25 | Obstacle distance: 198.1833333333333 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:27 | Obstacle distance: 197.77666666666664 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:29 | Obstacle distance: 198.0988888888889 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:32 | Obstacle distance: 197.77 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:34 | Obstacle distance: 198.0288888888889 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:36 | Obstacle distance: 198.0811111111111 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:38 | Obstacle distance: 197.98111111111112 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:40 | Obstacle distance: 190.92428571428576 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:42 | Obstacle distance: 198.02555555555557 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:45 | Obstacle distance: 197.92249999999999 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:47 | Obstacle distance: 197.85125 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:49 | Obstacle distance: 197.936 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:51 | Obstacle distance: 198.27444444444444 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:53 | Obstacle distance: 197.99428571428572 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:55 | Obstacle distance: 198.15285714285713 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:2:58 | Obstacle distance: 197.8525 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:0 | Obstacle distance: 197.9325 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:2 | Obstacle distance: 195.23777777777775 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:4 | Obstacle distance: 197.93375 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:6 | Obstacle distance: 197.8514285714286 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:8 | Obstacle distance: 197.9114285714286 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:11 | Obstacle distance: 197.92222222222225 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:13 | Obstacle distance: 198.13125 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:15 | Obstacle distance: 197.91125 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:17 | Obstacle distance: 198.0033333333333 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:19 | Obstacle distance: 197.97833333333332 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:22 | Obstacle distance: 197.91125 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:24 | Obstacle distance: 198.01777777777775 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:26 | Obstacle distance: 197.98555555555558 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:28 | Obstacle distance: 197.93625 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:30 | Obstacle distance: 197.28625 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:32 | Obstacle distance: 200.26125000000002 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:35 | Obstacle distance: 194.975 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:37 | Obstacle distance: 195.1588888888889 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:39 | Obstacle distance: 205.18 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:41 | Obstacle distance: 198.37666666666667 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:43 | Obstacle distance: 197.92999999999998 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:45 | Obstacle distance: 197.92555555555555 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:48 | Obstacle distance: 198.0514285714286 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:50 | Obstacle distance: 198.04000000000002 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:52 | Obstacle distance: 200.36624999999998 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:54 | Obstacle distance: 204.61333333333334 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:56 | Obstacle distance: 204.05000000000004 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:3:59 | Obstacle distance: 190.89333333333335 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:4:1 | Obstacle distance: 184.2577777777778 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+ID: 192.168.0.1 | Timestamp: 21 7 2020 17:4:3 | Obstacle distance: 197.88375 | State: Immobile | GPS Coordinates: 38.755069,-9.10235205458
+
+
+
+# =================================================================================== Results ===================================================================================== #
+
+Height (from ground): 45cm
+
+Time interval: 120 seconds
+
+Number of measurements: 60
+
+Minimum number:
+
+Maximum number:
+
+Mean of the obstacle's distance measured:
+
+Standard variation of the obstacle's distance measured:
+
+Variance of the obstacle's distance measured:
+
+Standard Error:
+
+Percentage Error:

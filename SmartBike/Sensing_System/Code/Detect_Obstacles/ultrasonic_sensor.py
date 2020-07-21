@@ -122,6 +122,8 @@ class Obstacle_Detection (threading.Thread):
     # Get the distance measurement to the obstacle detected
     def echo_signal(self):
 
+        sleep(0.1)
+
         # Set TRIG as LOW
         GPIO.output(self.GPIO_TRIGGER, GPIO.LOW)
 
@@ -158,9 +160,6 @@ class Obstacle_Detection (threading.Thread):
         # Round to two decimal points
         distance = round(distance, 2)
 
-        print("Distance measured: ")
-        print(distance)
-
         return distance
 
 
@@ -175,8 +174,8 @@ class Obstacle_Detection (threading.Thread):
             # Append new measure to the list
             timeInstance_measures.append(self.echo_signal())
 
-        # eliminates values that fall beyond n (=2) standard deviations from the mean of current list
-        correct_list = [x for x in timeInstance_measures if abs(x - np.mean(timeInstance_measures)) < np.std(timeInstance_measures) * 2 ]
+        # eliminates values that fall beyond n (= 1) standard deviations from the mean of current list
+        correct_list = [x for x in timeInstance_measures if abs(x - np.mean(timeInstance_measures)) < np.std(timeInstance_measures) * 1 ]
 
         # Reset list
         timeInstance_measures = []
@@ -188,14 +187,10 @@ class Obstacle_Detection (threading.Thread):
     def write_data(self):
 
         # Some gap between measurements
-        sleep(1.1)
+        sleep(1)
 
         # Get the distance measured for that time instance
         distance = self.data_mean()
-
-        print("\n")
-        print("Valor esperado:")
-        print(distance)
 
         # Check whether the distance is within the sensor's range + some compensation
         if distance > 2 and distance < 450:
@@ -240,7 +235,6 @@ class Obstacle_Detection (threading.Thread):
             lock.release()
 
         else:
-
             #print("No obstacle detected")
 
             distance = 0
@@ -567,6 +561,8 @@ class HandlerState(threading.Thread):
                 # Unlock
                 lock.release()
 
+        '''
+
         # Lock
         lock.acquire()
 
@@ -584,6 +580,10 @@ class HandlerState(threading.Thread):
 
         # Unlock
         lock.release()
+
+        '''
+
+
 
         # Set the status of detection made
         with open("/home/pi/SmartBike/Output/status_obstacles.txt", 'w') as f:
