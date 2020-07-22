@@ -63,7 +63,8 @@ from collections import deque
 import uart_peripheral
 
 
-# --------------------------------------------------------------------------------------- Startup ------------------------------------------------------------------------------------------- #
+##################################################################################   Startup  ########################################################################################################################################################################################################################################################################################################################################################################################################################
+
 
 # Lock to be used in accessing to data files
 lock = threading.Semaphore()
@@ -73,7 +74,13 @@ list_distances = deque([None] * 5)
 
 # List with last 10 measured in the same second
 timeInstance_measures = []
-# -------------------------------------------------------------------------------------- Functions ------------------------------------------------------------------------------------------ #
+
+
+
+##################################################################################   Functions  ########################################################################################################################################################################################################################################################################################################################################################################################################################
+
+
+# ---------------------------------------------------------------------------- Obstacle Detection Thread -------------------------------------------------------------------------------------- #
 
 # Obstacle Detection class
 class Obstacle_Detection (threading.Thread):
@@ -243,24 +250,6 @@ class Obstacle_Detection (threading.Thread):
             distance = 0
 
         return str(distance)
-
-
-    '''
-    # Get weighted average of last 6 distances measured
-    def weighted_average(self, distance):
-
-        # Save distance in distances list
-        list_distances.pop()
-        list_distances.appendleft(distance)
-
-        # Check if the sensor already measured 8 distances so far
-        if None not in list_distances:
-
-            # Get weigthed average from last 6 distances measured - current distance + last 5 distances measured
-            return np.average([distance, list_distances[0], list_distances[1], list_distances[2], list_distances[3], list_distances[4]], weights = [0.5, 0.15, 0.15, 0.10, 0.05, 0.05])
-
-        return 0
-    '''
 
 
     # Get the IP of the Raspberry Pi Zero
@@ -493,6 +482,26 @@ class Obstacle_Detection (threading.Thread):
         return (newCoord, newTimestamp)
 
 
+    '''
+    # Get weighted average of last 6 distances measured
+    def weighted_average(self, distance):
+
+        # Save distance in distances list
+        list_distances.pop()
+        list_distances.appendleft(distance)
+
+        # Check if the sensor already measured 8 distances so far
+        if None not in list_distances:
+
+            # Get weigthed average from last 6 distances measured - current distance + last 5 distances measured
+            return np.average([distance, list_distances[0], list_distances[1], list_distances[2], list_distances[3], list_distances[4]], weights = [0.5, 0.15, 0.15, 0.10, 0.05, 0.05])
+
+        return 0
+    '''
+
+
+
+# ---------------------------------------------------------------------------- Handler State Thread -------------------------------------------------------------------------------------- #
 
 # HandlerState class
 class HandlerState(threading.Thread):
@@ -537,6 +546,16 @@ class HandlerState(threading.Thread):
                 if value_line[14] == "Unknown":
 
                     try:
+
+                        '''
+                            FIX THIS PART OF THE ALGORITHM
+
+                            - Checking the distance difference in consecutive measurements may not be enough;
+                            - One option: . save the distance difference from 3/4 consecutive measurements;
+                                          . if the difference keeps being > x, the obstacle is moving;
+                                          . the middle consecutive measurements (the second and third one), the obstacle's state can be undefined;
+                        '''
+
                         # If difference between two consecutives measurements is small -> obstacles is  motionless
                         if abs(float(value_line[11]) - value_previous) < 20:
 
@@ -615,7 +634,6 @@ class HandlerState(threading.Thread):
 
 
 # -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
-
 
 # Main function - Menu
 def main():
