@@ -17,7 +17,7 @@
 # Environment - simulated
 #
 # Obstacle - Wall
-# Obstacle's caractheristics - Regular immobile obstacle, 3.20 x 2.50
+# Obstacle's caractheristics - Regular immobile obstacle, 1.60 x 2.50
 $
 # Distance (from the sensor) - 150cm
 #

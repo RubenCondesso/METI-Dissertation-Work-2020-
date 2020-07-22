@@ -1,5 +1,5 @@
 #
-# parameters_statistics - Python file for the Sensing System
+# Standard_Approach - parameters_statistics - Python file for the Sensing System
 #
 # 3 July 2020 - 1.0
 #
@@ -9,7 +9,7 @@
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# Calculate the parameters and get statistics for all data collected
+# Calculate the parameters and get statistics for all data collected, for the standard approach
 #
 
 from statistics import mean

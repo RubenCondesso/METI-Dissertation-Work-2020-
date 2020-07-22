@@ -1,7 +1,7 @@
 #
-# v1_regular_obstacle_immobile_400cm_60º.txt - Text file for the Sensing System
+# v2_irregular_obstacle_immobile_100cm_90º.txt - Text file for the Sensing System
 #
-# 23 June 2020 - 2.0
+# 16 June 2020 - 2.0
 #
 # Author: Ruben Condesso - 81969 - 2nd Semester (2020)
 #
@@ -9,7 +9,7 @@
 # SmartBike System - Master Thesis in Telecommunications and Computer Engineering
 #
 #
-# Output of the results from the detection of a regular immobile obstacle, in a simulated environment, using standard approach
+# Output of the results from the detection of a irregular immobile obstacle, in a simulated environment, using most 'likely approach'
 #
 
 # =================================================================================== Scenario conditions ===================================================================================== #
@@ -17,13 +17,13 @@
 # Environment - simulated
 #
 # Obstacle - Wall
-# Obstacle's caractheristics - Regular immobile obstacle, 1.60 x 2.50
+# Obstacle's caractheristics - Irregular immobile obstacle, 1.60 x 2.50
 $
-# Distance (from the sensor) - 400cm
+# Distance (from the sensor) - 100cm
 #
-# Angle (between the sensor and the obstacle) - 60º
+# Angle (between the sensor and the obstacle) - 90º
 #
-# The sensor is placed slightly to the left of the wall
+# The sensor is placed facing the center of the wall
 #
 # The mean, variance, standard variation, standard error and percentage error of the collected values are calculated
 #
@@ -31,28 +31,27 @@ $
 
 # =================================================================================== Output starts here ===================================================================================== #
 
-Can not detect neither the obstacle neither the hypotenuse (because the distance is bigger than 4 meters)
+
 
 
 # =================================================================================== Results ===================================================================================== #
 
-Height (from ground): 75cm
+Height (from ground): 45cm
 
-Time interval: 1 minute
+Time interval: 120 seconds
 
 Number of measurements: 60
 
-Mininum number: NA
+Minimum number:
 
-Maximum number: NA
+Maximum number:
 
-Mean of the obstacle's distance measured: NA
+Mean of the obstacle's distance measured:
 
-Standard variation of the obstacle's distance measured: NA
+Standard variation of the obstacle's distance measured:
 
-Variance of the obstacle's distance measured: NA
+Variance of the obstacle's distance measured:
 
-Standard Error: NA
+Standard Error:
 
-Percentage Error: NA
-
+Percentage Error:

@@ -192,6 +192,9 @@ class Obstacle_Detection (threading.Thread):
         # Get the distance measured for that time instance
         distance = self.data_mean()
 
+        # Round to two decimal points
+        distance = round(distance, 2)c
+
         # Check whether the distance is within the sensor's range + some compensation
         if distance > 2 and distance < 450:
 
