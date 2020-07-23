@@ -75,7 +75,8 @@ list_distances = deque([None] * 5)
 # List with last 10 measured in the same second
 timeInstance_measures = []
 
-
+# List with potencial consecutive distances of a moving obstacle
+movingObstacle_distances = []
 
 ##################################################################################   Functions  ########################################################################################################################################################################################################################################################################################################################################################################################################################
 
@@ -200,7 +201,7 @@ class Obstacle_Detection (threading.Thread):
         distance = self.data_mean()
 
         # Round to two decimal points
-        distance = round(distance, 2)c
+        distance = round(distance, 2)
 
         # Check whether the distance is within the sensor's range + some compensation
         if distance > 2 and distance < 450:
@@ -526,52 +527,139 @@ class HandlerState(threading.Thread):
     # Check the state of the obstacle
     def check_obstacleState(self):
 
-        value_previous = 0
-
         newlines = []
 
-        with open("/home/pi/SmartBike/Output/detected_obstacles.txt", 'r') as f:
+        global movingObstacle_distances
 
-            # Do a small sleep to acquire first some detection
-            sleep(1.1)
+        try:
 
-            for line in f.readlines():
+            with open("/home/pi/SmartBike/Output/detected_obstacles.txt", 'r') as f:
 
-                # Lock
-                lock.acquire()
+                # Sleep to acquire first some detections
+                sleep(1)
 
-                value_line = line.split()
+                # Read all lines in the file so far
+                all_lines = f.readlines()
 
-                # The state of the obstacle has not been defined yet
-                if value_line[14] == "Unknown":
+                # Create list with size 3
+                value_line = [None] * 3
+
+                # when the file have at least 3 measurements
+                if (len(all_lines) > 2):
+
+                    # Get lines in groups of 3 lines consecutives
+                    for i in range(0, len(all_lines), 3):
+
+                        # Lock
+                        lock.acquire()
+
+                        value_line[i:i+3] = all_lines[i:i+3]
+
+                        # Iterate over the 3 consecutive distances
+                        for line in value_line:
+
+                            line = line.split()
+
+                            # The state of the obstacle has not been defined yet
+                            if line[14] == "Unknown":
+
+                                # Add distance to list
+                                movingObstacle_distances.append(line[11])
+
+
+                        # check if all 3 distance were added to list
+                        if (len(movingObstacle_distances) == 3):
+
+                            # difference between  the 3 consecutive distances
+                            difference_distance = []
+
+                            try:
+
+                                # iterate over the list
+                                for s in range(1, len(movingObstacle_distances)):
+
+                                    difference_distance.append(abs(float(movingObstacle_distances[s]) - float(movingObstacle_distances[s-1])))
+
+
+                                if (len(difference_distance) == 2):
+
+                                    line_temp = [None] * 3
+                                    line_temp[0] = value_line[i].split()
+                                    line_temp[1] = value_line[i+1].split()
+                                    line_temp[2] = value_line[i+2].split()
+
+                                    # difference between 3 consecutive is always > 10 centimeters -> obstacle is moving
+                                    if (difference_distance[0] > 10 and difference_distance[1] > 10):
+
+                                        # Change the status
+                                        value_line[i] =  value_line[i].replace(line_temp[0][14], "Moving")
+                                        value_line[i+1] =  value_line[i+1].replace(line_temp[1][14], "Moving")
+                                        value_line[i+2] =  value_line[i+2].replace(line_temp[2][14], "Moving")
+
+                                    else:
+
+                                        # Change the status
+                                        value_line[i] =  value_line[i].replace(line_temp[0][14], "Immobile")
+                                        value_line[i+1] =  value_line[i+1].replace(line_temp[1][14], "Immobile")
+                                        value_line[i+2] =  value_line[i+2].replace(line_temp[2][14], "Immobile")
+
+
+                                    # Write new lines to the file
+                                    newlines.append(value_line[i])
+                                    newlines.append(value_line[i+1])
+                                    newlines.append(value_line[i+2])
+
+                                    line_temp = [None] * 3
+
+
+                            # No obstacle detected in this line of file
+                            # Handle IOERROR exception
+                            except OSError as e:
+                                print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+                            # Handle other exceptions such as atribute error
+                            except:
+                                print "Unexpected error: ", sys.exc_info()[0]
+
+
+                            # Reset list
+                            difference_distance = []
+
+                            # Reset list
+                            movingObstacle_distances = []
+
+                        # Reset list
+                        movingObstacle_distances = []
+
+                        # Unlock
+                        lock.release()
+
+        # No obstacle detected in this line of file
+        # Handle IOERROR exception
+        except OSError as e:
+            print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+        # Handle other exceptions such as atribute error
+        except:
+            print "Unexpected error: ", sys.exc_info()[0]
+
+
+
+        try:
+
+            # Set the status of detection made
+            with open("/home/pi/SmartBike/Output/status_obstacles.txt", 'w') as f:
+
+                for line in newlines:
+
+                    # Lock
+                    lock.acquire()
 
                     try:
+                        # Write to the file the detection made with right/real status
+                        f.write(line)
 
-                        '''
-                            FIX THIS PART OF THE ALGORITHM
-
-                            - Checking the distance difference in consecutive measurements may not be enough;
-                            - One option: . save the distance difference from 3/4 consecutive measurements;
-                                          . if the difference keeps being > x, the obstacle is moving;
-                                          . the middle consecutive measurements (the second and third one), the obstacle's state can be undefined;
-                        '''
-
-                        # If difference between two consecutives measurements is small -> obstacles is  motionless
-                        if abs(float(value_line[11]) - value_previous) < 20:
-
-                            # Change the status
-                            line = line.replace(value_line[14], "Immobile")
-
-                        else:
-
-                            # Change the status
-                            line = line.replace(value_line[14], "Moving")
-
-                        value_previous = float(value_line[11])
-
-                        newlines.append(line)
-
-                    # No obstacle detected in this line of file
+                    # No write to be made
                     # Handle IOERROR exception
                     except OSError as e:
                         print "I/O error({0}: {1}".format(e.errno, e.strerror)
@@ -580,10 +668,38 @@ class HandlerState(threading.Thread):
                     except:
                         print "Unexpected error: ", sys.exc_info()[0]
 
-                # Unlock
-                lock.release()
+                    # Unlock
+                    lock.release()
 
-        '''
+        # No obstacle detected in this line of file
+        # Handle IOERROR exception
+        except OSError as e:
+            print "I/O error({0}: {1}".format(e.errno, e.strerror)
+
+        # Handle other exceptions such as atribute error
+        except:
+            print "Unexpected error: ", sys.exc_info()[0]
+
+
+
+# -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
+
+# Main function - Menu
+def main():
+
+    if os.path.exists("/home/pi/SmartBike/Output/detected_obstacles.txt") == False:
+
+         # Lock
+        lock.acquire()
+
+        # Create the file for measures
+        file_create = open("/home/pi/SmartBike/Output/detected_obstacles.txt","w+")
+        file_create.close()
+
+        # Unlock
+        lock.release()
+
+    else:
 
         # Lock
         lock.acquire()
@@ -603,46 +719,6 @@ class HandlerState(threading.Thread):
         # Unlock
         lock.release()
 
-        '''
-
-
-
-        # Set the status of detection made
-        with open("/home/pi/SmartBike/Output/status_obstacles.txt", 'w') as f:
-
-            for line in newlines:
-
-                # Lock
-                lock.acquire()
-
-                try:
-                    # Write to the file the detection made with right/real status
-                    f.write(line)
-
-                # No write to be made
-                # Handle IOERROR exception
-                except OSError as e:
-                    print "I/O error({0}: {1}".format(e.errno, e.strerror)
-
-                # Handle other exceptions such as atribute error
-                except:
-                    print "Unexpected error: ", sys.exc_info()[0]
-
-                # Unlock
-                lock.release()
-
-
-
-# -------------------------------------------------------------------------------------- Main function -------------------------------------------------------------------------------------- #
-
-# Main function - Menu
-def main():
-
-    if os.path.exists("/home/pi/SmartBike/Output/detected_obstacles.txt") == False:
-
-        # Create the file for measures
-        file_create = open("/home/pi/SmartBike/Output/detected_obstacles.txt","w+")
-        file_create.close()
 
     # Run the ultrasonic sensor wtih this GPIO pins: Trigger - 18 & Echo - 24
     sensor = Obstacle_Detection(18, 24)
