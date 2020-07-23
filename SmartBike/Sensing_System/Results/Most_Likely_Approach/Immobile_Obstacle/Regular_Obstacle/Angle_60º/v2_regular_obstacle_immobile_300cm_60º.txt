@@ -101,16 +101,16 @@ Time interval: 120 seconds
 
 Number of measurements: 60
 
-Minimum number:
+Minimum number: 295.27
 
-Maximum number:
+Maximum number: 302.33
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: 296.618
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: 1.1055266403585087
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: 1.2221891525423716
 
-Standard Error:
+Standard Error: 0.142722875563238
 
-Percentage Error:
+Percentage Error: 0.01127

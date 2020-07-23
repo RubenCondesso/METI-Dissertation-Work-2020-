@@ -1,5 +1,5 @@
 #
-# Standard_Approach - parameters_statistics - Python file for the Sensing System
+# Standard_Approach_parameters_statistics - Python file for the Sensing System
 #
 # 3 July 2020 - 1.0
 #
