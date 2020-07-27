@@ -88,7 +88,9 @@ ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:44 | Obstacle distance: 100.62 | Sta
 ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:46 | Obstacle distance: 100.71 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
 ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:48 | Obstacle distance: 101.21 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
 ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:50 | Obstacle distance: 98.78 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
-
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:52 | Obstacle distance: 99.51 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:54 | Obstacle distance: 100.01 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:56 | Obstacle distance: 100.78 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
 
 # =================================================================================== Results ===================================================================================== #
 
@@ -98,16 +100,16 @@ Time interval: 120 seconds
 
 Number of measurements: 60
 
-Minimum number:
+Minimum number: 94.78
 
-Maximum number:
+Maximum number: 102.61
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: 101.15016666666666
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: 1.0591769936865139
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: 1.1218559039548013
 
-Standard Error:
+Standard Error: 0.1367391619077969
 
-Percentage Error:
+Percentage Error: 0.0115

@@ -91,13 +91,6 @@ ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:39 | Obstacle distance: 101.05 | St
 ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:41 | Obstacle distance: 99.63 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
 ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:43 | Obstacle distance: 100.46 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
 ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:45 | Obstacle distance: 100.96 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
-ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:47 | Obstacle distance: 99.83 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
-ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:49 | Obstacle distance: 101.22 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
-ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:51 | Obstacle distance: 100.17 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
-ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:54 | Obstacle distance: 100.59 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
-ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:56 | Obstacle distance: 100.26 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
-ID: 192.168.0.1 | Timestamp: 27 7 2020 13:56:58 | Obstacle distance: 101.01 | State: Immobile | GPS Coordinates: 39.7489661,-8.7828556054
-
 
 
 # =================================================================================== Results ===================================================================================== #
@@ -108,16 +101,16 @@ Time interval: 120 seconds
 
 Number of measurements: 60
 
-Minimum number:
+Minimum number: 98.44
 
-Maximum number:
+Maximum number: 101.91
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: 100.82466666666667
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: 0.6008256089992994
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: 0.36099141242937893
 
-Standard Error:
+Standard Error: 0.07756625258764052
 
-Percentage Error:
+Percentage Error: 0.008246
