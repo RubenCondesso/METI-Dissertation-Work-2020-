@@ -31,6 +31,63 @@ $
 
 # =================================================================================== Output starts here ===================================================================================== #
 
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:37 | Obstacle distance: 100.13 | State: Immobile | GPS Coordinates: 39.7489946,-8.8175253
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:39 | Obstacle distance: 101.79 | State: Immobile | GPS Coordinates: 39.7489946,-8.8175253
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:41 | Obstacle distance: 101.72 | State: Immobile | GPS Coordinates: 39.7489946,-8.8175253
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:44 | Obstacle distance: 101.21 | State: Immobile | GPS Coordinates: 39.7489946,-8.8175253
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:46 | Obstacle distance: 101.25 | State: Immobile | GPS Coordinates: 39.7489946,-8.8175253
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:48 | Obstacle distance: 101.78 | State: Immobile | GPS Coordinates: 39.7489946,-8.8175253
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:50 | Obstacle distance: 101.52 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:52 | Obstacle distance: 101.41 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:54 | Obstacle distance: 101.65 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:56 | Obstacle distance: 101.31 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:58:58 | Obstacle distance: 101.71 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:0 | Obstacle distance: 101.47 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:2 | Obstacle distance: 102.21 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:5 | Obstacle distance: 101.66 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:7 | Obstacle distance: 101.55 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:9 | Obstacle distance: 100.98 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:11 | Obstacle distance: 101.33 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:13 | Obstacle distance: 101.24 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:15 | Obstacle distance: 101.7 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:17 | Obstacle distance: 101.55 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:34 | Obstacle distance: 100.21 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:36 | Obstacle distance: 101.92 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:38 | Obstacle distance: 100.83 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:40 | Obstacle distance: 101.11 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:43 | Obstacle distance: 100.42 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:45 | Obstacle distance: 101.28 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:47 | Obstacle distance: 101.62 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:49 | Obstacle distance: 101.41 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:51 | Obstacle distance: 101.56 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:53 | Obstacle distance: 101.02 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:55 | Obstacle distance: 101.77 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:57 | Obstacle distance: 101.69 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 13:59:59 | Obstacle distance: 102.1 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:2 | Obstacle distance: 101.35 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:4 | Obstacle distance: 100.96 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:6 | Obstacle distance: 101.39 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:8 | Obstacle distance: 101.2 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:10 | Obstacle distance: 101.08 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:12 | Obstacle distance: 100.58 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:14 | Obstacle distance: 94.78 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:16 | Obstacle distance: 100.81 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:18 | Obstacle distance: 100.82 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:21 | Obstacle distance: 101.97 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:23 | Obstacle distance: 101.65 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:25 | Obstacle distance: 101.77 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:27 | Obstacle distance: 101.45 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:29 | Obstacle distance: 101.31 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:31 | Obstacle distance: 100.82 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:33 | Obstacle distance: 101.16 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:35 | Obstacle distance: 101.82 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:37 | Obstacle distance: 102.61 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:40 | Obstacle distance: 101.56 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:42 | Obstacle distance: 102.19 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:44 | Obstacle distance: 100.62 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:46 | Obstacle distance: 100.71 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:48 | Obstacle distance: 101.21 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
+ID: 192.168.0.1 | Timestamp: 27 7 2020 14:0:50 | Obstacle distance: 98.78 | State: Immobile | GPS Coordinates: 39.7489946,-8.78276133289
 
 
 # =================================================================================== Results ===================================================================================== #

@@ -31,27 +31,27 @@ $
 
 # =================================================================================== Output starts here ===================================================================================== #
 
-
+- The sensor could not detect the obstacle.
 
 
 # =================================================================================== Results ===================================================================================== #
 
 Height (from ground): 45cm
 
-Time interval: 120 seconds
+Time interval: NA
 
-Number of measurements: 60
+Number of measurements: NA
 
-Minimum number:
+Minimum number: NA
 
-Maximum number:
+Maximum number: NA
 
-Mean of the obstacle's distance measured:
+Mean of the obstacle's distance measured: NA
 
-Standard variation of the obstacle's distance measured:
+Standard variation of the obstacle's distance measured: NA
 
-Variance of the obstacle's distance measured:
+Variance of the obstacle's distance measured: NA
 
-Standard Error:
+Standard Error: NA
 
-Percentage Error:
+Percentage Error: NA
