@@ -113,4 +113,4 @@ Variance of the obstacle's distance measured: 1.6974590677966104
 
 Standard Error: 0.16819924037663442
 
-Percentage Error: 0.004605
+Percentage Error: 0.4605
