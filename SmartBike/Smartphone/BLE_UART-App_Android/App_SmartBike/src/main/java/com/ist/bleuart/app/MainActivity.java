@@ -43,7 +43,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,11 +50,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,29 +63,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -926,9 +911,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                         // Timestamp from ImAlive received
                         lasTimestamp = format.parse(string_timestamp);
 
-                        System.out.println("Timestamp:");
-                        System.out.println(lasTimestamp);
-
                         return true;
                     }
                 }
@@ -1202,19 +1184,28 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         // Array with the obstacle's state presented in the SQLite Database
         ArrayList<String> result_state = mDatabase.check_State();
 
+        // Array with the detection's timestamp presented in the SQLite Database
+        ArrayList<String> result_time = mDatabase.check_Time();
+
         for(int index = 0; index < result_distances.size(); index ++){
 
-            String temp_state = result_state.get(index);
+            String state_ofIndex = result_state.get(index);
 
             // Check the state of the obstacle
-            if (temp_state.equals("Moving")){
+            if (state_ofIndex.equals("Moving")){
 
                 // Convert string to float
-                float dist = Float.valueOf(result_distances.get(index));
+                float dist = Float.parseFloat(result_distances.get(index));
 
                 // Check if distance is to close to the user
-                if (dist > 0 && dist < 10){
-                    return true;
+                if (dist > 0 && dist < 100){
+
+                    String timestamp_ofIndex = result_time.get(index);
+
+                    // Check if timestamp is older
+                    if(check_Timestamp(timestamp_ofIndex)){
+                        return true;
+                    }
                 }
             }
         }
@@ -1250,6 +1241,80 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         alertDialog.show();
     }
 
+    /**
+     * Check a received timestamp
+     * @return true if timestamp is not too old
+     * @return if not
+     */
+    private boolean check_Timestamp(String t){
+
+        // Current date
+        Date now_date = new Date();
+
+        // Choose time zone in which you wat to interpret your date
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Lisbon"));
+        cal.setTime(now_date);
+
+        // Current day
+        int current_day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // Current month
+        int current_month = (cal.get(Calendar.MONTH)) + 1;
+
+        // Current year
+        int current_year = cal.get(Calendar.YEAR);
+
+        // Current hour
+        int current_hour = cal.get(Calendar.HOUR_OF_DAY);
+
+        // Current minute
+        int current_minute = cal.get(Calendar.MINUTE);
+
+        // Current second
+        int current_second = cal.get(Calendar.SECOND);
+
+        // Split string by spaces
+        String[] splitStr = t.split("\\s+");
+
+        String t_day = splitStr[0];
+
+        String t_month = splitStr[1];
+
+        String t_year = splitStr[2];
+
+        // Check timestamp of message received is too old
+        if ((current_day == Integer.parseInt(t_day)) && (current_month == Integer.parseInt(t_month)) && (current_year == Integer.parseInt(t_year))){
+
+            String[] t_time = splitStr[3].split(":");
+
+            String t_hour = t_time[0];
+
+            String t_minute = t_time[1];
+
+            String t_second = t_time[2];
+
+            if ((current_hour == Integer.parseInt(t_hour)) && (current_minute == Integer.parseInt(t_minute))){
+
+                if (current_second > Integer.parseInt(t_second)){
+
+                    int timedifference = current_second - Integer.parseInt(t_second);
+
+                    if ((timedifference > 0) && (timedifference < 10)){
+                        return true;
+                    }
+                }
+                else{
+
+                    int timedifference = Integer.parseInt(t_second) - current_second;
+
+                    if ((timedifference > 50) && (timedifference < 60)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 /*
 # ==============================================================================================================    Populate View    ======================================================================================================================== #

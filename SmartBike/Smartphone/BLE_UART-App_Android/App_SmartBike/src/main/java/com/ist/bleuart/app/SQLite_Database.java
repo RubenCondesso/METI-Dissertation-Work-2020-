@@ -122,18 +122,21 @@ public class SQLite_Database extends SQLiteOpenHelper {
         String keyword_State = "State:";
         String keyword_GPS = "Coordinates:";
 
+        contentValues.put(KEY_MSG_ID, getNextWord(item, keyword_ID));
+
+        String temp_item = item.replace(getNextWord(item, keyword_ID), "");
+
         // Day of the timestamp
-        String temp_day = getNextWord(item, keyword_Time);
+        String temp_day = getNextWord(temp_item, keyword_Time);
         // Month of the timestamp
-        String temp_Month = getNextWord(item, temp_day);
+        String temp_Month = getNextWord(temp_item, temp_day);
         // Year of the timestamp
-        String temp_year = getNextWord(item, temp_Month);
+        String temp_year = getNextWord(temp_item, temp_Month);
         // Time of the timestamp
-        String temp_time = getNextWord(item, temp_year);
+        String temp_time = getNextWord(temp_item, temp_year);
         // Final timestamp
         String timestamp = temp_day + " " + temp_Month + " " + temp_year + " " + temp_time;
 
-        contentValues.put(KEY_MSG_ID, getNextWord(item, keyword_ID));
         contentValues.put(KEY_MSG_TIMESTAMP, timestamp);
         contentValues.put(KEY_MSG_DISTANCE, getNextWord(item, keyword_Distance));
         contentValues.put(KEY_MSG_STATE, getNextWord(item, keyword_State));
@@ -212,13 +215,29 @@ public class SQLite_Database extends SQLiteOpenHelper {
         ArrayList<String> listState = new ArrayList<>();
 
         while (data.moveToNext()){
-            // Get the value from the database in column 3 -> Obstacle's state
+            // Get the value from the database in column 4 -> Obstacle's state
             // then add it to the respective ArrayList
             listState.add(data.getString(4));
         }
         return listState;
     }
 
+    /**
+     *  Gives the obstacle's timestamp presented in the SQLite Database
+     * @return ArrayList with the stored timestamp
+     */
+    public ArrayList<String> check_Time(){
+
+        Cursor data = getData();
+        ArrayList<String> listTime = new ArrayList<>();
+
+        while (data.moveToNext()){
+            // Get the value from the database in column 2 -> Detection's timestamp
+            // then add it to the respective ArrayList
+            listTime.add(data.getString(2));
+        }
+        return listTime;
+    }
 
     /**
      * Get word after a specific word in a String
