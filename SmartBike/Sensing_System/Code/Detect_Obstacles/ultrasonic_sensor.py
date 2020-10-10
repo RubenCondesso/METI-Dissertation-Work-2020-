@@ -720,7 +720,7 @@ def main():
         lock.release()
 
 
-    # Run the ultrasonic sensor wtih this GPIO pins: Trigger - Pin 16 (GPIO 23) & Echo - Pin 18 (GPIO 24)
+    # Run the ultrasonic sensor wtih this GPIO pins: Trigger - Pin 12 (GPIO 18) & Echo - Pin 18 (GPIO 24)
     sensor = Obstacle_Detection(18, 24)
     sensor.start()
 
